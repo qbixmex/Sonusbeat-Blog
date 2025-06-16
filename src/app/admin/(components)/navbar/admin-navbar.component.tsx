@@ -1,23 +1,22 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Menu, CircleX } from "lucide-react";
-import { ModeToggle } from "../switch-mode";
+import { Button } from "@/components/ui/button";
+import { LayoutDashboard, Menu, CircleX, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { ModeToggle } from "@/components/switch-mode";
 
 const links = [
-  { id: "8ybq", url: '/', label: 'Home' },
-  { id: "4c65", url: '/news', label: 'News' },
-  { id: "cxy7", url: '/tutorials', label: 'Tutorials' },
-  { id: "d41c", url: '/articles', label: 'Articles' },
+  { id: "8ybq", url: '/admin/dashboard', label: 'Dashboard' },
+  { id: "4c65", url: '/users', label: 'Users' },
+  { id: "cxy7", url: '/articles', label: 'articles' },
+  { id: "d41c", url: '/videos', label: 'Videos' },
   { id: "e6ea", url: '/music', label: 'Music' },
-  { id: "9abg", url: '/videos', label: 'Videos' },
 ];
 
-export const Navbar: React.FC = () => {
+export const AdminNavbar: React.FC = () => {
   const path = usePathname();
   const [ mobileMenu, setMobileMenu ] = useState(false);
 
@@ -38,12 +37,12 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="p-5 flex items-center">
       <div className="flex items-center gap-5 font-semibold text-gray-400">
-        <Link href="/" className={cn(path === '/' && "text-primary")}>
-          <Home />
+        <Link href="/admin/dashboard" className={cn(path === '/admin/dashboard' && "text-primary")}>
+          <LayoutDashboard />
         </Link>
         <div className="hidden md:flex items-center gap-5">
           {links.map(({id, url, label}) => {
-            if (url === '/') return null;
+            if (url === '/admin/dashboard') return null;
             return (
               <Link
                 key={id}
@@ -55,6 +54,7 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
       <div className="ml-auto flex items-center gap-2">
+        <OpenPublicPage />
         <MobileMenu toggleMobileMenu={toggleMobileMenu} />
         <ModeToggle />
       </div>
@@ -79,12 +79,28 @@ export const Navbar: React.FC = () => {
   );
 };
 
-type Props = Readonly<{
+const OpenPublicPage: React.FC = () => {
+  return (
+    <Button
+      size="icon"
+      variant="secondary"
+      className="border"
+      asChild
+    >
+      <a href="/" target="_blank" rel="noopener noreferrer">
+        <span className="sr-only">Open public page</span>
+        <Globe size={20} />
+      </a>
+    </Button>
+  );
+};
+
+type MobileMenuProps = Readonly<{
   className?: string;
   toggleMobileMenu: () => void;
 }>;
 
-const MobileMenu: React.FC<Props> = (props) => {
+const MobileMenu: React.FC<MobileMenuProps> = (props) => {
   const { className, toggleMobileMenu } = props;
 
   return (
@@ -100,4 +116,4 @@ const MobileMenu: React.FC<Props> = (props) => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;
