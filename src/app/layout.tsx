@@ -4,7 +4,7 @@ import { montserrat, notoSansMono } from "@/fonts";
 import "./globals.css";
 import { twMerge } from "tailwind-merge";
 import { ThemeProvider } from "next-themes";
-import { ModeToggle } from "@/components/switch-mode";
+import { Navbar } from "@/components/navbar/navbar.component";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog",
@@ -27,8 +27,10 @@ const RootLayout: React.FC<Props> = (props) => {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="absolute top-5 right-5"><ModeToggle /></div>
-          {props.children}
+          <main className="w-full">
+            <Navbar />
+            {props.children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
