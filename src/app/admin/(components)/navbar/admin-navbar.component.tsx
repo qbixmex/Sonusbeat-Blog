@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Menu, CircleX, Globe } from "lucide-react";
+import { LayoutDashboard, CircleX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/switch-mode";
+import { ProfileMenu } from "./profile-menu.component";
+import OpenPublicPage from "./open-public-page.component";
+import MobileMenu from "./mobile-menu.component";
 
 const links = [
   { id: "8ybq", url: '/admin/dashboard', label: 'Dashboard' },
@@ -40,6 +42,7 @@ export const AdminNavbar: React.FC = () => {
         <Link href="/admin/dashboard" className={cn(path === '/admin/dashboard' && "text-primary")}>
           <LayoutDashboard />
         </Link>
+
         <div className="hidden md:flex items-center gap-5">
           {links.map(({id, url, label}) => {
             if (url === '/admin/dashboard') return null;
@@ -53,11 +56,14 @@ export const AdminNavbar: React.FC = () => {
           })}
         </div>
       </div>
+
       <div className="ml-auto flex items-center gap-2">
         <OpenPublicPage />
         <MobileMenu toggleMobileMenu={toggleMobileMenu} />
         <ModeToggle />
+        <ProfileMenu />
       </div>
+
       {mobileMenu && (
         <div className="absolute top-0 left-0 w-screen h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center gap-5 p-5 md:hidden text-2xl">
           <CircleX
@@ -76,43 +82,6 @@ export const AdminNavbar: React.FC = () => {
         </div>
       )}
     </nav>
-  );
-};
-
-const OpenPublicPage: React.FC = () => {
-  return (
-    <Button
-      size="icon"
-      variant="secondary"
-      className="border"
-      asChild
-    >
-      <a href="/" target="_blank" rel="noopener noreferrer">
-        <span className="sr-only">Open public page</span>
-        <Globe size={20} />
-      </a>
-    </Button>
-  );
-};
-
-type MobileMenuProps = Readonly<{
-  className?: string;
-  toggleMobileMenu: () => void;
-}>;
-
-const MobileMenu: React.FC<MobileMenuProps> = (props) => {
-  const { className, toggleMobileMenu } = props;
-
-  return (
-    <Button
-      size="icon"
-      variant="secondary"
-      className={cn("border md:hidden", className)}
-      onClick={toggleMobileMenu}
-    >
-      <span className="sr-only">Open menu</span>
-      <Menu size={20} />
-    </Button>
   );
 };
 
