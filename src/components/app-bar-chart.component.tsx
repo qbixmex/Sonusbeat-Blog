@@ -72,7 +72,7 @@ export const ChartBarMultiple = () => {
           Tendencia a la alta por 5.2% este mes <TrendingUp className="h-4 w-4" />
         </div>
         <div className="text-muted-foreground leading-none">
-          Mostrando el total de visitantes de los últimos 6 meses
+          Mostrando el total de ventas de los últimos 6 meses
         </div>
       </CardFooter>
     </Card>
