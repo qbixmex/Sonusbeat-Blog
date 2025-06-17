@@ -26,11 +26,11 @@ const chartData = [
 
 const chartConfig = {
   current: {
-    label: "Current",
+    label: "2025",
     color: "var(--chart-4)",
   },
   previous: {
-    label: "Previous",
+    label: "2024",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
