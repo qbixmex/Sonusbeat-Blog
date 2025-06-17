@@ -9,24 +9,24 @@ const DashboardPage = async () => {
   return (
     <AdminLayout>      
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-5">
-        <div className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+        <section className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <ChartBarMultiple />
-        </div>
-        <div className="bg-secondary p-5 rounded-lg">
+        </section>
+        <section className="bg-secondary p-5 rounded-lg">
           <AppPieChart />
-        </div>
-        <div className="bg-secondary p-5 rounded-lg">
+        </section>
+        <section className="bg-secondary p-5 rounded-lg">
           <CardList title="Últimas Transacciones" />
-        </div>
-        <div className="bg-secondary p-5 rounded-lg">
+        </section>
+        <section className="bg-secondary p-5 rounded-lg">
           <CardList title="Contenido Popular" />
-        </div>
-        <div className="bg-secondary p-5 rounded-lg">
+        </section>
+        <section className="bg-secondary p-5 rounded-lg">
           <Scroll />
-        </div>
-        <div className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+        </section>
+        <section className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <AppAreaChart />
-        </div>
+        </section>
       </div>
     </AdminLayout>
   );

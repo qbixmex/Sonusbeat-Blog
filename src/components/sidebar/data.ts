@@ -15,34 +15,46 @@ export type Item = {
   Icon: LucideIcon;
 };
 
+export type User = {
+  name: string;
+  email: string;
+  avatar: string;
+};
+
+export const user: User = {
+  name: "Daniel González",
+  email: "qbixmex@gmail.com",
+  avatar: "https://avatars.githubusercontent.com/u/70177108?v=4", 
+};
+
 export const content: Item[] = [
   {
     id: "x9j2",
     title: "Artículos",
-    url: "#",
+    url: "/admin/articles",
     Icon: FileText,
   },
   {
     id: "a3b4",
     title: "Música",
-    url: "#",
+    url: "/admin/music",
     Icon: Music,
   },
   {
     id: "c5d6",
     title: "Videos",
-    url: "#",
+    url: "/admin/videos",
     Icon: Videotape,
   },
   {
     id: "e7f8",
     title: "Usuarios",
-    url: "#",
+    url: "/admin/users",
     Icon: Users,
   },
 ];
 
-export const management: Item[] = [
+export const control: Item[] = [
   {
     id: "e1f2",
     title: "Mensajes",

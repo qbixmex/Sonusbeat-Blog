@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -20,15 +20,17 @@ const AdminLayout: React.FC<Props> = async ({ children }) => {
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <aside>
-        <AppSidebar />
-      </aside>
-      <main className="w-full">
-        <AdminNavbar />
-        <MainContainer>
-          {children}
-        </MainContainer>
-      </main>
+      <AppSidebar />
+      <SidebarInset>
+        <header>
+          <AdminNavbar />
+        </header>
+        <main className="w-full">
+          <MainContainer>
+            {children}
+          </MainContainer>
+        </main>
+      </SidebarInset>
     </SidebarProvider>
   );
 };
