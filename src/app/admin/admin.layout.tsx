@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 import { AdminNavbar } from "./(components)/navbar/admin-navbar.component";
 import { AppSidebar } from "@/components/sidebar/app-sidebar.component";
+import MainContainer from "@/components/main-container.component";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog - Admin",
@@ -22,9 +23,11 @@ const AdminLayout: React.FC<Props> = async ({ children }) => {
       <aside>
         <AppSidebar />
       </aside>
-      <main>
+      <main className="w-full">
         <AdminNavbar />
-        {children}
+        <MainContainer>
+          {children}
+        </MainContainer>
       </main>
     </SidebarProvider>
   );
