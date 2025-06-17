@@ -3,7 +3,7 @@ import AdminLayout from "../admin.layout";
 import { ChartBarMultiple } from "@/components/app-bar-chart.component";
 import AppPieChart from "@/components/app-pie-chart.component";
 import { CardList } from "@/components/card-list.component";
-import { TodoList } from "@/components/todo-list.component";
+import { Scroll } from "@/components/scroll.component";
 
 const DashboardPage = async () => {
   return (
@@ -22,7 +22,7 @@ const DashboardPage = async () => {
           <CardList title="Contenido Popular" />
         </div>
         <div className="bg-secondary p-5 rounded-lg">
-          <TodoList />
+          <Scroll />
         </div>
         <div className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <AppAreaChart />
