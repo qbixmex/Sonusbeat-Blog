@@ -16,20 +16,20 @@ import { TrendingUp } from "lucide-react";
 export const description = "A multiple bar chart";
 
 const chartData = [
-  { month: "Enero", desktop: 186, mobile: 80 },
-  { month: "Febrero", desktop: 150, mobile: 30 },
-  { month: "Marzo", desktop: 237, mobile: 120 },
-  { month: "Abril", desktop: 240, mobile: 150 },
-  { month: "Mayo", desktop: 209, mobile: 130 },
-  { month: "Junio", desktop: 220, mobile: 90 },
+  { month: "Enero", clients: 186, sales: 80 },
+  { month: "Febrero", clients: 150, sales: 30 },
+  { month: "Marzo", clients: 237, sales: 120 },
+  { month: "Abril", clients: 240, sales: 150 },
+  { month: "Mayo", clients: 209, sales: 130 },
+  { month: "Junio", clients: 220, sales: 90 },
 ];
 
 const chartConfig = {
-  desktop: {
+  clients: {
     label: "Clientes",
     color: "var(--chart-1)",
   },
-  mobile: {
+  sales: {
     label: "Ventas",
     color: "var(--chart-2)",
   },
@@ -62,8 +62,8 @@ export const ChartBarMultiple = () => {
               content={<ChartTooltipContent indicator="dot" />}
             />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            <Bar dataKey="clients" fill="var(--color-clients)" radius={4} />
+            <Bar dataKey="sales" fill="var(--color-sales)" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
