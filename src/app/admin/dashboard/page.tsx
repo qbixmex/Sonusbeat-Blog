@@ -1,6 +1,7 @@
 import AppAreaChart from "@/components/app-area-chart.component";
 import AdminLayout from "../admin.layout";
 import { ChartBarMultiple } from "@/components/app-bar-chart.component";
+import AppPieChart from "@/components/app-pie-chart.component";
 
 const DashboardPage = async () => {
   return (
@@ -9,13 +10,15 @@ const DashboardPage = async () => {
         <div className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <ChartBarMultiple />
         </div>
+        <div className="bg-secondary p-5 rounded-lg">
+          <AppPieChart />
+        </div>
+        <div className="bg-secondary p-5 rounded-lg">Widget</div>
         <div className="bg-secondary p-5 rounded-lg">Widget</div>
         <div className="bg-secondary p-5 rounded-lg">Widget</div>
         <div className="bg-secondary p-5 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <AppAreaChart />
         </div>
-        <div className="bg-secondary p-5 rounded-lg">Widget</div>
-        <div className="bg-secondary p-5 rounded-lg">Widget</div>
       </div>
     </AdminLayout>
   );
