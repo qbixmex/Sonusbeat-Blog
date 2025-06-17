@@ -23,7 +23,7 @@ export const SidebarCategories = () => {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Padre">
+            <SidebarMenuButton asChild tooltip="Música Electrónica">
               <Link href="#">
                 <Music />
                 <span>Música Electrónica</span>
@@ -57,7 +57,7 @@ export const SidebarCategories = () => {
             </SidebarMenuSub>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Padre">
+            <SidebarMenuButton asChild tooltip="Tutoriales">
               <Link href="#">
                 <SquareLibrary />
                 <span>Tutoriales</span>
