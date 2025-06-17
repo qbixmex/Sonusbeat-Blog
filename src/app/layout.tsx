@@ -26,7 +26,7 @@ const RootLayout: React.FC<Props> = (props) => {
       <body className={`${fontsVariables.join(' ')} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

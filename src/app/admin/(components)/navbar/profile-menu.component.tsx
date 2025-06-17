@@ -11,17 +11,21 @@ import {
   AvatarFallback,
   AvatarImage
 } from '@/components/ui/avatar';
-import { User, LogOut, Settings } from "lucide-react";
+import { User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const ProfileMenu: React.FC = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>DG</AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Avatar>
+            <AvatarImage src="https://avatars.githubusercontent.com/u/70177108?v=4" />
+            <AvatarFallback>DG</AvatarFallback>
+          </Avatar>
+          <span className="sr-only">Abrir menú de perfil</span>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={16}>
         <DropdownMenuLabel>Opciones</DropdownMenuLabel>
@@ -29,10 +33,6 @@ export const ProfileMenu: React.FC = () => {
         <DropdownMenuItem className="flex items-center gap-2">
           <User className="size-[1.2rem]" />
           <span>Perfil</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex items-center gap-2">
-          <Settings className="size-[1.2rem]" />
-          <span>Ajustes</span>
         </DropdownMenuItem>
         <DropdownMenuItem variant="destructive" className="flex items-center gap-2">
           <LogOut className="size-[1.2rem]" />
