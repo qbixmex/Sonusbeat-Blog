@@ -39,7 +39,7 @@ export const AppAreaChart = () => {
   return (
     <Card>
       <CardHeader>
-        <h2 className="text-3xl font-semibold text-primary">Visitantes Totales</h2>
+        <h2 className="text-3xl font-semibold text-primary-foreground">Visitantes Totales</h2>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

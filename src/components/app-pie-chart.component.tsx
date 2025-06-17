@@ -59,7 +59,7 @@ export const AppPieChart = () => {
   return (
     <Card className="flex flex-col h-full">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Visitantes por Navegador</CardTitle>
+        <CardTitle className="text-xl">Visitantes por Navegador</CardTitle>
         <CardDescription>De Enero a Junio del 2025</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

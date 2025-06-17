@@ -91,11 +91,13 @@ const latestTransactions = [
 ];
 
 export const CardList: React.FC<Props> = ({ title }) => {
-  const list =
-    title === "Últimas Transacciones" ? latestTransactions : popularContent;
-  return (
+  const list = (title === "Últimas Transacciones")
+    ? latestTransactions
+    : popularContent;
+
+    return (
     <>
-      <h2 className="text-3xl text-primary font-semibold mb-6">{title}</h2>
+      <h2 className="text-3xl text-primary-foreground font-semibold mb-6">{title}</h2>
       <div className="flex flex-col gap-2">
         {list.map((item) => {
           const { id, title, image, badge } = item;
