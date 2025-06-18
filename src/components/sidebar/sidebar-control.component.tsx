@@ -22,7 +22,10 @@ export const SidebarControl: React.FC<Props> = ({ items }) => {
         <SidebarMenu>
           {items.map(({ id, title, url, Icon }) => (
             <SidebarMenuItem key={id}>
-              <SidebarMenuButton asChild tooltip={title}>
+              <SidebarMenuButton asChild tooltip={{
+              children: title,
+              className: "text-secondary-foreground font-semibold",
+            }}>
                 <Link href={url}>
                   <Icon />
                   <span>{title}</span>

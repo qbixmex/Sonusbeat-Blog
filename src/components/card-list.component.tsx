@@ -4,6 +4,7 @@ import { Badge } from "./ui/badge";
 
 type Props = {
   title: string;
+  content: "popular-content" | "latest-transactions";
 };
 
 type Item = {
@@ -90,14 +91,25 @@ const latestTransactions = [
   },
 ];
 
-export const CardList: React.FC<Props> = ({ title }) => {
-  const list = (title === "Últimas Transacciones")
-    ? latestTransactions
-    : popularContent;
+export const CardList: React.FC<Props> = ({ title, content }) => {
+  let list: Item[];
+
+  switch (content) {
+    case "popular-content":
+      list = popularContent;
+      break;
+
+    case "latest-transactions":
+      list = latestTransactions;
+      break;
+  
+    default:
+      list = [];
+  }
 
     return (
     <>
-      <h2 className="text-3xl text-primary-foreground font-semibold mb-6">{title}</h2>
+      <h2 className="text-3xl text-secondary-foreground font-semibold mb-6">{title}</h2>
       <div className="flex flex-col gap-2">
         {list.map((item) => {
           const { id, title, image, badge } = item;

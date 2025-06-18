@@ -10,7 +10,7 @@ import { user, content, control } from "./data";
 import { NavUser } from "./nav-user.component";
 import { SidebarLogo } from "./sidebar-logo.component";
 import { SidebarManagement } from "./sidebar-content";
-import SidebarProjects from "./sidebar-projects.component";
+import { SidebarProjects } from "./sidebar-projects.component";
 import { SidebarReleases } from "./sidebar-releases.component";
 import { SidebarCategories } from "./sidebar-categories.component";
 import { SidebarControl } from "./sidebar-control.component";

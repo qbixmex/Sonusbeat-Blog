@@ -16,10 +16,10 @@ const DashboardPage = async () => {
           <AppPieChart />
         </section>
         <section className="bg-secondary p-5 rounded-lg">
-          <CardList title="Últimas Transacciones" />
+          <CardList title="Últimas Transacciones" content="latest-transactions" />
         </section>
         <section className="bg-secondary p-5 rounded-lg">
-          <CardList title="Contenido Popular" />
+          <CardList title="Contenido Popular" content="popular-content" />
         </section>
         <section className="bg-secondary p-5 rounded-lg">
           <Scroll />

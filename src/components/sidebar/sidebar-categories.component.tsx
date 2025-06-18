@@ -23,7 +23,10 @@ export const SidebarCategories = () => {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Música Electrónica">
+            <SidebarMenuButton asChild tooltip={{
+              children: "Música Electrónica",
+              className: "text-secondary-foreground font-semibold",
+            }}>
               <Link href="#">
                 <Music />
                 <span>Música Electrónica</span>
@@ -31,7 +34,7 @@ export const SidebarCategories = () => {
             </SidebarMenuButton>
             <SidebarMenuSub>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Tech House">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Music2 />
                     <span>Tech House</span>
@@ -39,7 +42,7 @@ export const SidebarCategories = () => {
                 </SidebarMenuButton>
               </SidebarMenuSubItem>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Techno">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Music2 />
                     <span>Techno</span>
@@ -47,7 +50,7 @@ export const SidebarCategories = () => {
                 </SidebarMenuButton>
               </SidebarMenuSubItem>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Trance">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Music2 />
                     <span>Trance</span>
@@ -57,7 +60,10 @@ export const SidebarCategories = () => {
             </SidebarMenuSub>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Tutoriales">
+            <SidebarMenuButton asChild tooltip={{
+              children: "Tutoriales",
+              className: "text-secondary-foreground font-semibold",
+            }}>
               <Link href="#">
                 <SquareLibrary />
                 <span>Tutoriales</span>
@@ -65,7 +71,7 @@ export const SidebarCategories = () => {
             </SidebarMenuButton>
             <SidebarMenuSub>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Tech House">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Book />
                     <span>Ableton Live</span>
@@ -73,7 +79,7 @@ export const SidebarCategories = () => {
                 </SidebarMenuButton>
               </SidebarMenuSubItem>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Techno">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Book />
                     <span>Cubase</span>
@@ -81,7 +87,7 @@ export const SidebarCategories = () => {
                 </SidebarMenuButton>
               </SidebarMenuSubItem>
               <SidebarMenuSubItem>
-                <SidebarMenuButton asChild tooltip="Trance">
+                <SidebarMenuButton asChild>
                   <Link href="#">
                     <Book />
                     <span>Producción</span>

@@ -25,7 +25,10 @@ export const SidebarProjects: React.FC = () => {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Ver Proyectos">
+            <SidebarMenuButton asChild tooltip={{
+              children: "Ver Proyectos",
+              className: "text-secondary-foreground font-semibold",
+            }}>
               <Link href="#">
                 <Projector />
                 <span>Ver Proyectos</span>
@@ -33,10 +36,13 @@ export const SidebarProjects: React.FC = () => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Crear Proyecto">
+            <SidebarMenuButton asChild tooltip={{
+              children: "Crear Proyecto",
+              className: "text-secondary-foreground font-semibold",
+            }}>
               <Link href="#">
                 <PlusCircle />
-                <span>Agregar Proyecto</span>
+                <span>Crear Proyecto</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

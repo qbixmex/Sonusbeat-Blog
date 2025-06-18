@@ -28,7 +28,10 @@ export const SidebarReleases = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Ver Lanzamientos">
+                <SidebarMenuButton asChild tooltip={{
+                  children: "Ver Lanzamientos",
+                  className: "text-secondary-foreground font-semibold",
+                }}>
                   <Link href="#">
                     <Eye />
                     <span>Ver Lanzamientos</span>
@@ -36,7 +39,10 @@ export const SidebarReleases = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Crear Lanzamiento">
+                <SidebarMenuButton asChild tooltip={{
+                  children: "Crear Lanzamiento",
+                  className: "text-secondary-foreground font-semibold",
+                }}>
                   <Link href="#">
                     <Rocket />
                     <span>Crear Lanzamiento</span>

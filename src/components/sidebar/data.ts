@@ -19,12 +19,14 @@ export type User = {
   name: string;
   email: string;
   avatar: string;
+  bio?: string;
 };
 
 export const user: User = {
   name: "Daniel González",
   email: "qbixmex@gmail.com",
-  avatar: "https://avatars.githubusercontent.com/u/70177108?v=4", 
+  avatar: "https://avatars.githubusercontent.com/u/70177108?v=4",
+  bio: "Desarrollador web y entusiasta de la tecnología. Me apasiona crear aplicaciones web modernas y eficientes.",
 };
 
 export const content: Item[] = [
