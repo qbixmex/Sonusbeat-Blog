@@ -50,13 +50,15 @@ export const Badge: FC<BadgeProps> & {
           <BadgeIcon color="white" icon={icon} />
         </div>
       </HoverCardTrigger>
-      <HoverCardContent align="start" sideOffset={12} className={styles.badgeHover}>
+      <HoverCardContent
+        align="start"
+        sideOffset={12}
+        className={styles.badgeHover}
+      >
         <div className={styles.badgeHoverHeader}>
           { title } <BadgeIcon color={color} icon={icon} />
         </div>
-        <p className={styles.badgeHoverDescription}>
-          { description }
-        </p>
+        { description }
       </HoverCardContent>
     </HoverCard>
   );
