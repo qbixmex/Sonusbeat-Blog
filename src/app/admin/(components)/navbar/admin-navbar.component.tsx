@@ -6,8 +6,9 @@ import OpenPublicPage from "./open-public-page.component";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { PanelLeftIcon } from "lucide-react";
+import { User } from "@/root/next-auth";
 
-export const AdminNavbar: React.FC = () => {
+export const AdminNavbar: React.FC<{ user: User }> = ({ user }) => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -23,7 +24,10 @@ export const AdminNavbar: React.FC = () => {
       <div className="ml-auto flex items-center gap-2">
         <OpenPublicPage />
         <ModeToggle />
-        <ProfileMenu />
+        <ProfileMenu profile={{
+          name: user.name,
+          avatar: user.image,
+        }} />
       </div>
     </nav>
   );

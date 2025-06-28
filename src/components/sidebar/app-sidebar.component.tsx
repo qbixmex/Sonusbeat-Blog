@@ -6,7 +6,7 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { user, content, control } from "./data";
+import { content, control } from "./data";
 import { NavUser } from "./nav-user.component";
 import { SidebarLogo } from "./sidebar-logo.component";
 import { SidebarManagement } from "./sidebar-content";
@@ -14,10 +14,11 @@ import { SidebarProjects } from "./sidebar-projects.component";
 import { SidebarReleases } from "./sidebar-releases.component";
 import { SidebarCategories } from "./sidebar-categories.component";
 import { SidebarControl } from "./sidebar-control.component";
+import { User } from "@/root/next-auth";
 
-type Props = React.ComponentProps<typeof Sidebar>;
+type Props = Readonly<{ user: User }> & React.ComponentProps<typeof Sidebar>;
 
-export const AppSidebar: React.FC<Props> = ({ ...props }) => {
+export const AppSidebar: React.FC<Props> = ({ user, ...props }) => {
   return (
     <Sidebar collapsible="icon" {...props}>
 
@@ -36,7 +37,11 @@ export const AppSidebar: React.FC<Props> = ({ ...props }) => {
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser profile={{
+          name: user.name,
+          avatar: user.image,
+          email: user.email,
+        }} />
       </SidebarFooter>
 
       <SidebarRail />

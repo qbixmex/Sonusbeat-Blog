@@ -16,22 +16,34 @@ import {
 import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logout } from '@/app/(auth)/actions/handleLogout';
+import { getInitials } from "@/lib/utils";
 
-export const ProfileMenu: React.FC = () => {
+type Props = Readonly<{
+  profile: {
+    avatar: string;
+    name: string;
+  };
+}>;
+
+export const ProfileMenu: React.FC<Props> = ({ profile }) => {
+  
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <Avatar>
-            <AvatarImage src="https://avatars.githubusercontent.com/u/70177108?v=4" />
-            <AvatarFallback>DG</AvatarFallback>
+            <AvatarImage
+              src={profile.avatar}
+              alt={`${profile.name} profile image`}
+            />
+            <AvatarFallback>{ getInitials(profile.name) }</AvatarFallback>
           </Avatar>
           <span className="sr-only">Abrir menú de perfil</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={16}>
-        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+        <DropdownMenuLabel>{profile.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="flex items-center gap-2">
           <User className="size-[1.2rem]" />
@@ -48,7 +60,6 @@ export const ProfileMenu: React.FC = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-
 };
 
 export default ProfileMenu;

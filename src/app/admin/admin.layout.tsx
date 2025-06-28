@@ -28,10 +28,10 @@ const AdminLayout: React.FC<Props> = async ({ children }) => {
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar />
+      <AppSidebar user={session.user} />
       <SidebarInset>
         <header>
-          <AdminNavbar />
+          <AdminNavbar user={session.user} />
         </header>
         <main className="w-full">
           <MainContainer>
