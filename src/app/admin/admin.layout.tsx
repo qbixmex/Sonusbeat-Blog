@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { AdminNavbar } from "./(components)/navbar/admin-navbar.component";
 import { AppSidebar } from "@/components/sidebar/app-sidebar.component";
 import MainContainer from "@/components/main-container.component";
+import { auth } from "@/auth.config";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog - Admin",
@@ -15,8 +17,15 @@ export const metadata: Metadata = {
 type Props = Readonly<{ children: React.ReactNode; }>;
 
 const AdminLayout: React.FC<Props> = async ({ children }) => {
+  const session = await auth();
+
+  
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar_state')?.value === "true";
+
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
