@@ -19,7 +19,6 @@ type Props = Readonly<{ children: React.ReactNode; }>;
 const AdminLayout: React.FC<Props> = async ({ children }) => {
   const session = await auth();
 
-  
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar_state')?.value === "true";
 

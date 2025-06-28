@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +13,9 @@ import {
   AvatarFallback,
   AvatarImage
 } from '@/components/ui/avatar';
-import { User, LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { logout } from '@/app/(auth)/actions/handleLogout';
 
 export const ProfileMenu: React.FC = () => {
 
@@ -34,7 +37,11 @@ export const ProfileMenu: React.FC = () => {
           <User className="size-[1.2rem]" />
           <span>Perfil</span>
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive" className="flex items-center gap-2">
+        <DropdownMenuItem
+          variant="destructive"
+          className="flex items-center gap-2"
+          onClick={logout}
+        >
           <LogOut className="size-[1.2rem]" />
           <span>Salir</span>
         </DropdownMenuItem>

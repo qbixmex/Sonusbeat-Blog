@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { logout } from "@/app/(auth)/actions/handleLogout";
 
 type Props = Readonly<{
   user: {
@@ -101,9 +102,13 @@ export const NavUser: React.FC<Props> = ({ user }) => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-amber-500">
-              <LogOut className="text-amber-500" />
-              Salir
+            <DropdownMenuItem
+              className="text-amber-500"
+              onClick={logout}
+              variant="destructive"
+            >
+              <LogOut />
+              <span>Salir</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
