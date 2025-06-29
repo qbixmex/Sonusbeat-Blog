@@ -19,7 +19,7 @@ export const authConfig: NextAuthConfig = {
         const parsedCredentials = z
           .object({
             email: z.string().email(),
-            password: z.string().min(6),
+            password: z.string().min(8),
           })
           .safeParse(credentials);
 
@@ -66,25 +66,25 @@ export const authConfig: NextAuthConfig = {
       session.user = token.data as AdapterUser & User;
       return session;
     },
-    // authorized({ auth, request: { nextUrl } }) {
-    //   const isLoggedIn = !!auth?.user;
-    //   const isOnAdmin = nextUrl.pathname.startsWith('/admin');
-    //   const isOnLogin = nextUrl.pathname === '/auth/login';
-    //   const isOnRegister = nextUrl.pathname === '/auth/register';
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      const isOnLogin = nextUrl.pathname === '/login';
+      const isOnRegister = nextUrl.pathname === '/register';
 
-    //   if (isOnAdmin) {
-    //     // Redirect unauthenticated users to login page if they're not logged in.
-    //     return isLoggedIn ? true : false;
-    //   }
+      if (isOnAdmin) {
+        // Redirect unauthenticated users to login page if they're not logged in.
+        return isLoggedIn ? true : false;
+      }
 
-    //   if (isOnLogin || isOnRegister) {
-    //     if (isLoggedIn) {
-    //       return Response.redirect(new URL('/admin/dashboard', nextUrl));
-    //     }
-    //   }
+      if (isOnLogin || isOnRegister) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/admin/dashboard', nextUrl));
+        }
+      }
 
-    //   return true;
-    // },
+      return true;
+    },
   },
 };
 
