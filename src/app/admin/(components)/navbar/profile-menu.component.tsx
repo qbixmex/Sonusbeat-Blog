@@ -13,20 +13,26 @@ import {
   AvatarFallback,
   AvatarImage
 } from '@/components/ui/avatar';
-import { LogOut, User } from "lucide-react";
+import { LogOut, Mail, User, UserRoundPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logout } from '@/app/(auth)/actions/handleLogout';
 import { getInitials } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
-type Props = Readonly<{
-  profile: {
-    avatar: string;
-    name: string;
+export const ProfileMenu: React.FC = () => {
+  const { data } = useSession();
+  const { user } = data ?? {
+    expires: '',
+    user: {
+      id: '',
+      name: '',
+      image: '',
+      email: '',
+      isActive: false,
+      roles: []
+    }
   };
-}>;
-
-export const ProfileMenu: React.FC<Props> = ({ profile }) => {
-  
 
   return (
     <DropdownMenu>
@@ -34,20 +40,31 @@ export const ProfileMenu: React.FC<Props> = ({ profile }) => {
         <Button variant="ghost" size="icon">
           <Avatar>
             <AvatarImage
-              src={profile.avatar}
-              alt={`${profile.name} profile image`}
+              src={user.image}
+              alt={`${user.name} profile image`}
             />
-            <AvatarFallback>{ getInitials(profile.name) }</AvatarFallback>
+            <AvatarFallback>{ getInitials(user.name) }</AvatarFallback>
           </Avatar>
           <span className="sr-only">Abrir menú de perfil</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={16}>
-        <DropdownMenuLabel>{profile.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <section className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="size-[1.2rem]" />
+            <span>{user.name}</span>
+          </section>
+          <section className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Mail className="size-[1.2rem]" />
+            <span>{user.email}</span>
+          </section>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex items-center gap-2">
-          <User className="size-[1.2rem]" />
-          <span>Perfil</span>
+        <DropdownMenuItem>
+          <Link href={`/admin/profile/${user.id}`} className="flex items-center gap-2">
+            <UserRoundPen className="size-[1.2rem]" />
+            <span>Perfil</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
