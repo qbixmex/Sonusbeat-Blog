@@ -12,7 +12,8 @@ import {
 
 import Image from "next/image";
 import { Credentials } from "./credentials.component";
-import handleLoginGoogle from "@/app/(auth)/actions/handleLoginGoogle";
+import { handleLoginGoogle } from "@/app/(auth)/actions/handleLoginGoogle";
+import { handleLoginGithub } from "@/app/(auth)/actions/handleLoginGithub";
 
 type Props = { className?: string; } & React.ComponentProps<"div">;
 
@@ -29,16 +30,18 @@ export const LoginForm: React.FC<Props> = ({ className, ...props }) => {
         <CardContent>
           <div className="grid gap-6">
             <div className="flex flex-col gap-4">
-              <Button variant="outline" className="w-full">
-                <Image
-                  src="/images/svg/github.svg"
-                  alt="GitHub Logo"
-                  width={16}
-                  height={16}
-                  className="invert"
-                />
-                Github
-              </Button>
+              <form action={handleLoginGithub}>
+                <Button variant="outline" className="w-full">
+                  <Image
+                    src="/images/svg/github.svg"
+                    alt="GitHub Logo"
+                    width={16}
+                    height={16}
+                    className="invert"
+                  />
+                  Github
+                </Button>
+              </form>
               <form action={handleLoginGoogle}>
                 <Button variant="outline" className="w-full">
                   <Image

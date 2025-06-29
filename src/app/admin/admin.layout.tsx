@@ -19,12 +19,12 @@ type Props = Readonly<{ children: React.ReactNode; }>;
 const AdminLayout: React.FC<Props> = async ({ children }) => {
   const session = await auth();
 
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get('sidebar_state')?.value === "true";
-
   if (!session) {
     redirect("/login");
   }
+
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get('sidebar_state')?.value === "true";
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

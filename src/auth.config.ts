@@ -3,6 +3,7 @@ import { User } from './interfaces/user.interface';
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
+import Github from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import bcrypt from 'bcryptjs';
@@ -49,6 +50,10 @@ export const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID ?? undefined,
       clientSecret: process.env.AUTH_GOOGLE_SECRET ?? undefined,
+    }),
+    Github({
+      clientId: process.env.AUTH_GITHUB_ID ?? undefined,
+      clientSecret: process.env.AUTH_GITHUB_SECRET ?? undefined,
     }),
   ],
   session: {
