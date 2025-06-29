@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import {
@@ -10,10 +11,12 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form";
-import { Send } from "lucide-react";
+import { LoaderCircle, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import { handleLoginCredentials } from "@/app/(auth)/actions/handleLoginCredentials";
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   email: z
@@ -38,10 +41,18 @@ export const Credentials = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    form.reset();
+  const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
+    const response = await handleLoginCredentials({ email, password });
+    if (response === 'Success') {
+      form.reset();
+    }
   };
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      window.location.href = "/admin/dashboard";
+    }
+  }, [form.formState.isSubmitSuccessful]);
 
   return (
     <Form {...form}>
@@ -70,15 +81,30 @@ export const Credentials = () => {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Acceder <Send />
+          <Button
+            type="submit"
+            className={cn({
+              "bg-secondary hover:bg-secondary cursor-not-allowed": form.formState.isSubmitting,
+            })}
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <div className="flex items-center gap-2 text-secondary-foreground animate-pulse">
+                <span className="text-sm italic">Espere</span>
+                <LoaderCircle className="size-4 animate-spin" />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span>Acceder</span> <Send />
+              </div>
+            )}
           </Button>
         </div>
       </form>
