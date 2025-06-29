@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { montserrat, notoSansMono } from "@/fonts";
 
-import { ThemeProvider } from "next-themes";
+
 import "./globals.css";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog",
@@ -24,16 +25,11 @@ const RootLayout: React.FC<Props> = (props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`${fontsVariables.join(' ')} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <main className="w-full">
             {props.children}
           </main>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

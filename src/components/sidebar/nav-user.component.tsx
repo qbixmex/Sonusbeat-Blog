@@ -1,12 +1,11 @@
 "use client"
 
+import { useSession } from "next-auth/react";
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  UserRoundPen,
 } from "lucide-react";
 import {
   Avatar,
@@ -28,17 +27,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { logout } from "@/app/(auth)/actions/handleLogout";
+import { getInitials } from "@/lib/utils";
+import Link from "next/link";
 
-type Props = Readonly<{
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
+export const NavUser: React.FC = () => {
+  const { data } = useSession();
+  const { user } = data ?? {
+    expires: '',
+    user: {
+      id: '',
+      name: '',
+      image: '',
+      email: '',
+      isActive: false,
+      roles: []
+    }
   };
-}>;
-
-export const NavUser: React.FC<Props> = ({ user }) => {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -50,8 +56,10 @@ export const NavUser: React.FC<Props> = ({ user }) => {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={user.image} alt={user.name} />
+                <AvatarFallback className="rounded-lg">
+                  { getInitials(user.name) }
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -69,8 +77,10 @@ export const NavUser: React.FC<Props> = ({ user }) => {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="size-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={user.image} alt={user.name} />
+                  <AvatarFallback className="rounded-lg">
+                    { getInitials(user.name) }
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -81,19 +91,10 @@ export const NavUser: React.FC<Props> = ({ user }) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Actualiza a Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Cuenta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Facturación
+                <Link href={`/admin/profile/${user.id}`} className="w-full flex items-center gap-2">
+                  <UserRoundPen />
+                  <span>Perfil</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -101,9 +102,13 @@ export const NavUser: React.FC<Props> = ({ user }) => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-amber-500">
-              <LogOut className="text-amber-500" />
-              Salir
+            <DropdownMenuItem
+              className="text-amber-500"
+              onClick={logout}
+              variant="destructive"
+            >
+              <LogOut />
+              <span>Salir</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
