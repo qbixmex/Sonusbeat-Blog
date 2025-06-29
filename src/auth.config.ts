@@ -1,10 +1,12 @@
-import type { AdapterUser } from 'next-auth/adapters';
-import { User } from './interfaces/user.interface';
-import NextAuth, { type NextAuthConfig } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import type { NextAuthConfig } from "next-auth"
+import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
-import Github from "next-auth/providers/github";
+import type { User } from '@/root/next-auth';
+import { type AdapterUser } from 'next-auth/adapters';
 import Credentials from "next-auth/providers/credentials";
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+
 import prisma from "@/lib/prisma";
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -15,6 +17,14 @@ export const authConfig: NextAuthConfig = {
     signIn: '/login',
   },
   providers: [
+    GitHub({
+      clientId: process.env.AUTH_GITHUB_ID ?? undefined,
+      clientSecret: process.env.AUTH_GITHUB_SECRET ?? undefined,
+    }),
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID ?? undefined,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? undefined,
+    }),
     Credentials({
       async authorize(credentials) {
         const parsedCredentials = z
@@ -47,50 +57,20 @@ export const authConfig: NextAuthConfig = {
         return null;
       },
     }),
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID ?? undefined,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? undefined,
-    }),
-    Github({
-      clientId: process.env.AUTH_GITHUB_ID ?? undefined,
-      clientSecret: process.env.AUTH_GITHUB_SECRET ?? undefined,
-    }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.data = user;
-      }
-
+      if (user) token.data = user;
       return token;
     },
     async session({ session, token }) {
       session.user = token.data as AdapterUser & User;
       return session;
     },
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
-      const isOnLogin = nextUrl.pathname === '/login';
-      const isOnRegister = nextUrl.pathname === '/register';
-
-      if (isOnAdmin) {
-        // Redirect unauthenticated users to login page if they're not logged in.
-        return isLoggedIn ? true : false;
-      }
-
-      if (isOnLogin || isOnRegister) {
-        if (isLoggedIn) {
-          return Response.redirect(new URL('/admin/dashboard', nextUrl));
-        }
-      }
-
-      return true;
-    },
-  },
+  }
 };
 
 export const { auth, signIn, signOut, handlers } = NextAuth(authConfig);

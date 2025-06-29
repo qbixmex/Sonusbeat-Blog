@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   emailVerified?: Date;
+  username: string;
   password: string;
   roles: Role[];
   isActive: boolean;

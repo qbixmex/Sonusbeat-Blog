@@ -29,6 +29,7 @@ export const ProfileMenu: React.FC = () => {
       name: '',
       image: '',
       email: '',
+      username: '',
       isActive: false,
       roles: []
     }

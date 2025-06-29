@@ -1,12 +1,12 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 import { AdminNavbar } from "./(components)/navbar/admin-navbar.component";
 import { AppSidebar } from "@/components/sidebar/app-sidebar.component";
 import MainContainer from "@/components/main-container.component";
 import { auth } from "@/auth.config";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog - Admin",
