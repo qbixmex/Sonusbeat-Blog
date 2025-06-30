@@ -299,7 +299,10 @@ export const ArticleForm = () => {
           <div className="my-10 h-0.5 bg-gray-700"></div>
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">
-            <Button className="bg-gray-700 hover:bg-gray-800 text-muted-foreground cursor-pointer">
+            <Button
+              className="bg-gray-700 hover:bg-gray-800 text-muted-foreground cursor-pointer"
+              type="button"
+            >
               <Link href="/admin/articles">Cancelar</Link>
             </Button>
             <Button
