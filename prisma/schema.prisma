@@ -17,33 +17,33 @@ datasource db {
 // =================== AUTH JS ===================
 
 model Account {
-  id                 String  @id @default(uuid())
-  userId             String  @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String? @db.Text
+  id                       String  @id @default(uuid())
+  userId                   String  @map("user_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  refresh_token            String? @db.Text
   refresh_token_expires_at Int?
-  access_token       String? @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.Text
-  session_state      String?
- 
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
- 
+
 model Session {
   id           String   @id @default(uuid())
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@map("sessions")
 }
 
@@ -51,7 +51,7 @@ enum Role {
   admin
   user
 }
- 
+
 model User {
   id            String    @id @default(uuid())
   name          String?
@@ -61,16 +61,16 @@ model User {
   image         String?
   password      String?
 
-  roles         Role[] @default([user])
-  isActive      Boolean  @default(true)
+  roles    Role[]  @default([user])
+  isActive Boolean @default(true)
 
-  accounts      Account[]
-  sessions      Session[]
-  articles      Article[]
+  accounts Account[]
+  sessions Session[]
+  articles Article[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@map("users")
 }
 
@@ -88,22 +88,22 @@ model Article {
   description String @db.VarChar(250)
   content     String @db.Text
 
-  image       String? @default("article-default.jpg")
-  imageAlt    String? @db.VarChar(100)
+  image    String? @default("article-default.jpg")
+  imageAlt String? @db.VarChar(100)
 
-  authorId    String @map("author_id")
-  author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   seoTitle       String?
   seoDescription String?
-  seoRobots      SeoRobotsOption[] @default([noindex_nofollow])
+  seoRobots      SeoRobotsOption @default(noindex_nofollow)
 
   publishedAt DateTime?
-  published   Boolean @default(false)
+  published   Boolean   @default(false)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
- 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("articles")
 }
 
@@ -111,7 +111,7 @@ model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
   @@map("verification_tokens")
 }

@@ -62,7 +62,7 @@ export const Articles: React.FC = () => {
           className="bg-blue-600 hover:bg-blue-700"
           asChild
         >
-          <Link href={`/articles/new`} title="Crear nuevo artículo">
+          <Link href={`/admin/articles/new`} title="Crear nuevo artículo">
             <span className="sr-only">Crear nuevo artículo</span>
             <File className="size-5" />
           </Link>
