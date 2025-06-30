@@ -1,6 +1,6 @@
-import { Badge } from "./badge.component";
 import { Award, CircleCheckBig, PartyPopper, Shield } from "lucide-react";
 import styles from "./badges.module.css";
+import Badge from "./badge.component";
 
 export const Badges = () => {
   return (
