@@ -1,0 +1,14 @@
+@reference "tailwindcss";
+
+.mainWrapper {
+  @apply flex flex-col my-10 min-h-[500px];
+}
+
+.section {
+  @apply w-full flex-1 bg-[var(--secondary)] p-5 rounded-lg
+  flex flex-col;
+}
+
+.cardTitle {
+  @apply text-xl font-semibold mb-3;
+}

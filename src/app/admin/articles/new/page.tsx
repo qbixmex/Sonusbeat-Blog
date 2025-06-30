@@ -7,10 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import styles from "./styles.module.css";
-import { Articles } from "./(components)/articles.component";
+import styles from "../styles.module.css";
+import { Card, CardContent } from "@/components/ui/card";
+import ArticleForm from "./(components)/article-form.component";
 
-const ArticlesPage = () => {
+const CreateArticlePage = () => {
   return (
     <AdminLayout>
       <article>
@@ -22,7 +23,10 @@ const ArticlesPage = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Artículos</BreadcrumbPage>
+                <BreadcrumbLink href="/admin/articles">Artículos</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbItem>
+                <BreadcrumbPage>Crear Artículo</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -31,7 +35,11 @@ const ArticlesPage = () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles />
+              <Card className="flex-1">
+                <CardContent>
+                  <ArticleForm />
+                </CardContent>
+              </Card>
             </div>
           </div>
         </main>
@@ -40,4 +48,4 @@ const ArticlesPage = () => {
   );
 };
 
-export default ArticlesPage;
+export default CreateArticlePage;

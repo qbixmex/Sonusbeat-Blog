@@ -1,0 +1,41 @@
+@reference "tailwindcss";
+
+.userInfo {
+  @apply relative;
+}
+
+.userData {
+  @apply flex flex-col gap-3;
+}
+
+.title {
+  @apply text-3xl font-semibold;
+}
+
+.progressBar {
+  @apply mt-2 mb-4;
+}
+
+.row {
+  @apply flex items-center gap-2;
+}
+
+.rowHeading {
+  @apply inline-flex items-center gap-1 font-semibold text-gray-400;
+}
+
+.rowValue {
+  @apply font-semibold text-gray-500;
+}
+
+.rowBadge {
+  @apply text-gray-200 px-4 py-1;
+}
+
+.date {
+  @apply text-gray-500 italic text-sm mt-3;
+}
+
+.editButton {
+  @apply absolute top-0 right-0 size-[28px];
+}
