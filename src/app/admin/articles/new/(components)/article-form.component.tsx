@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ import { createArticleAction } from "@/app/admin/(actions)/create-article.action
 import { useSession } from "next-auth/react";
 
 export const ArticleForm = () => {
+  const route = useRouter();
   const session = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,11 +70,10 @@ export const ArticleForm = () => {
 
     const response = await createArticleAction(formData, session.data?.user.id ?? "");
 
-    console.log("Respuesta:", response);
-
-    // if (response === 'Success') {
-    //   form.reset();
-    // }
+    if (response.ok) {
+      form.reset();
+      route.replace("/admin/articles");
+    }
   };
 
   return (

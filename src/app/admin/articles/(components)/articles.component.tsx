@@ -24,35 +24,13 @@ import {
 } from "@/components/ui/pagination";
 import { format } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/root/src/components/ui/card";
+import { Article } from "@/interfaces/article.interface";
 
-const articles = [
-  {
-    id: 'abc-123-5555-3333',
-    title: 'Tutorial Tech House',
-    publishedAt: new Date('2025-04-12T14:25:15.235Z'),
-    category: 'Tech House',
-    author: 'Juan Pérez',
-    active: true,
-  },
-  {
-    id: 'def-456-7777-8888',
-    title: 'Tutorial Psytrance',
-    category: 'Psytrance',
-    author: 'Fernando López',
-    publishedAt: new Date('2024-08-15T14:35:44.725Z'),
-    active: false,
-  },
-  {
-    id: 'ghi-789-9999-0000',
-    title: 'Tutorial de Sylenth 2',
-    category: 'VST',
-    author: 'Alejandro García',
-    publishedAt: new Date('2024-09-12T16:18:22.125Z'),
-    active: true,
-  },
-];
+type Props = Readonly<{
+  articles: Article[];
+}>;
 
-export const Articles: React.FC = () => {
+export const Articles: React.FC<Props> = ({ articles }) => {
   return (
     <Card className="flex-1 flex flex-col">
       <CardHeader className="flex items-center justify-between">
@@ -95,7 +73,7 @@ export const Articles: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   <Switch
-                    checked={article.active}
+                    checked={article.published}
                     className="data-[state=checked]:bg-emerald-600"
                   />
                 </TableCell>
