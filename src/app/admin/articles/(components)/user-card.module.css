@@ -1,0 +1,17 @@
+@reference "tailwindcss";
+
+.cardHeader {
+  @apply flex items-center gap-2;
+}
+
+.cardHeaderTitle {
+  @apply text-xl font-semibold;
+}
+
+.avatar {
+  @apply size-14 border-2 border-gray-600;
+}
+
+.userBio {
+  @apply text-sm text-[var(--muted-foreground)] p-0;
+}

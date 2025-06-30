@@ -1,0 +1,62 @@
+@reference "tailwindcss";
+
+.sectionTitle {
+  @apply text-3xl font-semibold mb-4;
+}
+
+.sectionBadges {
+  @apply flex gap-3;
+}
+
+.badge {
+  display: inline-block;
+  @apply rounded-full p-2 box-content border-2;
+}
+
+.badgeBlue {
+  @apply bg-blue-800 border-blue-700;
+}
+
+.badgeGreen {
+  @apply bg-emerald-800 border-emerald-700;
+}
+
+.badgeGreen {
+  @apply bg-emerald-800 border-emerald-700;
+}
+
+.badgeRed {
+  @apply bg-red-800 border-red-700;
+}
+
+.badgeYellow {
+  @apply bg-amber-500/80 border-amber-600;
+}
+
+.badgePurple {
+  @apply bg-purple-800 border-purple-700;
+}
+
+.badgeGray {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.badgeHover {
+  @apply w-[300px] flex flex-col gap-2;
+}
+
+.badgeHoverHeader {
+  @apply inline-flex justify-between items-center mb-2;
+}
+
+.badgeHoverTitle {
+  @apply font-bold;
+}
+
+.badgeHoverDescription {
+  @apply text-sm text-[var(--muted-foreground)];
+}
+
+.badgeHoverIcon {
+  @apply text-emerald-500/80;
+}
