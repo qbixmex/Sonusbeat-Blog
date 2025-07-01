@@ -1,3 +1,5 @@
+import { FC } from "react";
+import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
   Breadcrumb,
@@ -8,15 +10,23 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
-import { Articles } from "./(components)/articles.component";
-import { fetchArticlesAction } from "../(actions)/fetch-articles.action";
+import fetchArticleAction from "@/app/admin/(actions)/fetch-article.action";
+import ArticleForm from "../../(components)/article-form.component";
 import { Article } from "@/interfaces/article.interface";
 
-const ArticlesPage = async () => {
-  const response = await fetchArticlesAction();
+type Props = Readonly<{
+  params: Promise<{
+    id: string;
+  }>;
+}>;
+
+const EditArticlePage: FC<Props> = async ({ params }) => {
+
+  const articleId = (await params).id;
+  const response = await fetchArticleAction(articleId);
 
   if (!response.ok) {
-    console.log("Error fetching articles:", response.message);
+    redirect("/admin/articles");
   }
 
   return (
@@ -30,7 +40,11 @@ const ArticlesPage = async () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Artículos</BreadcrumbPage>
+                <BreadcrumbLink href="/admin/articles">Artículos</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Editar Artículo</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -39,7 +53,7 @@ const ArticlesPage = async () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles articles={response.articles as Article[]} />
+              <ArticleForm article={response.article as Article} />
             </div>
           </div>
         </main>
@@ -48,4 +62,4 @@ const ArticlesPage = async () => {
   );
 };
 
-export default ArticlesPage;
+export default EditArticlePage;

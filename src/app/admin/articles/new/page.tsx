@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "../styles.module.css";
 import { Card, CardContent } from "@/components/ui/card";
-import ArticleForm from "./(components)/article-form.component";
+import ArticleForm from "../(components)/article-form.component";
 
 const CreateArticlePage = () => {
   return (

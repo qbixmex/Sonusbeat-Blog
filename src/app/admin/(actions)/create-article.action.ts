@@ -67,28 +67,28 @@ export const createArticleAction = async (
 
     return prismaTransaction;
   } catch (error) {
-  if (error instanceof Error && 'meta' in error && error.meta) {
-    if ('code' in error && error.code as string === 'P2002') {
-      const fieldError = (error.meta as { modelName: string; target: string[] }).target[0];
+    if (error instanceof Error && 'meta' in error && error.meta) {
+      if ('code' in error && error.code as string === 'P2002') {
+        const fieldError = (error.meta as { modelName: string; target: string[] }).target[0];
+        return {
+          ok: false,
+          message: `¡ El campo "${fieldError}", está duplicado !`,
+          user: null,
+        };
+      }
+
       return {
         ok: false,
-        message: `¡ El campo "${fieldError}", está duplicado !`,
+        message: '¡ Error al crear el artículo, revise los logs del servidor !',
         user: null,
       };
     }
-
+    console.log(error);
     return {
       ok: false,
-      message: '¡ Error al crear el artículo, revise los logs del servidor !',
+      message: '¡ Error inesperado, revise los logs del servidor !',
       user: null,
     };
-  }
-  console.log(error);
-  return {
-    ok: false,
-    message: '¡ Error inesperado, revise los logs del servidor !',
-    user: null,
-  };
   }
 };
 

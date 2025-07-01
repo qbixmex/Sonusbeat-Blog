@@ -24,35 +24,29 @@ import {
 } from "@/components/ui/pagination";
 import { format } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/root/src/components/ui/card";
+import { Article } from "@/interfaces/article.interface";
+import updateArticleStateAction from "../../(actions)/update-article-state.action";
+import { toast } from "sonner";
 
-const articles = [
-  {
-    id: 'abc-123-5555-3333',
-    title: 'Tutorial Tech House',
-    publishedAt: new Date('2025-04-12T14:25:15.235Z'),
-    category: 'Tech House',
-    author: 'Juan Pérez',
-    active: true,
-  },
-  {
-    id: 'def-456-7777-8888',
-    title: 'Tutorial Psytrance',
-    category: 'Psytrance',
-    author: 'Fernando López',
-    publishedAt: new Date('2024-08-15T14:35:44.725Z'),
-    active: false,
-  },
-  {
-    id: 'ghi-789-9999-0000',
-    title: 'Tutorial de Sylenth 2',
-    category: 'VST',
-    author: 'Alejandro García',
-    publishedAt: new Date('2024-09-12T16:18:22.125Z'),
-    active: true,
-  },
-];
+type Props = Readonly<{
+  articles: Article[];
+}>;
 
-export const Articles: React.FC = () => {
+export const Articles: React.FC<Props> = ({ articles }) => {
+
+  const handleArticleState = async (articleId: string) => {
+    const response = await updateArticleStateAction(articleId);
+
+    if (!response.ok) {
+      toast.error(response.message);
+      return;
+    }
+
+    if (response.ok) {
+      toast.success(response.message);
+    }
+  };
+
   return (
     <Card className="flex-1 flex flex-col">
       <CardHeader className="flex items-center justify-between">
@@ -95,8 +89,10 @@ export const Articles: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   <Switch
-                    checked={article.active}
-                    className="data-[state=checked]:bg-emerald-600"
+                    checked={article.published}
+                    onCheckedChange={() => {
+                      handleArticleState(article.id as string);
+                    }}
                   />
                 </TableCell>
                 <TableCell className="flex items-center gap-2">
@@ -108,7 +104,7 @@ export const Articles: React.FC = () => {
                     asChild
                   >
                     <Link
-                      href={`/admin/articles/${'abc-123-5555-3333'}`}
+                      href={`/admin/articles/${article.id}`}
                       title="Ver artículo"
                     >
                       <span className="sr-only">Ver artículo</span>
@@ -122,7 +118,7 @@ export const Articles: React.FC = () => {
                     asChild
                   >
                     <Link
-                      href={`/admin/articles/${'abc-123-5555-3333'}/edit`}
+                      href={`/admin/articles/${article.id}/edit`}
                       title="Editar artículo"
                     >
                       <span className="sr-only">Editar artículo</span>
@@ -134,7 +130,7 @@ export const Articles: React.FC = () => {
                     size="icon"
                     className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
                     title="Eliminar artículo"
-                    onClick={() => { console.log('Delete article') }}
+                    onClick={() => { console.log(`Delete article: ${article.id}`) }}
                   >
                     <span className="sr-only">Eliminar Artículo</span>
                     <Trash className="size-5" />
