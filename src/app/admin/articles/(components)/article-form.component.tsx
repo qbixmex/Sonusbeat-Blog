@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -23,34 +23,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/root/src/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, LoaderCircle, Send } from "lucide-react";
+import { CalendarIcon, LoaderCircle, Save, XCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { formSchema } from "../create-article.schema";
 import imagePlaceholder from "@/assets/svg/landscape-placeholder.svg";
 import Link from "next/link";
 import { createArticleAction } from "@/app/admin/(actions)/create-article.action";
+import { editArticleAction } from "../../(actions)/edit-article.action";
 import { useSession } from "next-auth/react";
+import { formSchema } from "../new/create-article.schema";
+import { Article } from "@/interfaces/article.interface";
+import { toast } from "sonner";
 
-export const ArticleForm = () => {
+type Props = Readonly<{
+  article?: Article;
+}>;
+
+export const ArticleForm: FC<Props> = ({ article }) => {
   const route = useRouter();
   const session = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      content: "",
-      category: "",
-      image: "",
-      imageAlt: "",
-      seoTitle: "",
-      seoDescription: "",
-      seoRobots: "noindex_nofollow",
-      publishedAt: new Date(),
-      published: false,
+      title: article?.title ?? "",
+      description: article?.description ?? "",
+      content: article?.content ?? "",
+      category: article?.category ?? "",
+      image: article?.image ?? "",
+      imageAlt: article?.imageAlt ?? "",
+      seoTitle: article?.seoTitle ?? "",
+      seoDescription: article?.seoDescription ?? "",
+      seoRobots: article?.seoRobots ?? "noindex_nofollow",
+      publishedAt: article?.publishedAt ?? new Date(),
+      published: article?.published ?? false,
     },
   });
 
@@ -58,6 +65,7 @@ export const ArticleForm = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
+
     Object.entries(data).forEach(([key, value]) => {
       if (value instanceof Date) {
         formData.append(key, value.toISOString());
@@ -68,17 +76,51 @@ export const ArticleForm = () => {
       }
     });
 
-    const response = await createArticleAction(formData, session.data?.user.id ?? "");
+    if (article && article.id) {
+      const response = await editArticleAction(
+        formData,
+        article.id as string,
+        session.data?.user.id ?? "",
+      );
 
-    if (response.ok) {
-      form.reset();
-      route.replace("/admin/articles");
+      if (!response.ok) {
+        toast.error(response.message);
+        return;
+      }
+
+      if (response.ok) {
+        toast.success(response.message);
+        form.reset();
+        route.replace("/admin/articles");
+        return;
+      }
+    }
+
+    if (!article) {
+      const response = await createArticleAction(
+        formData,
+        session.data?.user.id ?? ""
+      );
+
+      if (!response.ok) {
+        toast.error(response.message);
+        return;
+      }
+
+      if (response.ok) {
+        toast.success(response.message);
+        form.reset();
+        route.replace("/admin/articles");
+        return;
+      }
     }
   };
 
   return (
     <div className="w-full lg:max-w-[768px] mx-auto">
-      <h1 className="text-3xl md:text-5xl font-semibold text-center">Crear Articulo</h1>
+      <h1 className="text-3xl md:text-5xl font-semibold text-center">
+        { article ? 'Editar' : 'Crear' } Articulo
+      </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <h2 className="my-8 text-2xl font-semibold">DETALLES</h2>
@@ -304,7 +346,9 @@ export const ArticleForm = () => {
               className="bg-gray-700 hover:bg-gray-800 text-muted-foreground cursor-pointer"
               type="button"
             >
-              <Link href="/admin/articles">Cancelar</Link>
+              <Link href="/admin/articles" className="inline-flex items-center gap-2">
+                Cancelar <XCircle />
+              </Link>
             </Button>
             <Button
               type="submit"
@@ -320,7 +364,7 @@ export const ArticleForm = () => {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span>Crear</span> <Send />
+                  Guardar <Save />
                 </div>
               )}
             </Button>

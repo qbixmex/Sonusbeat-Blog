@@ -1,4 +1,10 @@
-export interface Article {
+type Robots =
+  'index_follow'
+  | 'noindex_follow'
+  | 'index_nofollow'
+  | 'noindex_nofollow'
+
+  export interface Article {
   id?: string;
   title: string;
   image: string;
@@ -10,7 +16,7 @@ export interface Article {
   imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
-  seoRobots: string;
+  seoRobots: Robots;
   publishedAt: Date;
   published: boolean;
   createdAt: Date;

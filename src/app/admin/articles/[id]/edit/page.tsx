@@ -1,3 +1,5 @@
+import { FC } from "react";
+import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
   Breadcrumb,
@@ -7,11 +9,26 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import styles from "../styles.module.css";
-import { Card, CardContent } from "@/components/ui/card";
-import ArticleForm from "../(components)/article-form.component";
+import styles from "./styles.module.css";
+import fetchArticleAction from "@/app/admin/(actions)/fetch-article.action";
+import ArticleForm from "../../(components)/article-form.component";
+import { Article } from "@/interfaces/article.interface";
 
-const CreateArticlePage = () => {
+type Props = Readonly<{
+  params: Promise<{
+    id: string;
+  }>;
+}>;
+
+const EditArticlePage: FC<Props> = async ({ params }) => {
+
+  const articleId = (await params).id;
+  const response = await fetchArticleAction(articleId);
+
+  if (!response.ok) {
+    redirect("/admin/articles");
+  }
+
   return (
     <AdminLayout>
       <article>
@@ -25,8 +42,9 @@ const CreateArticlePage = () => {
               <BreadcrumbItem>
                 <BreadcrumbLink href="/admin/articles">Artículos</BreadcrumbLink>
               </BreadcrumbItem>
+              <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Crear Artículo</BreadcrumbPage>
+                <BreadcrumbPage>Editar Artículo</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -35,11 +53,7 @@ const CreateArticlePage = () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Card className="flex-1">
-                <CardContent>
-                  <ArticleForm />
-                </CardContent>
-              </Card>
+              <ArticleForm article={response.article as Article} />
             </div>
           </div>
         </main>
@@ -48,4 +62,4 @@ const CreateArticlePage = () => {
   );
 };
 
-export default CreateArticlePage;
+export default EditArticlePage;

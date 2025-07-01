@@ -25,12 +25,28 @@ import {
 import { format } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/root/src/components/ui/card";
 import { Article } from "@/interfaces/article.interface";
+import updateArticleStateAction from "../../(actions)/update-article-state.action";
+import { toast } from "sonner";
 
 type Props = Readonly<{
   articles: Article[];
 }>;
 
 export const Articles: React.FC<Props> = ({ articles }) => {
+
+  const handleArticleState = async (articleId: string) => {
+    const response = await updateArticleStateAction(articleId);
+
+    if (!response.ok) {
+      toast.error(response.message);
+      return;
+    }
+
+    if (response.ok) {
+      toast.success(response.message);
+    }
+  };
+
   return (
     <Card className="flex-1 flex flex-col">
       <CardHeader className="flex items-center justify-between">
@@ -74,7 +90,9 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                 <TableCell>
                   <Switch
                     checked={article.published}
-                    className="data-[state=checked]:bg-emerald-600"
+                    onCheckedChange={() => {
+                      handleArticleState(article.id as string);
+                    }}
                   />
                 </TableCell>
                 <TableCell className="flex items-center gap-2">
@@ -86,7 +104,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                     asChild
                   >
                     <Link
-                      href={`/admin/articles/${'abc-123-5555-3333'}`}
+                      href={`/admin/articles/${article.id}`}
                       title="Ver artículo"
                     >
                       <span className="sr-only">Ver artículo</span>
@@ -100,7 +118,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                     asChild
                   >
                     <Link
-                      href={`/admin/articles/${'abc-123-5555-3333'}/edit`}
+                      href={`/admin/articles/${article.id}/edit`}
                       title="Editar artículo"
                     >
                       <span className="sr-only">Editar artículo</span>
@@ -112,7 +130,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                     size="icon"
                     className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
                     title="Eliminar artículo"
-                    onClick={() => { console.log('Delete article') }}
+                    onClick={() => { console.log(`Delete article: ${article.id}`) }}
                   >
                     <span className="sr-only">Eliminar Artículo</span>
                     <Trash className="size-5" />
