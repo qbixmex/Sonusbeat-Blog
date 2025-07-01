@@ -42,8 +42,6 @@ export const fetchArticlesAction = async (props?: {
       skip: offset,
     });
 
-    console.log(data[0]);
-
     return {
       ok: true,
       message: 'Los artículos fueron obtenidos satisfactoriamente',

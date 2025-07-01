@@ -34,13 +34,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/root/src/components/ui/card";
 import { Article } from "@/interfaces/article.interface";
 import { updateArticleStateAction } from "../../(actions)/update-article-state.action";
 import { deleteArticleAction } from "../../(actions)/delete-article.action";
-import { toast } from "sonner";
-import { getFirstAndLastName } from "@/lib/utils";
+import { cn, getFirstAndLastName, renderRobots } from "@/lib/utils";
 
 type Props = Readonly<{
   articles: Article[];
@@ -111,6 +112,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
               <TableHead className="hidden lg:table-cell">Categoría</TableHead>
               <TableHead className="hidden lg:table-cell">Author</TableHead>
               <TableHead>Activo</TableHead>
+              <TableHead className="hidden lg:table-cell">Robots</TableHead>
               <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -134,6 +136,16 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                       handleArticleState(article.id as string, article.published);
                     }}
                   />
+                </TableCell>
+                <TableCell>
+                  <Badge className={cn("text-sm lowercase", {
+                    "bg-emerald-500 text-emerald-50 dark:bg-emerald-600 dark:text-emerald-100": article.seoRobots === "index_follow",
+                    "bg-purple-400 text-purple-50 dark:bg-purple-600 dark:text-purple-200": article.seoRobots === "noindex_follow",
+                    "bg-amber-400 text-amber-900 dark:bg-amber-600 dark:text-amber-100": article.seoRobots === "index_nofollow",
+                    "bg-stone-700 text-stone-300 dark:bg-stone-700 dark:text-bg-stone-100": article.seoRobots === "noindex_nofollow",
+                  })}>
+                    {renderRobots(article.seoRobots)}
+                  </Badge>
                 </TableCell>
                 <TableCell className="flex items-center gap-2">
                   <Button
