@@ -38,3 +38,10 @@ export const renderRobots = (robots: string): string => {
       return "No definido";
   }
 };
+
+export const getFirstAndLastName = (full_name: string): string => {
+  const names = full_name.split(' ');
+  if (full_name.length === 0) return '';
+  if (full_name.length === 1) return names[0];
+  return `${names.at(0)} ${names.at(1)}`;
+};

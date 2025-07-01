@@ -10,9 +10,15 @@ type FetchArticleResponse = {
 export const fetchArticleAction = async (articleId: string): Promise<FetchArticleResponse> => {
   try {
     const article = await prisma.article.findUniqueOrThrow({
-      where: {
-        id: articleId,
-      },
+      where: { id: articleId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      }
     });
 
     return {
@@ -27,7 +33,10 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
         category: 'Pending',
         image: article.image as string,
         imageAlt: article.imageAlt,
-        author: article.authorId,
+        author: {
+          id: article.author.id,
+          name: article.author.name!,
+        },
         seoTitle: article.seoTitle,
         seoDescription: article.seoDescription,
         seoRobots: article.seoRobots,

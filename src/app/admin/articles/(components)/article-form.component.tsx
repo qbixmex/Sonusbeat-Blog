@@ -80,7 +80,6 @@ export const ArticleForm: FC<Props> = ({ article }) => {
       const response = await editArticleAction(
         formData,
         article.id as string,
-        session.data?.user.id ?? "",
       );
 
       if (!response.ok) {

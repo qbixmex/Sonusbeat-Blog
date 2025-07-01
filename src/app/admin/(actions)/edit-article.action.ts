@@ -15,7 +15,6 @@ type EditArticleResponse = {
 export const editArticleAction = async (
   formData: FormData,
   articleId: string,
-  author: string,
 ): Promise<EditArticleResponse> => {
   const rawData = Object.fromEntries(formData);
 
@@ -57,7 +56,6 @@ export const editArticleAction = async (
             slug: createSlug(data.title),
             description: data.description,
             content: data.content,
-            authorId: author,
             image: data.image ?? 'no-image.png',
             imageAlt: data.imageAlt ?? '',
             seoTitle: data.seoTitle,
@@ -65,6 +63,14 @@ export const editArticleAction = async (
             seoRobots: data.seoRobots,
             publishedAt: data.publishedAt as Date,
             published: data.published,
+          },
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+              },
+            }
           },
         });
 
@@ -77,7 +83,10 @@ export const editArticleAction = async (
             slug: updatedArticle.slug,
             description: updatedArticle.description,
             content: updatedArticle.content,
-            author: author,
+            author: {
+              id: updatedArticle.author.id,
+              name: updatedArticle.author.name!,
+            },
             category: 'Pending',
             image: updatedArticle.image ?? 'no-image.png',
             imageAlt: updatedArticle.imageAlt ?? '',
