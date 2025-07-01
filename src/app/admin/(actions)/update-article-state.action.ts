@@ -11,7 +11,6 @@ type UpdateArticleStatusResponse = {
 export const updateArticleStateAction = async (
   articleId: string,
 ): Promise<UpdateArticleStatusResponse> => {
-
   const article = await prisma.article.findUnique({
     where: { id: articleId },
     select: { published: true },
@@ -35,7 +34,6 @@ export const updateArticleStateAction = async (
     ok: true,
     message: 'El artículo ha sido' + (article.published ? ' despublicado ' : ' publicado ') + '👍',
   };
-
 };
 
 export default updateArticleStateAction;

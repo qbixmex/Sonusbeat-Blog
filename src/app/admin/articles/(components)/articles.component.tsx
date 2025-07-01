@@ -23,10 +23,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/root/src/components/ui/card";
 import { Article } from "@/interfaces/article.interface";
-import updateArticleStateAction from "../../(actions)/update-article-state.action";
+import { updateArticleStateAction } from "../../(actions)/update-article-state.action";
+import { deleteArticleAction } from "../../(actions)/delete-article.action";
 import { toast } from "sonner";
 
 type Props = Readonly<{
@@ -52,6 +64,19 @@ export const Articles: React.FC<Props> = ({ articles }) => {
       startTransition(() => {
         setOptimisticState({ id: articleId, published: currentPublished });
       });
+      toast.error(response.message);
+      return;
+    }
+
+    if (response.ok) {
+      toast.success(response.message);
+    }
+  };
+
+  const handleDeleteArticle = async (articleId: string) => {
+    const response = await deleteArticleAction(articleId);
+
+    if (!response.ok) {
       toast.error(response.message);
       return;
     }
@@ -139,16 +164,34 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                       <FileEdit className="size-5" />
                     </Link>
                   </Button>
-                  <Button
-                    variant="default"
-                    size="icon"
-                    className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
-                    title="Eliminar artículo"
-                    onClick={() => { console.log(`Delete article: ${article.id}`) }}
-                  >
-                    <span className="sr-only">Eliminar Artículo</span>
-                    <Trash className="size-5" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="default"
+                        size="icon"
+                        className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
+                        title="Eliminar artículo"
+                      >
+                        <span className="sr-only">Eliminar Artículo</span>
+                        <Trash className="size-5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>¿ Estas seguro de eliminar este artículo ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta acción no se puede deshacer.
+                          Esto eliminará el artículo y todos sus datos asociados de forma permanente.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteArticle(article.id as string)}
+                        >Continuar</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))}
