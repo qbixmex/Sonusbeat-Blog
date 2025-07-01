@@ -33,7 +33,7 @@ export const updateArticleStateAction = async (
 
   return {
     ok: true,
-    message: '¡ El artículo actualizado !',
+    message: 'El artículo ha sido' + (article.published ? ' despublicado ' : ' publicado ') + '👍',
   };
 
 };

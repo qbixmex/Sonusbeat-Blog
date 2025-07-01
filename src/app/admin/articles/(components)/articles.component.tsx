@@ -1,5 +1,6 @@
 'use client';
 
+import { startTransition, useOptimistic } from "react";
 import {
   Table,
   TableBody,
@@ -34,10 +35,23 @@ type Props = Readonly<{
 
 export const Articles: React.FC<Props> = ({ articles }) => {
 
-  const handleArticleState = async (articleId: string) => {
+  const [ optimisticState, setOptimisticState ] = useOptimistic(articles, (prev, { id, published }) => {
+    return prev.map(article => 
+      article.id === id ? { ...article, published } : article
+    );
+  });
+
+  const handleArticleState = async (articleId: string, currentPublished: boolean) => {
+    startTransition(() => {
+      setOptimisticState({ id: articleId, published: !currentPublished });
+    });
+
     const response = await updateArticleStateAction(articleId);
 
     if (!response.ok) {
+      startTransition(() => {
+        setOptimisticState({ id: articleId, published: currentPublished });
+      });
       toast.error(response.message);
       return;
     }
@@ -75,7 +89,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {articles.map((article) => (
+            {optimisticState.map((article) => (
               <TableRow key={article.id}>
                 <TableCell>{article.title}</TableCell>
                 <TableCell className="hidden md:table-cell">
@@ -91,7 +105,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                   <Switch
                     checked={article.published}
                     onCheckedChange={() => {
-                      handleArticleState(article.id as string);
+                      handleArticleState(article.id as string, article.published);
                     }}
                   />
                 </TableCell>
