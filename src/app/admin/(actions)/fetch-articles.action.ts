@@ -30,9 +30,19 @@ export const fetchArticlesAction = async (props?: {
   try {
     const data = await prisma.article.findMany({
       orderBy: { createdAt: 'desc' },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+          }
+        },
+      },
       take: limit,
       skip: offset,
     });
+
+    console.log(data[0]);
 
     return {
       ok: true,
@@ -44,7 +54,10 @@ export const fetchArticlesAction = async (props?: {
         slug: item.slug,
         description: item.description,
         content: item.content,
-        author: "John Doe",
+        author: {
+          id: item.author.id,
+          name: item.author.name!,
+        },
         category: 'Pending',
         imageAlt: item.image,
         seoTitle: item.seoTitle,

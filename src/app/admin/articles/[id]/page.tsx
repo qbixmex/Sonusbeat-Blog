@@ -95,7 +95,7 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Autor:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              { article?.author }
+                              { article?.author.name }
                             </TableCell>
                           </TableRow>
                           <TableRow>
