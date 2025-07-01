@@ -40,6 +40,7 @@ import { Article } from "@/interfaces/article.interface";
 import { updateArticleStateAction } from "../../(actions)/update-article-state.action";
 import { deleteArticleAction } from "../../(actions)/delete-article.action";
 import { toast } from "sonner";
+import { getFirstAndLastName } from "@/lib/utils";
 
 type Props = Readonly<{
   articles: Article[];
@@ -124,7 +125,7 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                   {article.category}
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
-                  {article.author}
+                  {getFirstAndLastName(article.author.name)}
                 </TableCell>
                 <TableCell>
                   <Switch

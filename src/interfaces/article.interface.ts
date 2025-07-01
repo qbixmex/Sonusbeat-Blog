@@ -11,7 +11,10 @@ type Robots =
   slug: string;
   description: string;
   content: string;
-  author: string;
+  author: {
+    id: string;
+    name: string;
+  };
   category: string;
   imageAlt: string | null;
   seoTitle: string | null;
