@@ -24,3 +24,17 @@ export const createSlug = (title: string): string => {
     .replace(/\s/g, '-');
 };
 
+export const renderRobots = (robots: string): string => {
+  switch (robots) {
+    case 'index_follow':
+      return 'Indexar y Seguir';
+    case 'noindex_follow':
+      return 'No Indexar y Seguir';
+    case 'index_nofollow':
+      return 'Indexar y No Seguir';
+    case 'noindex_nofollow':
+      return 'No Indexar y No Seguir';
+    default:
+      return "No definido";
+  }
+};
