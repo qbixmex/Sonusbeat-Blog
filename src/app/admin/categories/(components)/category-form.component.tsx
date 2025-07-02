@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils";
 import { formSchema } from "../new/create-article.schema";
 import { Category } from "@/interfaces/category.interface";
 import { toast } from "sonner";
-import { createCategoryAction } from "@/app/admin/(actions)/categories/create-category.action";
-import { editCategoryAction } from "@/app/admin/(actions)/categories/edit-category.action";
+import { createCategoryAction } from "../(actions)/create-category.action";
+import { editCategoryAction } from "../(actions)/edit-category.action";
 
 type Props = Readonly<{
   category?: Category;

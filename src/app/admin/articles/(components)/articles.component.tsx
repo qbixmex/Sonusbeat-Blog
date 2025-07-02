@@ -39,8 +39,8 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Article } from "@/interfaces/article.interface";
-import { updateArticleStateAction } from "../../(actions)/update-article-state.action";
-import { deleteArticleAction } from "../../(actions)/delete-article.action";
+import { updateArticleStateAction } from "../(actions)/update-article-state.action";
+import { deleteArticleAction } from "../(actions)/delete-article.action";
 import { cn, getFirstAndLastName, renderRobots } from "@/lib/utils";
 
 type Props = Readonly<{

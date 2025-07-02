@@ -1,9 +1,8 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { editFormSchema } from "../articles/[id]/edit/edit-article.schema";
+import { editFormSchema } from "../../articles/[id]/edit/edit-article.schema";
 import prisma from "@/lib/prisma";
-import { createSlug } from "@/lib/utils";
 import { Article } from "@/interfaces/article.interface";
 
 type EditArticleResponse = {
@@ -12,7 +11,7 @@ type EditArticleResponse = {
   article: Article | null;
 };
 
-export const editArticleAction = async (
+export const updateArticleAction = async (
   formData: FormData,
   articleId: string,
 ): Promise<EditArticleResponse> => {
@@ -53,7 +52,7 @@ export const editArticleAction = async (
           where: { id: articleId },
           data: {
             title: data.title,
-            slug: createSlug(data.title),
+            slug: data.slug,
             categoryId: data.categoryId,
             description: data.description,
             content: data.content,
@@ -150,4 +149,4 @@ export const editArticleAction = async (
   }
 };
 
-export default editArticleAction;
+export default updateArticleAction;

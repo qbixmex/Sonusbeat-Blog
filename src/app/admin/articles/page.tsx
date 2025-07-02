@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
-import { fetchArticlesAction } from "../(actions)/fetch-articles.action";
 import { Article } from "@/interfaces/article.interface";
+import fetchArticlesAction from "./(actions)/fetch-articles.action";
 import { toast } from "sonner";
 
 const ArticlesPage = async () => {

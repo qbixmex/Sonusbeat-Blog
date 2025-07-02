@@ -1,4 +1,5 @@
 import { FC } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
@@ -10,14 +11,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
-import fetchArticleAction from "@/app/admin/(actions)/fetch-article.action";
+import fetchArticleAction from "../(actions)/fetch-article.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import placeholderImage from "@/assets/svg/landscape-placeholder.svg";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { renderRobots } from "@/root/src/lib/utils";
-import Link from "next/link";
 
 type Props = Readonly<{
   params: Promise<{
@@ -85,6 +85,12 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                             <TableHead className="text-sm font-semibold">Título:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
                               { article?.title }
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableHead className="text-sm font-semibold">Slug:</TableHead>
+                            <TableCell className="text-pretty text-muted-foreground">
+                              { article?.slug }
                             </TableCell>
                           </TableRow>
                           <TableRow>

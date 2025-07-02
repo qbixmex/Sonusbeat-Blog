@@ -1,7 +1,8 @@
 'use client';
 
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -21,21 +22,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/root/src/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, LoaderCircle, Save, XCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn, createSlug } from "@/lib/utils";
 import imagePlaceholder from "@/assets/svg/landscape-placeholder.svg";
-import Link from "next/link";
-import { createArticleAction } from "@/app/admin/(actions)/create-article.action";
-import { editArticleAction } from "../../(actions)/edit-article.action";
+import { toast } from "sonner";
+import { createArticleAction } from "../(actions)/create-article.action";
+import { updateArticleAction } from "../(actions)/update-article.action";
 import { useSession } from "next-auth/react";
 import { formSchema } from "../new/create-article.schema";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
-import { toast } from "sonner";
 
 type Props = Readonly<{
   categories: Category[];
@@ -50,6 +50,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: article?.title ?? "",
+      slug: article?.slug ?? "",
       description: article?.description ?? "",
       content: article?.content ?? "",
       categoryId: article?.category.id ?? "",
@@ -62,6 +63,14 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       published: article?.published ?? false,
     },
   });
+
+  // Watch the title field
+  const titleValue = form.watch("title");
+
+  // Whenever title changes, set slug to the same value
+  useEffect(() => {
+    form.setValue("slug", createSlug(titleValue));
+  }, [titleValue, form]);
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -79,7 +88,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     });
 
     if (article && article.id) {
-      const response = await editArticleAction(
+      const response = await updateArticleAction(
         formData,
         article.id as string,
       );
@@ -316,6 +325,34 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
               />
               <FormField
                 control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Slug</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-5">
+              <FormField
+                control={form.control}
+                name="seoDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción SEO</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} className="resize-none min-h-20" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="seoRobots"
                 render={({ field }) => (
                   <FormItem>
@@ -334,21 +371,6 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                           <SelectItem value="noindex_nofollow">No Indexar y No Seguir</SelectItem>
                         </SelectContent>
                       </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-full md:w-1/2">
-              <FormField
-                control={form.control}
-                name="seoDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción SEO</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} className="resize-none min-h-20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

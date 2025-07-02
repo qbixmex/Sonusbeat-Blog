@@ -10,9 +10,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
-import { fetchArticleAction } from "@/app/admin/(actions)/fetch-article.action";
+import { fetchArticleAction } from "@/app/admin/articles/(actions)/fetch-article.action";
+import { fetchCategoriesAction } from "@/app/admin/categories/(actions)/fetch-categories.action";
 import { ArticleForm } from "@/app/admin/articles/(components)/article-form.component";
-import { fetchCategoriesAction } from "@/app/admin/(actions)/categories/fetch-categories.action";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import { toast } from "sonner";
