@@ -6,6 +6,7 @@ import {
   FileText,
   Inbox,
   Settings2,
+  Folder,
 } from "lucide-react";
 
 export type Item = {
@@ -35,6 +36,12 @@ export const content: Item[] = [
     title: "Artículos",
     url: "/admin/articles",
     Icon: FileText,
+  },
+  {
+    id: "bx86",
+    title: "Categorías",
+    url: "/admin/categories",
+    Icon: Folder,
   },
   {
     id: "a3b4",

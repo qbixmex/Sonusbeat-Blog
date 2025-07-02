@@ -4,7 +4,7 @@ type Robots =
   | 'index_nofollow'
   | 'noindex_nofollow'
 
-  export interface Article {
+export interface Article {
   id?: string;
   title: string;
   image: string;
