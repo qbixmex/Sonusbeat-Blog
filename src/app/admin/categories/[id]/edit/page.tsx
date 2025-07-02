@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
-import { fetchCategoryAction } from "@/app/admin/(actions)/categories/fetch-category.action";
+import { fetchCategoryAction } from "@/app/admin/categories/(actions)/fetch-category.action";
 import { CategoryForm } from "../../(components)/category-form.component";
 import { Category } from "@/interfaces/category.interface";
 

@@ -4,7 +4,6 @@ import prisma from "@/lib/prisma";
 
 import { createFormSchema } from "./create-article.schema";
 import { revalidatePath } from "next/cache";
-import { createSlug } from "@/lib/utils";
 
 export const createArticleAction = async (
   formData: FormData,
@@ -41,7 +40,7 @@ export const createArticleAction = async (
       const createdArticle = await transaction.article.create({
         data: {
           title: data.title,
-          slug: createSlug(data.title),
+          slug: data.slug,
           description: data.description,
           categoryId: data.categoryId,
           content: data.content,

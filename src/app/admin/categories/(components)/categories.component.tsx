@@ -34,7 +34,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Category } from "@/interfaces/category.interface";
-import { deleteCategoryAction } from "@/app/admin/(actions)/categories/delete-category.action";
+import { deleteCategoryAction } from "../(actions)/delete-category.action";
 
 type Props = Readonly<{
   categories: Category[];

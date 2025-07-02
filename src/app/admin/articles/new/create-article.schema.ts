@@ -9,6 +9,14 @@ export const formSchema = z.object({
     .trim()
     .min(8, "El título debe ser por lo menos de 8 caracteres")
     .max(250, "El título debe ser máximo 250 caracteres"),
+  slug: z
+    .string({
+      required_error: "El slug es obligatorio",
+      invalid_type_error: "El slug debe ser un string",
+    })
+    .trim()
+    .min(8, "El slug debe ser por lo menos de 8 caracteres")
+    .max(250, "El slug debe ser máximo 250 caracteres"),
   description: z
     .string({
       required_error: "La descripción es obligatoria",
