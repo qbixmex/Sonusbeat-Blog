@@ -22,6 +22,7 @@ import { formSchema } from "../new/create-article.schema";
 import { Category } from "@/interfaces/category.interface";
 import { toast } from "sonner";
 import { createCategoryAction } from "@/app/admin/(actions)/categories/create-category.action";
+import { editCategoryAction } from "@/app/admin/(actions)/categories/edit-category.action";
 
 type Props = Readonly<{
   category?: Category;
@@ -45,24 +46,24 @@ export const CategoryForm: FC<Props> = ({ category }) => {
       formData.append(key, value);
     });
 
-    // if (category && category.id) {
-    //   const response = await editCategoryAction(
-    //     formData,
-    //     category.id as string,
-    //   );
+    if (category && category.id) {
+      const response = await editCategoryAction(
+        formData,
+        category.id as string,
+      );
 
-    //   if (!response.ok) {
-    //     toast.error(response.message);
-    //     return;
-    //   }
+      if (!response.ok) {
+        toast.error(response.message);
+        return;
+      }
 
-    //   if (response.ok) {
-    //     toast.success(response.message);
-    //     form.reset();
-    //     route.replace("/admin/categories");
-    //     return;
-    //   }
-    // }
+      if (response.ok) {
+        toast.success(response.message);
+        form.reset();
+        route.replace("/admin/categories");
+        return;
+      }
+    }
 
     if (!category) {
       const response = await createCategoryAction(formData);
@@ -126,7 +127,7 @@ export const CategoryForm: FC<Props> = ({ category }) => {
               className="bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-muted-foreground cursor-pointer"
               type="button"
             >
-              <Link href="/admin/articles" className="inline-flex items-center gap-2">
+              <Link href="/admin/categories" className="inline-flex items-center gap-2">
                 Cancelar <XCircle />
               </Link>
             </Button>
