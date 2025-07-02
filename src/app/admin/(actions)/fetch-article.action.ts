@@ -17,6 +17,13 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
             id: true,
             name: true,
           }
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          }
         }
       }
     });
@@ -30,7 +37,11 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
         slug: article.slug,
         description: article.description,
         content: article.content,
-        category: 'Pending',
+        category: {
+          id: article?.category?.id as string,
+          name: article?.category?.name as string,
+          slug: article?.category?.slug as string,
+        },
         image: article.image as string,
         imageAlt: article.imageAlt,
         author: {

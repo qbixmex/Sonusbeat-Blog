@@ -22,14 +22,11 @@ export const createFormSchema = z.object({
       invalid_type_error: "El contenido debe ser un string",
     })
     .min(8, "El contenido debe ser por lo menos de 8 caracteres"),
-  category: z
+  categoryId: z
     .string({
       required_error: "La categoría es obligatoria",
       invalid_type_error: "La categoría debe ser un string",
-    })
-    .trim()
-    .min(3, "La categoría debe ser por lo menos de 3 caracteres")
-    .max(50, "La descripción debe ser máximo 100 caracteres"),
+    }),
   image: z
     .string({ invalid_type_error: "La imagen debe ser un string" })
     .min(7, "La imagen debe ser por lo menos de 3 caracteres")

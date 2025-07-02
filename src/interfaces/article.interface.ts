@@ -15,7 +15,11 @@ export interface Article {
     id: string;
     name: string;
   };
-  category: string;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
