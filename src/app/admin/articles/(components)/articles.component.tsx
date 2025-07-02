@@ -124,10 +124,20 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                   {format(article.publishedAt, "EEE MMMM dd, yyyy")}
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
-                  {article.category}
+                  <Link
+                    href={`/admin/categories/${article?.category.id}`}
+                    className="text-blue-400 hover:underline"
+                  >
+                    {article.category.name}
+                  </Link>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
-                  {getFirstAndLastName(article.author.name)}
+                  <Link
+                    href={`/admin/profile/${article.author.id}`}
+                    className="text-blue-400 hover:underline"
+                  >
+                    {getFirstAndLastName(article.author.name)}
+                  </Link>
                 </TableCell>
                 <TableCell>
                   <Switch

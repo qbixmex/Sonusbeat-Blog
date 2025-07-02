@@ -10,9 +10,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
-import fetchArticleAction from "@/app/admin/(actions)/fetch-article.action";
-import ArticleForm from "../../(components)/article-form.component";
+import { fetchArticleAction } from "@/app/admin/(actions)/fetch-article.action";
+import { ArticleForm } from "@/app/admin/articles/(components)/article-form.component";
+import { fetchCategoriesAction } from "@/app/admin/(actions)/categories/fetch-categories.action";
 import { Article } from "@/interfaces/article.interface";
+import { Category } from "@/interfaces/category.interface";
+import { toast } from "sonner";
 
 type Props = Readonly<{
   params: Promise<{
@@ -21,13 +24,21 @@ type Props = Readonly<{
 }>;
 
 const EditArticlePage: FC<Props> = async ({ params }) => {
-
   const articleId = (await params).id;
-  const response = await fetchArticleAction(articleId);
-
-  if (!response.ok) {
+  const responseArticle = await fetchArticleAction(articleId);
+  
+  if (!responseArticle.ok) {
     redirect("/admin/articles");
   }
+
+  const article = responseArticle.article as Article;
+  const responseCategories = await fetchCategoriesAction();
+
+  if (!responseCategories.ok) {
+    toast.error(responseCategories.message);
+  }
+
+  const categories = responseCategories.categories as Category[];
 
   return (
     <AdminLayout>
@@ -53,7 +64,10 @@ const EditArticlePage: FC<Props> = async ({ params }) => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <ArticleForm article={response.article as Article} />
+              <ArticleForm
+                article={article}
+                categories={categories}
+              />
             </div>
           </div>
         </main>

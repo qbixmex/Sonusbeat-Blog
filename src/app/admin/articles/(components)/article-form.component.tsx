@@ -34,13 +34,15 @@ import { editArticleAction } from "../../(actions)/edit-article.action";
 import { useSession } from "next-auth/react";
 import { formSchema } from "../new/create-article.schema";
 import { Article } from "@/interfaces/article.interface";
+import { Category } from "@/interfaces/category.interface";
 import { toast } from "sonner";
 
 type Props = Readonly<{
+  categories: Category[];
   article?: Article;
 }>;
 
-export const ArticleForm: FC<Props> = ({ article }) => {
+export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const route = useRouter();
   const session = useSession();
 
@@ -50,7 +52,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
       title: article?.title ?? "",
       description: article?.description ?? "",
       content: article?.content ?? "",
-      category: article?.category ?? "",
+      categoryId: article?.category.id ?? "",
       image: article?.image ?? "",
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",
@@ -61,7 +63,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
     },
   });
 
-  const [ openCalendar, setOpenCalendar ] = useState(false);
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
@@ -118,7 +120,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
   return (
     <div className="w-full lg:max-w-[768px] mx-auto">
       <h1 className="text-3xl md:text-5xl font-semibold text-center">
-        { article ? 'Editar' : 'Crear' } Articulo
+        {article ? 'Editar' : 'Crear'} Articulo
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -189,15 +191,32 @@ export const ArticleForm: FC<Props> = ({ article }) => {
             <div className="w-full md:w-1/2 flex flex-col gap-5">
               <FormField
                 control={form.control}
-                name="category"
+                name="categoryId"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Categoría</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <FormControl>
+                    <FormItem>
+                      <FormLabel>Categoría</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl className="w-full">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccione una categoría" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem
+                              key={category.id}
+                              value={category.id as string}
+                            >{category.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  </FormControl>
                 )}
               />
               <FormField
@@ -337,7 +356,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
               />
             </div>
           </section>
-          
+
           <div className="my-10 h-0.5 bg-gray-700"></div>
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">

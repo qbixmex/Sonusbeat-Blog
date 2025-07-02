@@ -54,6 +54,7 @@ export const editArticleAction = async (
           data: {
             title: data.title,
             slug: createSlug(data.title),
+            categoryId: data.categoryId,
             description: data.description,
             content: data.content,
             image: data.image ?? 'no-image.png',
@@ -70,13 +71,20 @@ export const editArticleAction = async (
                 id: true,
                 name: true,
               },
-            }
+            },
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
           },
         });
 
         return {
           ok: true,
-          message: '¡ Artículo actualizado !',
+          message: 'Artículo actualizado 👍',
           article: {
             id: updatedArticle.id,
             title: updatedArticle.title,
@@ -87,7 +95,11 @@ export const editArticleAction = async (
               id: updatedArticle.author.id,
               name: updatedArticle.author.name!,
             },
-            category: 'Pending',
+            category: {
+              id: updatedArticle.category?.id as string,
+              name: updatedArticle.category?.name as string,
+              slug: updatedArticle.category?.slug as string,
+            },
             image: updatedArticle.image ?? 'no-image.png',
             imageAlt: updatedArticle.imageAlt ?? '',
             seoTitle: updatedArticle.seoTitle,

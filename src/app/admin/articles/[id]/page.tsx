@@ -17,6 +17,7 @@ import placeholderImage from "@/assets/svg/landscape-placeholder.svg";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { renderRobots } from "@/root/src/lib/utils";
+import Link from "next/link";
 
 type Props = Readonly<{
   params: Promise<{
@@ -101,7 +102,9 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Categoría:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              { article?.category }
+                              <Link href={`/admin/categories/${article?.category.id}`} className="text-blue-500 hover:underline">
+                                { article?.category.name }
+                              </Link>
                             </TableCell>
                           </TableRow>
                           <TableRow>
