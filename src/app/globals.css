@@ -139,3 +139,9 @@ p, a, span, li, div, section, article {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .hide-element {
+    @apply absolute -top-[9999px] -left-[9999px];
+  }  
+}
