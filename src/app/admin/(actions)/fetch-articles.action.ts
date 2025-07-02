@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Article } from "@/interfaces/article.interface";
 
-type ResponseCreateArticle = {
+type ResponseFetchArticles = {
   ok: boolean;
   message: string;
   articles: Article[] | null;
@@ -24,7 +24,7 @@ type ResponseCreateArticle = {
 export const fetchArticlesAction = async (props?: {
   limit?: number;
   offset?: number;
-}): Promise<ResponseCreateArticle> => {
+}): Promise<ResponseFetchArticles> => {
   const { limit, offset } = props ?? { limit: 10, offset: 0 };
 
   try {
