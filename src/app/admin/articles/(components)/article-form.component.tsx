@@ -342,7 +342,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">
             <Button
-              className="bg-gray-700 hover:bg-gray-800 text-muted-foreground cursor-pointer"
+              className="bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-muted-foreground cursor-pointer"
               type="button"
             >
               <Link href="/admin/articles" className="inline-flex items-center gap-2">
@@ -352,7 +352,7 @@ export const ArticleForm: FC<Props> = ({ article }) => {
             <Button
               type="submit"
               className={cn("cursor-pointer", {
-                "bg-secondary hover:bg-secondary cursor-not-allowed": form.formState.isSubmitting,
+                "bg-primary/60 dark:bg-secondary dark:hover:bg-secondary cursor-not-allowed": form.formState.isSubmitting,
               })}
               disabled={form.formState.isSubmitting}
             >

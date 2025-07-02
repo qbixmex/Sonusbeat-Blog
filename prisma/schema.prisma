@@ -81,6 +81,19 @@ enum SeoRobotsOption {
   noindex_nofollow @map("noindex, nofollow")
 }
 
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+
+  articles Article[] @relation("CategoryArticles")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
 model Article {
   id          String @id @default(uuid())
   title       String @db.VarChar(250)
@@ -90,6 +103,9 @@ model Article {
 
   image    String? @default("article-default.jpg")
   imageAlt String? @db.VarChar(100)
+
+  categoryId String? @map("category_id")
+  category   Category? @relation("CategoryArticles", fields: [categoryId], references: [id], onDelete: Cascade)
 
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
