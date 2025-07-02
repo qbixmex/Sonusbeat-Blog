@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import styles from "../styles.module.css";
 import { Card, CardContent } from "@/components/ui/card";
 import ArticleForm from "../(components)/article-form.component";
-import { fetchCategoriesAction } from "@/app/admin/(actions)/categories/fetch-categories.action";
+import { fetchCategoriesAction } from "@/app/admin/categories/(actions)/fetch-categories.action";
 import { Category } from "@/interfaces/category.interface";
 
 const CreateArticlePage = async () => {

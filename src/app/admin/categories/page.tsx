@@ -1,3 +1,4 @@
+import Link from "next/link";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
   Breadcrumb,
@@ -7,13 +8,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import styles from "./styles.module.css";
-import Categories from "./(components)/categories.component";
-import { fetchCategoriesAction } from "../(actions)/categories/fetch-categories.action";
-import { toast } from "sonner";
-import { Category } from "@/interfaces/category.interface";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { toast } from "sonner";
+import Categories from "./(components)/categories.component";
+import { fetchCategoriesAction } from "./(actions)/fetch-categories.action";
+import { Category } from "@/interfaces/category.interface";
+import styles from "./styles.module.css";
 
 const CategoriesPage = async () => {
   const response = await fetchCategoriesAction();
