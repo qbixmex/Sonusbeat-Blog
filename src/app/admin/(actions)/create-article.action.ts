@@ -43,6 +43,7 @@ export const createArticleAction = async (
           title: data.title,
           slug: createSlug(data.title),
           description: data.description,
+          categoryId: data.categoryId,
           content: data.content,
           image: data.image,
           imageAlt: data.imageAlt,
@@ -57,7 +58,7 @@ export const createArticleAction = async (
 
       return {
         ok: true,
-        message: 'Artículo creado satisfactoriamente',
+        message: 'Artículo Creado 👍',
         user: createdArticle,
       };
     });

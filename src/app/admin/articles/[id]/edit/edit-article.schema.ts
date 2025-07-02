@@ -22,7 +22,7 @@ export const editFormSchema = z.object({
       invalid_type_error: "El contenido debe ser un string",
     })
     .min(8, "El contenido debe ser por lo menos de 8 caracteres"),
-  category: z
+  categoryId: z
     .string({
       required_error: "La categoría es obligatoria",
       invalid_type_error: "La categoría debe ser un string",

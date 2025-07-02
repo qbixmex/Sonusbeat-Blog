@@ -37,6 +37,13 @@ export const fetchArticlesAction = async (props?: {
             name: true,
           }
         },
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          }
+        }
       },
       take: limit,
       skip: offset,
@@ -56,7 +63,11 @@ export const fetchArticlesAction = async (props?: {
           id: item.author.id,
           name: item.author.name!,
         },
-        category: 'Pending',
+        category: {
+          id: item.category?.id as string,
+          name: item.category?.name as string,
+          slug: item.category?.slug as string,
+        },
         imageAlt: item.image,
         seoTitle: item.seoTitle,
         seoDescription: item.seoDescription,
