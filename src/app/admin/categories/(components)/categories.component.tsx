@@ -65,7 +65,7 @@ export const Categories: React.FC<Props> = ({ categories }) => {
           className="bg-blue-600 hover:bg-blue-700"
           asChild
         >
-          <Link href={`/admin/articles/new`} title="Crear nuevo artículo">
+          <Link href={`/admin/categories/new`} title="Crear nuevo artículo">
             <span className="sr-only">Crear categoría</span>
             <File className="size-5" />
           </Link>

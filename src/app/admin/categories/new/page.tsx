@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "../styles.module.css";
 import { Card, CardContent } from "@/components/ui/card";
-import ArticleForm from "../(components)/article-form.component";
+import { CategoryForm } from "../(components)/category-form.component";
 
 const CreateArticlePage = () => {
   return (
@@ -23,11 +23,11 @@ const CreateArticlePage = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/admin/articles">Artículos</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/articles">Categorías</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Crear Artículo</BreadcrumbPage>
+                <BreadcrumbPage>Crear Categoría</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -38,7 +38,7 @@ const CreateArticlePage = () => {
             <div className={styles.section}>
               <Card className="flex-1">
                 <CardContent>
-                  <ArticleForm />
+                  <CategoryForm />
                 </CardContent>
               </Card>
             </div>
