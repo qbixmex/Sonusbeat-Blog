@@ -34,8 +34,7 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Category } from "@/interfaces/category.interface";
-// import { updateArticleStateAction } from "../../(actions)/update-article-state.action";
-// import { deleteArticleAction } from "../../(actions)/delete-article.action";
+import { deleteCategoryAction } from "@/app/admin/(actions)/categories/delete-category.action";
 
 type Props = Readonly<{
   categories: Category[];
@@ -43,16 +42,16 @@ type Props = Readonly<{
 
 export const Categories: React.FC<Props> = ({ categories }) => {
   const handleDeleteCategory = async (categoryId: string) => {
-    // const response = await deleteCategoryAction(categoryId);
+    const response = await deleteCategoryAction(categoryId);
 
-    // if (!response.ok) {
-    //   toast.error(response.message);
-    //   return;
-    // }
+    if (!response.ok) {
+      toast.error(response.message);
+      return;
+    }
 
-    // if (response.ok) {
-    //   toast.success(response.message);
-    // }
+    if (response.ok) {
+      toast.success(response.message);
+    }
   };
 
   return (

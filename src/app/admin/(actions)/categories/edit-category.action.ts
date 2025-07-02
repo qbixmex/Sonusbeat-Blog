@@ -75,7 +75,7 @@ export const editCategoryAction = async (
 
         return {
           ok: true,
-          message: '¡ Artículo actualizado !',
+          message: 'Categoría Actualizada 👍',
           category: {
             id: updatedCategory.id,
             name: updatedCategory.name,
