@@ -11,13 +11,12 @@ import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
 import { Article } from "@/interfaces/article.interface";
 import fetchArticlesAction from "./(actions)/fetch-articles.action";
-import { toast } from "sonner";
 
 const ArticlesPage = async () => {
   const response = await fetchArticlesAction();
 
   if (!response.ok) {
-    toast.error(response.message);
+    console.error("Error fetching articles:", response.message);    
   }
 
   return (
