@@ -11,17 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import Categories from "./(components)/categories.component";
 import { fetchCategoriesAction } from "./(actions)/fetch-categories.action";
-import { Category } from "@/interfaces/category.interface";
 import styles from "./styles.module.css";
 
 const CategoriesPage = async () => {
   const response = await fetchCategoriesAction();
-
-  let categories: Category[] = [];
-
-  if (!response.ok && !response.categories) {
-    categories = [];
-  }
+  const categories = response.categories ?? [];
 
   return (
     <AdminLayout>
