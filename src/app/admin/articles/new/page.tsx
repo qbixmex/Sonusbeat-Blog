@@ -20,7 +20,13 @@ const CreateArticlePage = async () => {
     console.error("Error fetching articles:", response.message);    
   }
 
-  const categories = response.categories as Category[];
+  let categories: Category[];
+
+  if (!response.categories) {
+    categories = [];
+  }
+
+  categories = response.categories as Category[];
 
   return (
     <AdminLayout>
