@@ -15,8 +15,10 @@ import fetchArticlesAction from "./(actions)/fetch-articles.action";
 const ArticlesPage = async () => {
   const response = await fetchArticlesAction();
 
-  if (!response.ok) {
-    console.error("Error fetching articles:", response.message);    
+  let articles: Article[] = [];
+
+  if (!response.ok && !response.articles) {
+    articles = [];
   }
 
   return (
@@ -39,7 +41,7 @@ const ArticlesPage = async () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles articles={response.articles as Article[]} />
+              <Articles articles={articles} />
             </div>
           </div>
         </main>

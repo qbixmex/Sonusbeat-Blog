@@ -17,11 +17,11 @@ import styles from "./styles.module.css";
 const CategoriesPage = async () => {
   const response = await fetchCategoriesAction();
 
-  if (!response.ok) {
-    console.error("Error fetching categories:", response.message);    
-  }
+  let categories: Category[] = [];
 
-  const categories = response.categories as Category[];
+  if (!response.ok && !response.categories) {
+    categories = [];
+  }
 
   return (
     <AdminLayout>
