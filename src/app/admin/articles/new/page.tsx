@@ -7,7 +7,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { toast } from "sonner";
 import styles from "../styles.module.css";
 import { Card, CardContent } from "@/components/ui/card";
 import ArticleForm from "../(components)/article-form.component";
@@ -18,7 +17,7 @@ const CreateArticlePage = async () => {
   const response = await fetchCategoriesAction();
 
   if (!response.ok) {
-    toast.error(response.message);
+    console.error("Error fetching articles:", response.message);    
   }
 
   const categories = response.categories as Category[];
