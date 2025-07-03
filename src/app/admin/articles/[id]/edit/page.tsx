@@ -15,7 +15,6 @@ import { fetchCategoriesAction } from "@/app/admin/categories/(actions)/fetch-ca
 import { ArticleForm } from "@/app/admin/articles/(components)/article-form.component";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
-import { toast } from "sonner";
 
 type Props = Readonly<{
   params: Promise<{
@@ -34,8 +33,8 @@ const EditArticlePage: FC<Props> = async ({ params }) => {
   const article = responseArticle.article as Article;
   const responseCategories = await fetchCategoriesAction();
 
-  if (!responseCategories.ok) {
-    toast.error(responseCategories.message);
+  if (!responseCategories.message) {
+    console.error("Error fetching categories:", responseCategories.message);    
   }
 
   const categories = responseCategories.categories as Category[];
