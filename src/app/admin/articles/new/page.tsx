@@ -7,21 +7,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { toast } from "sonner";
 import styles from "../styles.module.css";
 import { Card, CardContent } from "@/components/ui/card";
 import ArticleForm from "../(components)/article-form.component";
 import { fetchCategoriesAction } from "@/app/admin/categories/(actions)/fetch-categories.action";
-import { Category } from "@/interfaces/category.interface";
 
 const CreateArticlePage = async () => {
   const response = await fetchCategoriesAction();
 
   if (!response.ok) {
-    toast.error(response.message);
+    console.error("Error fetching articles:", response.message);    
   }
-
-  const categories = response.categories as Category[];
 
   return (
     <AdminLayout>
@@ -49,7 +45,7 @@ const CreateArticlePage = async () => {
             <div className={styles.section}>
               <Card className="flex-1">
                 <CardContent>
-                  <ArticleForm categories={categories} />
+                  <ArticleForm categories={response.categories ?? []} />
                 </CardContent>
               </Card>
             </div>
