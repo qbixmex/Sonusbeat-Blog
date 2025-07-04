@@ -39,6 +39,21 @@ export const renderRobots = (robots: string): string => {
   }
 };
 
+export const renderSeoRobots = (robots: string): string => {
+  switch (robots) {
+    case 'index_follow':
+      return 'index, follow';
+    case 'noindex_follow':
+      return 'noindex, follow';
+    case 'index_nofollow':
+      return 'index, nofollow';
+    case 'noindex_nofollow':
+      return 'noindex, nofollow';
+    default:
+      return "noindex, nofollow";
+  }
+};
+
 export const getFirstAndLastName = (full_name: string): string => {
   const names = full_name.split(' ');
   if (full_name.length === 0) return '';
