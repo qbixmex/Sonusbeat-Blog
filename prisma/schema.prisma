@@ -55,7 +55,7 @@ enum Role {
 model User {
   id            String    @id @default(uuid())
   name          String?
-  username      String?   @unique @default("no_provided")
+  username      String?   @unique
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
@@ -82,9 +82,9 @@ enum SeoRobotsOption {
 }
 
 model Category {
-  id          String   @id @default(uuid())
-  name        String   @unique @db.VarChar(100)
-  slug        String   @unique @db.VarChar(100)
+  id   String @id @default(uuid())
+  name String @unique @db.VarChar(100)
+  slug String @unique @db.VarChar(100)
 
   articles Article[] @relation("CategoryArticles")
 
@@ -104,7 +104,7 @@ model Article {
   image    String? @default("article-default.jpg")
   imageAlt String? @db.VarChar(100)
 
-  categoryId String? @map("category_id")
+  categoryId String?   @map("category_id")
   category   Category? @relation("CategoryArticles", fields: [categoryId], references: [id], onDelete: Cascade)
 
   authorId String @map("author_id")

@@ -9,16 +9,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
-import { Article } from "@/interfaces/article.interface";
 import fetchArticlesAction from "./(actions)/fetch-articles.action";
-import { toast } from "sonner";
 
 const ArticlesPage = async () => {
   const response = await fetchArticlesAction();
-
-  if (!response.ok) {
-    toast.error(response.message);
-  }
+  const articles = response.articles ?? [];
 
   return (
     <AdminLayout>
@@ -40,7 +35,7 @@ const ArticlesPage = async () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles articles={response.articles as Article[]} />
+              <Articles articles={articles} />
             </div>
           </div>
         </main>

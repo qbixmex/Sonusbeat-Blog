@@ -9,20 +9,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import Categories from "./(components)/categories.component";
 import { fetchCategoriesAction } from "./(actions)/fetch-categories.action";
-import { Category } from "@/interfaces/category.interface";
 import styles from "./styles.module.css";
 
 const CategoriesPage = async () => {
   const response = await fetchCategoriesAction();
-
-  if (!response.ok) {
-    toast.error(response.message);
-  }
-
-  const categories = response.categories as Category[];
+  const categories = response.categories ?? [];
 
   return (
     <AdminLayout>
