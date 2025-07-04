@@ -11,20 +11,24 @@ export const Article: FC<Props> = ({ article }) => {
   return (
     <article className="mb-5">
       <header>
-        <figure className="relative mb-3 flex justify-center">
-          <Image
-            src={`/images/blog/${article.image}`}
-            alt={`${article.title} imagen`}
-            width={600}
-            height={400}
-            className="w-full h-auto object-cover rounded"
-          />
-          <figcaption className="bg-black/80 inline-block text-neutral-50 rounded-bl rounded-tr absolute left-0 bottom-0 px-2 py-1">
-            { article.category.name }
-          </figcaption>
-        </figure>
+        <Link href={`/${article.category.slug}/${article.slug}`}>
+          <figure className="relative mb-3 flex justify-center">
+            <Image
+              src={`/images/blog/${article.image}`}
+              alt={`${article.title} imagen`}
+              width={600}
+              height={400}
+              className="w-full h-auto object-cover rounded"
+            />
+            <figcaption className="bg-black/80 inline-block text-neutral-50 rounded-bl rounded-tr absolute left-0 bottom-0 px-2 py-1">
+              { article.category.name }
+            </figcaption>
+          </figure>
+        </Link>
         <h2 className="text-xl font-semibold mb-2 text-blue-500">
-          { article.title }
+          <Link href={`/${article.category.slug}/${article.slug}`}>
+            { article.title }
+          </Link>
         </h2>
       </header>
       <main>

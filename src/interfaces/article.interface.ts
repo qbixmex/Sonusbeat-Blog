@@ -1,4 +1,4 @@
-type Robots =
+export type Robots =
   'index_follow'
   | 'noindex_follow'
   | 'index_nofollow'
@@ -54,26 +54,20 @@ export interface PublicArticlesList {
 export interface PublicArticle {
   id: string;
   title: string;
-  image: string;
-  slug: string;
   description: string;
   content: string;
+  image: string;
+  imageAlt: string;
   author: {
-    id: string;
     name: string;
     username: string;
   };
   category: {
-    id: string;
     name: string;
     slug: string;
   };
-  imageAlt: string;
   seoTitle: string;
   seoDescription: string;
   seoRobots: Robots;
   publishedAt: Date;
-  published: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
