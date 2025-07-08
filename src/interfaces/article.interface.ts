@@ -11,23 +11,23 @@ export interface Article {
   slug: string;
   description: string;
   content: string;
-  author: {
+  author?: {
     id: string;
     name: string;
-  };
-  category: {
+  } | string;
+  category?: {
     id: string;
     name: string;
     slug: string;
-  };
+  } | string;
   imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoRobots: Robots;
   publishedAt: Date;
   published: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface PublicArticlesList {
