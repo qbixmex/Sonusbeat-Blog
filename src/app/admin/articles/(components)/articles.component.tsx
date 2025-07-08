@@ -125,18 +125,18 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
                   <Link
-                    href={`/admin/categories/${article?.category.id}`}
+                    href={`/admin/categories/${(article?.category as { id: string }).id}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {article.category.name}
+                    {(article.category as { name: string }).name}
                   </Link>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
                   <Link
-                    href={`/admin/profile/${article.author.id}`}
+                    href={`/admin/profile/${(article.author as { id: string }).id}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {getFirstAndLastName(article.author.name)}
+                    {getFirstAndLastName((article.author as { name: string }).name)}
                   </Link>
                 </TableCell>
                 <TableCell>

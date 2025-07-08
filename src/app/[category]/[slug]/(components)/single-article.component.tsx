@@ -9,7 +9,6 @@ type Props = Readonly<{
 }>;
 
 export const SingleArticle: FC<Props> = ({ article }) => {
-
   return (
     <article>
       <header className="flex flex-col gap-2 mb-5">
@@ -43,7 +42,11 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           </div>
           <div className="flex gap-2 text-muted-foreground">
             <span><b>Fecha de Publicación:</b></span>
-            {format(article.publishedAt, 'MMMM dd, yyyy')}
+            {
+              article.publishedAt
+                ? format(new Date(article.publishedAt), 'MMMM dd, yyyy')
+                : 'Fecha desconocida'
+              }
           </div>
         </section>
       </main>
