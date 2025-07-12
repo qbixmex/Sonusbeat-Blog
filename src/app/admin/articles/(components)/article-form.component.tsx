@@ -53,7 +53,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       slug: article?.slug ?? "",
       description: article?.description ?? "",
       content: article?.content ?? "",
-      categoryId: article?.category.id ?? "",
+      categoryId: (article?.category as Category).id ?? "",
       image: article?.image ?? "",
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",

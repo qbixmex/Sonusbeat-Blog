@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -141,7 +142,31 @@ p, a, span, li, div, section, article {
 }
 
 @layer utilities {
+  .prose h2 {
+    @apply text-blue-500 font-semibold text-4xl;
+  }
+  
+  .prose h3 {
+    @apply text-pink-500 text-3xl;
+  }
+  
+  .prose h4 {
+    @apply text-orange-500 text-2xl;
+  }
+  
+  .prose h5 {
+    @apply text-emerald-500 text-xl;
+  }
+  
+  .prose h6 {
+    @apply text-sky-500 text-lg;
+  }
+  
+  .prose p {
+    @apply text-muted-foreground text-xl leading-8 text-pretty;
+  }
+
   .hide-element {
     @apply absolute -top-[9999px] -left-[9999px];
-  }  
+  }
 }
