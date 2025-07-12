@@ -102,14 +102,14 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Autor:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              { article?.author.name }
+                              { (article?.author as { name: string }).name }
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Categoría:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              <Link href={`/admin/categories/${article?.category.id}`} className="text-blue-500 hover:underline">
-                                { article?.category.name }
+                              <Link href={`/admin/categories/${(article?.category as { id: string }).id}`} className="text-blue-500 hover:underline">
+                                {( article?.category as { name: string }).name }
                               </Link>
                             </TableCell>
                           </TableRow>
