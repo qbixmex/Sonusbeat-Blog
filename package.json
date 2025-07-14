@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "bun run prisma:deploy && next build",
+    "build": "npm run prisma:deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "prisma:deploy": "bunx prisma migrate deploy && prisma generate",
+    "prisma:deploy": "bunx prisma migrate deploy && bunx prisma generate",
     "seed": "NODE_ENV=development ts-node ./src/seed/seed-database.ts"
   },
   "dependencies": {
