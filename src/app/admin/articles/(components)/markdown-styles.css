@@ -1,0 +1,23 @@
+@reference "tailwindcss";
+
+.dark .rc-md-editor.md-editor {
+  @apply rounded overflow-auto border-stone-400 bg-stone-950;
+}
+
+/* Toolbar */
+.dark .rc-md-navigation.visible {
+  @apply bg-stone-900 border-b border-stone-400;
+}
+
+/* Left Editor */
+.dark .md-editor textarea.section-container.input {
+  @apply bg-stone-950 text-stone-200 border-none shadow-none caret-white;
+}
+
+/* Right Editor */
+.dark .md-editor .section.sec-html.visible {
+  @apply bg-stone-950 border-none;
+  & .section-container.html-wrap .custom-html-style {
+    @apply text-stone-300;
+  }
+}
