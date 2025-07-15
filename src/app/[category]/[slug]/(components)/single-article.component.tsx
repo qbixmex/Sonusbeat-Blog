@@ -1,23 +1,17 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import Image from 'next/image';
 import { PublicArticle } from '@/interfaces/article.interface';
 import Link from 'next/link';
 import { format } from 'date-fns/format';
-import DOMPurify from 'dompurify';
+import ReactMarkdown from "react-markdown";
 
 type Props = Readonly<{
   article: PublicArticle;
 }>;
 
 export const SingleArticle: FC<Props> = ({ article }) => {
-  const [sanitizedContent, setSanitizedContent] = useState<string>('');
-
-  useEffect(() => {
-    setSanitizedContent(DOMPurify.sanitize(article.content));
-  }, [article.content]);
-
   return (
     <article>
       <header className="flex flex-col gap-2 mb-5">
@@ -59,10 +53,8 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           </div>
         </section>
       </main>
-        <section
-          className="mb-5 prose prose-lg dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-        >
+        <section className="mb-5 prose prose-lg dark:prose-invert max-w-none">
+          <ReactMarkdown>{article.content}</ReactMarkdown>
         </section>
     </article>
   );
