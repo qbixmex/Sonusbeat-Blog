@@ -36,11 +36,24 @@ import { useSession } from "next-auth/react";
 import { formSchema } from "../new/create-article.schema";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
+import MdEditorField from "./md-editor-field.component";
 
 type Props = Readonly<{
   categories: Category[];
   article?: Article;
 }>;
+
+const demoContent = `\
+Descripción del artículo debe ir aquí. Breve descripción que resuma el contenido del artículo.
+## Título del artículo
+### Subtítulo del artículo
+Este es un ejemplo de contenido que puede incluirse en el artículo. Puedes usar Markdown para form
+**Lista**
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+`;
 
 export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const route = useRouter();
@@ -52,8 +65,8 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       title: article?.title ?? "",
       slug: article?.slug ?? "",
       description: article?.description ?? "",
-      content: article?.content ?? "",
-      categoryId: (article?.category as Category).id ?? "",
+      content:  article?.content ?? demoContent,
+      categoryId: article?.category ? (article?.category as Category).id : "",
       image: article?.image ?? "",
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",
@@ -252,12 +265,16 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                 <FormItem>
                   <FormLabel>Contenido</FormLabel>
                   <FormControl>
-                    <Textarea {...field} className="resize-none min-h-40" />
+                    <MdEditorField
+                      value={field.value}
+                      setContent={value => field.onChange(value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
           </section>
 
           <div className="my-10 h-0.5 bg-gray-700"></div>
