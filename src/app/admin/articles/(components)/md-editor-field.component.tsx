@@ -23,7 +23,7 @@ export const MdEditorField: FC<Props> = ({ value, setContent }) => {
         view: {
           menu: true,
           md: true,
-          html: false,
+          html: true,
         },
       }}
     />
