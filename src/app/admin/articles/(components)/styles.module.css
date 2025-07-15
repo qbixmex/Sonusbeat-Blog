@@ -1,0 +1,11 @@
+@reference "tailwindcss";
+
+.inputLabel {
+  @apply flex items-center text-red-500 gap-2 text-sm leading-none font-medium select-none
+  group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50
+  peer-disabled:cursor-not-allowed peer-disabled:opacity-50 data-[error=true]:text-destructive;
+}
+
+.markdownEditor {
+  @apply rounded-md overflow-auto h-full !resize-y min-h-[300px] max-h-none;
+}
