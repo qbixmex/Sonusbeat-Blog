@@ -7,6 +7,7 @@ import { AdminNavbar } from "./(components)/navbar/admin-navbar.component";
 import { AppSidebar } from "@/components/sidebar/app-sidebar.component";
 import MainContainer from "@/components/main-container.component";
 import { auth } from "@/auth.config";
+import CloseSession from "./(components)/auth/close-session.component";
 
 export const metadata: Metadata = {
   title: "Sonusbeat Blog - Admin",
@@ -21,6 +22,10 @@ const AdminLayout: React.FC<Props> = async ({ children }) => {
 
   if (!session) {
     redirect("/login");
+  }
+
+  if (!session.user?.emailVerified) {
+    return <CloseSession />;
   }
 
   const cookieStore = await cookies();

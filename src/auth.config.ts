@@ -62,6 +62,25 @@ export const authConfig: NextAuthConfig = {
     strategy: "jwt",
   },
   callbacks: {
+    async signIn({ user }) {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: user.email as string }
+      });
+
+      // If user does not exist, allow NextAuth to create it (only for OAuth)
+      if (!dbUser) {
+        // Allow registration, but do not return true here,
+        // just let NextAuth create the user.
+        return true;
+      }
+
+      // If user exists but email is not verified, block login !
+      if (!dbUser.emailVerified) {
+        console.error(`[AUTH] Usuario no verificado: ${user.email}`);
+        return '/login?error=auth';
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) token.data = user;
       return token;
