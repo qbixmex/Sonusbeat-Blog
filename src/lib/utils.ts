@@ -1,5 +1,7 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { format } from 'date-fns/format';
+import { Locale, es } from 'date-fns/locale';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -59,4 +61,27 @@ export const getFirstAndLastName = (full_name: string): string => {
   if (full_name.length === 0) return '';
   if (full_name.length === 1) return names[0];
   return `${names.at(0)} ${names.at(1)}`;
+};
+
+export const articleFormatDate = (date: Date, lang?: Locale) => {
+  const spanishFormattedDate = format(
+    new Date(date),
+    "d MMMM yyyy",
+    { locale: lang ? lang : undefined }
+  );
+  const englishFormattedDate = format(
+    new Date(date),
+    "MMMM d, yyyy",
+    { locale: lang ? lang : undefined }
+  );
+  const segments = spanishFormattedDate.split(' ');
+  if (lang === es) {
+    return segments.at(0)
+      + " de "
+      + segments[1][0].toUpperCase()
+      + segments[1].slice(1)
+      + ", "
+      + segments.at(2)
+  }
+  return englishFormattedDate;
 };
