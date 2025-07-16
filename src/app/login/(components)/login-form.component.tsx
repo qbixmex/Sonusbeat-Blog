@@ -1,7 +1,8 @@
 'use client';
 
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -9,17 +10,63 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import Image from "next/image";
 import { Credentials } from "./credentials.component";
 import { handleLoginGoogle } from "@/app/(auth)/actions/handleLoginGoogle";
 import { handleLoginGithub } from "@/app/(auth)/actions/handleLoginGithub";
+import { useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
+import styles from "./styles.module.css";
+
+type Notification = {
+  type: 'error' | 'success' | 'info' | 'warning' | 'default';
+  message: string;
+};
 
 type Props = { className?: string; } & React.ComponentProps<"div">;
 
 export const LoginForm: React.FC<Props> = ({ className, ...props }) => {
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
+
+  const [notification, setNotification] = useState<Notification>({
+    type: 'default',
+    message: '',
+  });
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (error === 'auth') {
+      setNotification({
+        type: 'error',
+        message: '¡ No se pudo iniciar sesión !',
+      });
+      timeout = setTimeout(() => {
+        setNotification({
+          type: 'default',
+          message: '',
+        });
+        const url = new URL(window.location.href);
+        url.searchParams.delete('error');
+        window.history.replaceState({}, '', url.toString());
+      }, 3000)
+    }
+    return () => clearTimeout(timeout);
+  }, [error]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {error && notification.message &&
+        <div className={cn(styles.notification, {
+          [styles.notificationInfo]: notification.type === 'info',
+          [styles.notificationSuccess]: notification.type === 'success',
+          [styles.notificationWarning]: notification.type === 'warning',
+          [styles.notificationError]: notification.type === 'error',
+          [styles.notificationDefault]: notification.type === 'default',
+        })}>
+          {notification.message}
+        </div>
+      }
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Bienvenido de Vuelta</CardTitle>
