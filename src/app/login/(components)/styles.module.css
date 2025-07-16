@@ -1,0 +1,32 @@
+@reference "tailwindcss";
+
+.notification {
+  @apply
+    bg-stone-950
+    text-neutral-50
+    px-3
+    py-4
+    rounded-lg
+    text-center
+    font-semibold text-lg;
+}
+
+.notificationError {
+  @apply bg-red-600;
+}
+
+.notificationSuccess {
+  @apply bg-green-600;
+}
+
+.notificationInfo {
+  @apply bg-blue-600;
+}
+
+.notificationWarning {
+  @apply bg-yellow-600;
+}
+
+.notificationDefault {
+  @apply bg-gray-600;
+}
