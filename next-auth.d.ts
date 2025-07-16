@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   username: string;
+  emailVerified: Date | null;
   roles?: string[],
   image: string,
   isActive: boolean,
