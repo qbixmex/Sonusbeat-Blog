@@ -49,7 +49,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
               article.publishedAt
                 ? format(new Date(article.publishedAt), 'MMMM dd, yyyy')
                 : 'Fecha desconocida'
-              }
+            }
           </div>
         </section>
       </main>
