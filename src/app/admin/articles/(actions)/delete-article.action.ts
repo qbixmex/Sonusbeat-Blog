@@ -24,9 +24,12 @@ export const deleteArticleAction = async (articleId: string) => {
     where: { id: articleId },
   });
 
-  // Delete image from cloudinary.
+  // Delete previous image from cloudinary.
   if (articleDeleted.imagePublicID) {
-    await deleteImage(articleDeleted.imagePublicID);
+    const response = await deleteImage(articleDeleted.imagePublicID);
+    if (!response.ok) {
+      throw 'Error deleting image from cloudinary';
+    }
   }
 
   revalidatePath('/admin/articles');
