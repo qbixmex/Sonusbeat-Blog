@@ -15,7 +15,7 @@ const main = async () => {
       const response = await prisma.article.deleteMany();
       console.log("Articles Deleted:", response.count);
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Error deleting articles:", (error as Error).message);
   }
 
@@ -26,7 +26,7 @@ const main = async () => {
       const response = await prisma.category.deleteMany();
       console.log("Categories Deleted:", response.count);
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Error deleting categories:", (error as Error).message);
   }
 
@@ -37,7 +37,7 @@ const main = async () => {
       const response = await prisma.user.deleteMany();
       console.log("Users Deleted:", response.count);
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Error deleting users:", (error as Error).message);
   }
 

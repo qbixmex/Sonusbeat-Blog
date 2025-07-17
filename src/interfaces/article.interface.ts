@@ -7,7 +7,9 @@ export type Robots =
 export interface Article {
   id?: string;
   title: string;
-  image: string;
+  imageURL: string;
+  imagePublicID: string;
+  imageAlt: string | null;
   slug: string;
   description: string;
   content: string;
@@ -20,7 +22,6 @@ export interface Article {
     name: string;
     slug: string;
   } | string;
-  imageAlt: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
   seoRobots: Robots;
@@ -33,7 +34,7 @@ export interface Article {
 export interface PublicArticlesList {
   id: string;
   title: string;
-  image: string;
+  imageURL: string;
   imageAlt: string;
   slug: string;
   description: string;
@@ -56,7 +57,7 @@ export interface PublicArticle {
   title: string;
   description: string;
   content: string;
-  image: string;
+  imageURL: string;
   imageAlt: string;
   author: {
     name: string;
