@@ -161,9 +161,29 @@ p, a, span, li, div, section, article {
   .prose h6 {
     @apply text-sky-500 text-lg;
   }
-  
+
   .prose p {
     @apply text-muted-foreground text-xl leading-8 text-pretty;
+  }
+
+  .prose b, .prose strong {
+    @apply text-stone-500 font-bold;
+  }
+
+  .prose hr {
+    @apply !border-stone-400 my-10;
+  }
+
+  .dark .prose hr {
+    @apply !border-stone-700;
+  }
+
+  .prose ul {
+    @apply pl-5;
+  }
+
+  .prose li {
+    @apply text-muted-foreground leading-8;
   }
 
   .hide-element {
