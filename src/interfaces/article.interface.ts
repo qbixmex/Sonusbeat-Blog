@@ -8,8 +8,8 @@ export interface Article {
   id?: string;
   title: string;
   imageURL: string;
-  imagePublicID: string;
   imageAlt: string | null;
+  imagePublicID?: string;
   slug: string;
   description: string;
   content: string;
