@@ -23,8 +23,12 @@ export const Article: FC<Props> = ({ article }) => {
           <Link href={`/${article.category.slug}/${article.slug}`}>
             <figure className="relative">
               <Image
-                src={`/images/blog/${article.image}`}
-                alt={`${article.title} imagen`}
+                src={
+                  article.imageURL.startsWith("https")
+                  ? article.imageURL
+                  : `/images/blog/${article.imageURL}`
+                }
+                alt={`${article.imageAlt} imagen`}
                 width={1024}
                 height={576}
                 className="w-full max-w-[1024px] lg:max-w-[400px] h-auto object-cover rounded"

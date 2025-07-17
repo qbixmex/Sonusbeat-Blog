@@ -52,7 +52,6 @@ export const generateStaticParams = async () => {
   }
 
   return result.slugs.map((permalink) => ({ permalink }));
-
 };
 
 //* This re-validates the page every 7 days
