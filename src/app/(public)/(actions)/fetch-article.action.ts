@@ -26,7 +26,7 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
       select: {
         id: true,
         title: true,
-        image: true,
+        imageURL: true,
         imageAlt: true,
         description: true,
         content: true,
@@ -55,7 +55,7 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
       article: {
         id: data?.id as string,
         title: data?.title as string,
-        image: data?.image as string,
+        imageURL: data?.imageURL as string,
         imageAlt: data?.imageAlt as string,
         description: data?.description as string,
         content: data?.content as string,

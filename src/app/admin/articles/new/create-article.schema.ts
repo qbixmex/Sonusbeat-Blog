@@ -1,5 +1,14 @@
 import z from "zod";
 
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 1; // 1MB
+const ACCEPTED_FILE_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/gif',
+  'image/webp',
+];
+
 export const formSchema = z.object({
   title: z
     .string({
@@ -36,9 +45,13 @@ export const formSchema = z.object({
       invalid_type_error: "El id de la categoría debe ser un string",
     }),
   image: z
-    .string({ invalid_type_error: "La imagen debe ser un string" })
-    .min(7, "La imagen debe ser por lo menos de 3 caracteres")
-    .optional(),
+    .instanceof(File, { message: "La imagen debe ser un archivo" })
+    .refine((file) => {
+      return !file || file.size <= MAX_UPLOAD_SIZE;
+    }, 'El tamaño máximo de la imagen deber ser menor a 1MB')
+    .refine((file) => {
+      return file && ACCEPTED_FILE_TYPES.includes(file.type);
+    }, 'El tipo de archivo debe ser uno de los siguientes: png, jpeg, jpg, gif, webp'),
   imageAlt: z
     .string({ invalid_type_error: "El author seo debe ser un string" })
     .min(3, "El author seo debe ser por lo menos de 3 caracteres")
@@ -82,3 +95,5 @@ export const formSchema = z.object({
     })
     .optional(),
 });
+
+export default formSchema;

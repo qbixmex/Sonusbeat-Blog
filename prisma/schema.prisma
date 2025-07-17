@@ -101,8 +101,9 @@ model Article {
   description String @db.VarChar(250)
   content     String @db.Text
 
-  image    String? @default("article-default.jpg")
-  imageAlt String? @db.VarChar(100)
+  imageURL      String? @default("article-default.jpg")
+  imagePublicID String?
+  imageAlt      String? @db.VarChar(100)
 
   categoryId String?   @map("category_id")
   category   Category? @relation("CategoryArticles", fields: [categoryId], references: [id], onDelete: Cascade)

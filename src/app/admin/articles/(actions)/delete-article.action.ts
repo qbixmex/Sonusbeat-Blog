@@ -2,14 +2,18 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import deleteImage from "./delete-image.action";
 
 export const deleteArticleAction = async (articleId: string) => {
-  const article = await prisma.article.findUnique({
+  const articleDeleted = await prisma.article.findUnique({
     where: { id: articleId },
-    select: { published: true },
+    select: {
+      imagePublicID: true,
+      published: true,
+    },
   });
 
-  if (!article) {
+  if (!articleDeleted) {
     return {
       ok: false,
       message: '¡ El articulo no existe !',
@@ -19,7 +23,12 @@ export const deleteArticleAction = async (articleId: string) => {
   await prisma.article.delete({
     where: { id: articleId },
   });
-  
+
+  // Delete image from cloudinary.
+  if (articleDeleted.imagePublicID) {
+    await deleteImage(articleDeleted.imagePublicID);
+  }
+
   revalidatePath('/admin/articles');
 
   return {
