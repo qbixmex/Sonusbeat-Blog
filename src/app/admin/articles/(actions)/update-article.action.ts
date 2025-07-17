@@ -84,13 +84,12 @@ export const updateArticleAction = async (
 
         if (image) {
           // Delete previous image from cloudinary.
-          const response = await deleteImage(updatedArticle.imagePublicID ?? '');
-
-          if (!response.ok) {
-            throw 'Error deleting image from cloudinary';
+          if (updatedArticle.imagePublicID) {
+            const response = await deleteImage(updatedArticle.imagePublicID);
+            if (!response.ok) {
+              throw 'Error deleting image from cloudinary';
+            }
           }
-
-          console.log("SE SUPONE QUE SE DEBE SUBIR UNA NUEVA IMAGEN");
 
           // Upload Image to third-party storage (cloudinary).
           const imageUploaded = await uploadImage(image, 'articles');
