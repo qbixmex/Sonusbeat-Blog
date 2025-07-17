@@ -42,7 +42,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
           name: article?.category?.name as string,
           slug: article?.category?.slug as string,
         },
-        image: article.image as string,
+        imageURL: article.imageURL as string,
         imageAlt: article.imageAlt,
         author: {
           id: article.author.id,

@@ -55,7 +55,8 @@ export const fetchArticlesAction = async (props?: {
       articles: data.map((item) => ({
         id: item.id,
         title: item.title,
-        image: item.image as string,
+        imageURL: item.imageURL as string,
+        imageAlt: item.imageAlt,
         slug: item.slug,
         description: item.description,
         content: item.content,
@@ -68,7 +69,6 @@ export const fetchArticlesAction = async (props?: {
           name: item.category?.name as string,
           slug: item.category?.slug as string,
         },
-        imageAlt: item.image,
         seoTitle: item.seoTitle,
         seoDescription: item.seoDescription,
         seoRobots: item.seoRobots,

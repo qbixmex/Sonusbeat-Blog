@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 
 import { createFormSchema } from "./create-article.schema";
 import { revalidatePath } from "next/cache";
+import uploadImage from "./upload-image.action";
 
 export const createArticleAction = async (
   formData: FormData,
@@ -33,37 +34,64 @@ export const createArticleAction = async (
     };
   }
 
-  const data = articleParsed.data;
+  const { image, ...articleToSave } = articleParsed.data;
+
+    // Upload Image to third-party storage (cloudinary).
+  const imageUploaded = await uploadImage(image!, 'articles');
+
+    if (!imageUploaded) {
+      throw 'Error uploading image to cloudinary';
+    }
 
   try {
     const prismaTransaction = await prisma.$transaction(async (transaction) => {
       const createdArticle = await transaction.article.create({
         data: {
-          title: data.title,
-          slug: data.slug,
-          description: data.description,
-          categoryId: data.categoryId,
-          content: data.content,
-          image: data.image,
-          imageAlt: data.imageAlt,
+          title: articleToSave.title,
+          slug: articleToSave.slug,
+          description: articleToSave.description,
+          categoryId: articleToSave.categoryId,
+          content: articleToSave.content,
+          imageURL: imageUploaded.secureUrl,
+          imagePublicID: imageUploaded.publicId,
+          imageAlt: articleToSave.imageAlt,
           authorId: authenticatedUserId,
-          seoTitle: data.seoTitle,
-          seoDescription: data.seoDescription,
-          seoRobots: data.seoRobots,
-          publishedAt: data.publishedAt,
-          published: data.published,
+          seoTitle: articleToSave.seoTitle,
+          seoDescription: articleToSave.seoDescription,
+          seoRobots: articleToSave.seoRobots,
+          publishedAt: articleToSave.publishedAt,
+          published: articleToSave.published,
         },
       });
 
       return {
         ok: true,
         message: 'Artículo Creado 👍',
-        user: createdArticle,
+        article: {
+          id: createdArticle.id,
+          title: createdArticle.title,
+          slug: createdArticle.slug,
+          description: createdArticle.description,
+          categoryId: createdArticle.categoryId,
+          content: createdArticle.content,
+          imageURL: imageUploaded.secureUrl,
+          imagePublicID: imageUploaded.publicId,
+          imageAlt: createdArticle.imageAlt,
+          authorId: authenticatedUserId,
+          seoTitle: createdArticle.seoTitle,
+          seoDescription: createdArticle.seoDescription,
+          seoRobots: createdArticle.seoRobots,
+          publishedAt: createdArticle.publishedAt,
+          published: createdArticle.published,
+          createdAt: createdArticle.createdAt,
+          updatedAt: createdArticle.updatedAt,
+        },
       };
     });
 
     // Revalidate Paths
-    revalidatePath('/admin/users');
+    revalidatePath('/');
+    revalidatePath('/admin/articles');
 
     return prismaTransaction;
   } catch (error) {
