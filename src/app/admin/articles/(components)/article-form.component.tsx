@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
@@ -278,6 +286,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                     <MdEditorField
                       value={field.value}
                       setContent={value => field.onChange(value)}
+                      articleId={article?.id ?? undefined}
                     />
                   </FormControl>
                   <FormMessage />
@@ -293,10 +302,48 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
           <section className="flex flex-col md:flex-row gap-5">
             <figure className="w-full md:w-1/2">
-              <ImageIcon
-                strokeWidth={0.5}
-                className="w-full h-full text-neutral-500 relative"
-              />
+              {
+                article?.imageURL ? (
+                  <Dialog>
+                    <DialogTrigger className="cursor-pointer">
+                      <Image
+                        src={
+                          article.imageURL.startsWith("http")
+                            ? article.imageURL
+                            : `/images/blog/${article.imageURL}`
+                        }
+                        alt={article.imageAlt ?? "Imagen del artículo"}
+                        width={300}
+                        height={200}
+                        className="w-full h-auto object-cover rounded-lg"
+                      />
+                    </DialogTrigger>
+                    <DialogContent style={{ maxWidth: "90%" }}>
+                      <DialogHeader>
+                        <DialogTitle className="sr-only">
+                          {article.imageAlt ?? "Imagen del artículo"}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <Image
+                        src={
+                          article.imageURL.startsWith("http")
+                            ? article.imageURL
+                            : `/images/blog/${article.imageURL}`
+                        }
+                        alt={article.imageAlt ?? "Imagen del artículo"}
+                        width={1280}
+                        height={720}
+                        className="w-full max-w-[1280px] h-auto object-cover rounded-lg"
+                      />
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <ImageIcon
+                    strokeWidth={0.5}
+                    className="w-full h-full text-neutral-500 relative"
+                  />
+                )
+              }
             </figure>
             {
               imageFieldMounted ? (

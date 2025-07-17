@@ -16,18 +16,18 @@ type Props = Readonly<{
 }>;
 
 export const SingleArticle: FC<Props> = ({ article }) => {
-  return (
+  const imageURL = article.imageURL && article.imageURL.startsWith("https")
+    ? article.imageURL
+    : `/images/blog/${article.imageURL}`
+
+    return (
     <article>
       <header className={styles.header}>
         <h1 className={cn(["text-primary", styles.headerTitle])}>
           {article.title}
         </h1>
         <Image
-          src={
-            article.imageURL.startsWith("https")
-            ? article.imageURL
-            : `/images/blog/${article.imageURL}`
-          }
+          src={imageURL}
           alt={article.imageAlt}
           width={1200}
           height={600}
