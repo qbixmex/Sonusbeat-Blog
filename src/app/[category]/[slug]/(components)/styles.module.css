@@ -1,0 +1,41 @@
+@reference "tailwindcss";
+
+.header {
+  @apply flex flex-col gap-3 mb-5;
+}
+
+.headerTitle {
+  @apply order-2 text-3xl font-semibold;
+}
+
+.headerImage {
+  @apply order-1 w-full h-[400px] object-cover my-4 rounded;
+}
+
+.headerInfo {
+  @apply flex items-center gap-5;
+}
+
+.headerInfoSection {
+  @apply flex gap-2;
+}
+
+.headerInfoIcon {
+  @apply text-pink-600;
+}
+
+.headerInfoLink {
+  @apply text-amber-600 italic;
+}
+
+.headerInfoDate {
+  @apply text-amber-600 italic;
+}
+
+.articleDescription {
+  @apply my-10 font-semibold text-2xl text-gray-500;
+}
+
+.articleContent {
+  @apply max-w-none mb-5;
+}
