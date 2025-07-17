@@ -36,12 +36,12 @@ export const createArticleAction = async (
 
   const { image, ...articleToSave } = articleParsed.data;
 
-    // Upload Image to third-party storage (cloudinary).
+  // Upload Image to third-party storage (cloudinary).
   const imageUploaded = await uploadImage(image!, 'articles');
 
-    if (!imageUploaded) {
-      throw 'Error uploading image to cloudinary';
-    }
+  if (!imageUploaded) {
+    throw 'Error uploading image to cloudinary';
+  }
 
   try {
     const prismaTransaction = await prisma.$transaction(async (transaction) => {

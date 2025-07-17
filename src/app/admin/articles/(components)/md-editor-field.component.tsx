@@ -5,13 +5,21 @@ import MdEditor from "react-markdown-editor-lite";
 import ReactMarkdown from "react-markdown";
 import "react-markdown-editor-lite/lib/index.css";
 import "./markdown-styles.css";
+import uploadContentImage from "../(actions)/upload-content-image.action";
 
 type Props = Readonly<{
   value: string;
   setContent: (value: string) => void;
+  articleId?: string;
 }>;
 
-export const MdEditorField: FC<Props> = ({ value, setContent }) => {
+export const MdEditorField: FC<Props> = ({ value, setContent, articleId }) => {
+  const handleImageUpload = async (file: File) => {
+    const response = await uploadContentImage(file, articleId!);
+    if (!response?.imageURL) throw new Error("No image URL returned");
+    return response.imageURL;
+  };
+
   return (
     <MdEditor
       className="md-editor"
@@ -19,6 +27,8 @@ export const MdEditorField: FC<Props> = ({ value, setContent }) => {
       style={{ minHeight: 400 }}
       renderHTML={text => <ReactMarkdown>{text}</ReactMarkdown>}
       onChange={({ text }) => setContent(text)}
+      onImageUpload={handleImageUpload}
+      imageUrl="/images/sonusbeat-logo.png"
       config={{
         view: {
           menu: true,
