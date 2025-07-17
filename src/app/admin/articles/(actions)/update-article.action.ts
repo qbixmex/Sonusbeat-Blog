@@ -1,9 +1,11 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { editFormSchema } from "../../articles/[id]/edit/edit-article.schema";
+import editFormSchema from "../../articles/[id]/edit/edit-article.schema";
 import prisma from "@/lib/prisma";
 import { Article } from "@/interfaces/article.interface";
+import deleteImage from "./delete-image.action";
+import uploadImage from "./upload-image.action";
 
 type EditArticleResponse = {
   ok: boolean;
@@ -31,7 +33,7 @@ export const updateArticleAction = async (
     };
   }
 
-  const data = articleParsed.data;
+  const { image, ...eventToSave } = articleParsed.data;
 
   try {
     const prismaTransaction = await prisma.$transaction(async (transaction) => {
@@ -51,18 +53,17 @@ export const updateArticleAction = async (
         const updatedArticle = await transaction.article.update({
           where: { id: articleId },
           data: {
-            title: data.title,
-            slug: data.slug,
-            categoryId: data.categoryId,
-            description: data.description,
-            content: data.content,
-            image: data.image ?? 'no-image.png',
-            imageAlt: data.imageAlt ?? '',
-            seoTitle: data.seoTitle,
-            seoDescription: data.seoDescription,
-            seoRobots: data.seoRobots,
-            publishedAt: data.publishedAt as Date,
-            published: data.published,
+            title: eventToSave.title,
+            slug: eventToSave.slug,
+            categoryId: eventToSave.categoryId,
+            description: eventToSave.description,
+            content: eventToSave.content,
+            imageAlt: eventToSave.imageAlt ?? '',
+            seoTitle: eventToSave.seoTitle,
+            seoDescription: eventToSave.seoDescription,
+            seoRobots: eventToSave.seoRobots,
+            publishedAt: eventToSave.publishedAt as Date,
+            published: eventToSave.published,
           },
           include: {
             author: {
@@ -80,6 +81,36 @@ export const updateArticleAction = async (
             },
           },
         });
+
+        if (image) {
+          // Delete previous image from cloudinary.
+          const response = await deleteImage(updatedArticle.imagePublicID ?? '');
+
+          if (!response.ok) {
+            throw 'Error deleting image from cloudinary';
+          }
+
+          console.log("SE SUPONE QUE SE DEBE SUBIR UNA NUEVA IMAGEN");
+
+          // Upload Image to third-party storage (cloudinary).
+          const imageUploaded = await uploadImage(image, 'articles');
+
+          if (!imageUploaded) {
+            throw 'Error uploading image to cloudinary';
+          }
+
+          // Update event with new image.
+          await transaction.article.update({
+            where: { id: articleId },
+            data: {
+              imageURL: imageUploaded.secureUrl,
+              imagePublicID: imageUploaded.publicId,
+            },
+          });
+
+          // Update event object to return.
+          updatedArticle.imageURL = imageUploaded.secureUrl;
+        }
 
         return {
           ok: true,
@@ -99,7 +130,8 @@ export const updateArticleAction = async (
               name: updatedArticle.category?.name as string,
               slug: updatedArticle.category?.slug as string,
             },
-            image: updatedArticle.image ?? 'no-image.png',
+            imageURL: updatedArticle.imageURL ?? 'no-image.png',
+            imagePublicID: updatedArticle.imagePublicID ?? '',
             imageAlt: updatedArticle.imageAlt ?? '',
             seoTitle: updatedArticle.seoTitle,
             seoDescription: updatedArticle.seoDescription,
@@ -110,7 +142,7 @@ export const updateArticleAction = async (
             updatedAt: updatedArticle.updatedAt,
           },
         };
-      } catch(error) {
+      } catch (error) {
         if (error instanceof Error && 'meta' in error && error.meta) {
           if ('code' in error && error.code as string === 'P2002') {
             const fieldError = (error.meta as { modelName: string; target: string[] }).target[0];

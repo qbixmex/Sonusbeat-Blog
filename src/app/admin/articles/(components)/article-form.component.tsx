@@ -3,7 +3,6 @@
 import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,16 +23,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, LoaderCircle, Save, XCircle } from "lucide-react";
+import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { cn, createSlug } from "@/lib/utils";
-import imagePlaceholder from "@/assets/svg/landscape-placeholder.svg";
 import { toast } from "sonner";
 import { createArticleAction } from "../(actions)/create-article.action";
 import { updateArticleAction } from "../(actions)/update-article.action";
 import { useSession } from "next-auth/react";
-import { formSchema } from "../new/create-article.schema";
+import createArticleSchema from "../new/create-article.schema";
+import editArticleSchema from "../[id]/edit/edit-article.schema";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import MdEditorField from "./md-editor-field.component";
@@ -58,6 +57,8 @@ Este es un ejemplo de contenido que puede incluirse en el artículo. Puedes usar
 export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const route = useRouter();
   const session = useSession();
+  const [imageFieldMounted, setImageFieldMounted] = useState(false);
+  const formSchema = !article ? createArticleSchema : editArticleSchema;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,7 +68,6 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       description: article?.description ?? "",
       content:  article?.content ?? demoContent,
       categoryId: article?.category ? (article?.category as Category).id : "",
-      image: article?.image ?? "",
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",
       seoDescription: article?.seoDescription ?? "",
@@ -85,20 +85,30 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     form.setValue("slug", createSlug(titleValue));
   }, [titleValue, form]);
 
+  useEffect(() => {
+    setImageFieldMounted(true);
+  }, []);
+
   const [openCalendar, setOpenCalendar] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-      if (value instanceof Date) {
-        formData.append(key, value.toISOString());
-      } else if (typeof value === "boolean") {
-        formData.append(key, value ? "true" : "false");
-      } else {
-        formData.append(key, value);
-      }
-    });
+    formData.append("title", data.title);
+    formData.append("slug", data.slug);
+    formData.append("description", data.description);
+    formData.append("content", data.content);
+    formData.append("categoryId", data.categoryId);
+    formData.append("imageAlt", data.imageAlt!);
+    formData.append("seoTitle", data.seoTitle);
+    formData.append("seoDescription", data.seoDescription);
+    formData.append("seoRobots", data.seoRobots);
+    formData.append("publishedAt", data.publishedAt!.toISOString());
+    formData.append("published", data.published ? "true" : "false");
+
+    if (data.image && typeof data.image === "object") {
+      formData.append("image", data.image);
+    }
 
     if (article && article.id) {
       const response = await updateArticleAction(
@@ -283,42 +293,54 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
           <section className="flex flex-col md:flex-row gap-5">
             <figure className="w-full md:w-1/2">
-              <Image
-                src={imagePlaceholder}
-                alt="Placeholder de artículo"
-                className="w-full h-auto md:max-w-[300px] rounded"
-                width={200}
-                height={200}
+              <ImageIcon
+                strokeWidth={0.5}
+                className="w-full h-full text-neutral-500 relative"
               />
             </figure>
-            <div className="w-full flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Imagen</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageAlt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Texto Alternativo de Imagen</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {
+              imageFieldMounted ? (
+                <div className="w-full flex flex-col gap-5">
+                  <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Imagen</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              field.onChange(file);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="imageAlt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Texto Alternativo de Imagen</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ) : (
+                <div className="w-full flex flex-col gap-y-2">
+                  <div className="w-full h-8 bg-slate-500 rounded animate-pulse" />
+                  <div className="w-full h-8 bg-slate-500 rounded animate-pulse" />
+                </div>
+              )
+            }
           </section>
 
           <div className="my-10 h-0.5 bg-gray-700"></div>

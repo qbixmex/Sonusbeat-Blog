@@ -23,7 +23,11 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           {article.title}
         </h1>
         <Image
-          src={`/images/blog/${article.image}`}
+          src={
+            article.imageURL.startsWith("https")
+            ? article.imageURL
+            : `/images/blog/${article.imageURL}`
+          }
           alt={article.imageAlt}
           width={1200}
           height={600}

@@ -1,6 +1,15 @@
 import z from "zod";
 
-export const editFormSchema = z.object({
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 1; // 1MB
+const ACCEPTED_FILE_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/gif',
+  'image/webp',
+];
+
+export const formSchema = z.object({
   title: z
     .string({
       required_error: "El título es obligatorio",
@@ -39,8 +48,10 @@ export const editFormSchema = z.object({
     .min(3, "La categoría debe ser por lo menos de 3 caracteres")
     .max(50, "La descripción debe ser máximo 100 caracteres"),
   image: z
-    .string({ invalid_type_error: "La imagen debe ser un string" })
-    .min(7, "La imagen debe ser por lo menos de 3 caracteres")
+    .instanceof(File, { message: "La imagen debe ser un archivo" })
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, 'El tamaño máximo de la imagen deber ser menor a 1MB')
+    .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), `El tipo de archivo debe ser uno de los siguientes: ${ACCEPTED_FILE_TYPES.join(', ')}`)
+    .nullable()
     .optional(),
   imageAlt: z
     .string({ invalid_type_error: "El author seo debe ser un string" })
@@ -85,3 +96,5 @@ export const editFormSchema = z.object({
     })
     .optional(),
 });
+
+export default formSchema;
