@@ -41,7 +41,7 @@ export const formSchema = z.object({
     .min(8, "El contenido debe ser por lo menos de 8 caracteres"),
   categoryId: z
     .string({
-      required_error: "El id de la categoría es obligatoria",
+      required_error: "¡ La categoría es obligatoria !",
       invalid_type_error: "El id de la categoría debe ser un string",
     }),
   image: z
