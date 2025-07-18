@@ -34,7 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
-import { cn, createSlug } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { createArticleAction } from "../(actions)/create-article.action";
 import { updateArticleAction } from "../(actions)/update-article.action";
@@ -74,8 +74,8 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       title: article?.title ?? "",
       slug: article?.slug ?? "",
       description: article?.description ?? "",
-      content:  article?.content ?? demoContent,
-      categoryId: article?.category ? (article?.category as Category).id : "",
+      content: article?.content ?? demoContent,
+      categoryId: article?.category ? (article?.category as Category).id : undefined,
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",
       seoDescription: article?.seoDescription ?? "",
@@ -84,14 +84,6 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       published: article?.published ?? false,
     },
   });
-
-  // Watch the title field
-  const titleValue = form.watch("title");
-
-  // Whenever title changes, set slug to the same value
-  useEffect(() => {
-    form.setValue("slug", createSlug(titleValue));
-  }, [titleValue, form]);
 
   useEffect(() => {
     setImageFieldMounted(true);
@@ -111,7 +103,11 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     formData.append("seoTitle", data.seoTitle);
     formData.append("seoDescription", data.seoDescription);
     formData.append("seoRobots", data.seoRobots);
-    formData.append("publishedAt", data.publishedAt!.toISOString());
+    formData.append("publishedAt",
+      data.publishedAt
+        ? data.publishedAt.toISOString()
+        : new Date().toISOString()
+    );
     formData.append("published", data.published ? "true" : "false");
 
     if (data.image && typeof data.image === "object") {
@@ -233,30 +229,34 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                 control={form.control}
                 name="categoryId"
                 render={({ field }) => (
-                  <FormControl>
-                    <FormItem>
-                      <FormLabel>Categoría</FormLabel>
+                  <FormItem>
+                    <FormLabel>Categoría</FormLabel>
+                    <FormControl>
                       <Select
                         onValueChange={field.onChange}
+                        value={field.value}
                         defaultValue={field.value}
                       >
-                        <FormControl className="w-full">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccione una categoría" />
-                          </SelectTrigger>
-                        </FormControl>
+                        <SelectTrigger
+                          className="w-full"
+                          aria-invalid={!!form.formState.errors.categoryId}
+                        >
+                          <SelectValue placeholder="Seleccione una categoría" />
+                        </SelectTrigger>
                         <SelectContent>
                           {categories.map((category) => (
                             <SelectItem
                               key={category.id}
                               value={category.id as string}
-                            >{category.name}</SelectItem>
+                            >
+                              {category.name}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  </FormControl>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
               <FormField
