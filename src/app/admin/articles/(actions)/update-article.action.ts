@@ -111,6 +111,10 @@ export const updateArticleAction = async (
           updatedArticle.imageURL = imageUploaded.secureUrl;
         }
 
+        // Revalidate Paths
+        revalidatePath('/');
+        revalidatePath(`/${updatedArticle.category?.slug}/${updatedArticle.slug}`);
+
         return {
           ok: true,
           message: 'Artículo actualizado 👍',
@@ -165,9 +169,6 @@ export const updateArticleAction = async (
         };
       }
     });
-
-    // Revalidate Paths
-    revalidatePath('/admin/users');
 
     return prismaTransaction;
   } catch (error) {
