@@ -30,7 +30,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
 
     return {
       ok: true,
-      message: "Artículo obtenido correctamente 👍",
+      message: "Artículo fue obtenido correctamente 👍",
       article: {
         id: article.id,
         title: article.title,
@@ -42,7 +42,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
           name: article?.category?.name as string,
           slug: article?.category?.slug as string,
         },
-        imageURL: article.imageURL as string,
+        imageURL: article.imageURL,
         imageAlt: article.imageAlt,
         author: {
           id: article.author.id,

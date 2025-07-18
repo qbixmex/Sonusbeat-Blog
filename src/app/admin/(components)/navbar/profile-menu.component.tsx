@@ -40,10 +40,9 @@ export const ProfileMenu: React.FC = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <Avatar>
-            <AvatarImage
-              src={user.image}
-              alt={`${user.name} profile image`}
-            />
+            {user.image !== 'no-image.jpg' && (
+              <AvatarImage src={user.image} alt={`${user.name} profile image`} />
+            )}
             <AvatarFallback>{ getInitials(user.name) }</AvatarFallback>
           </Avatar>
           <span className="sr-only">Abrir menú de perfil</span>

@@ -16,7 +16,7 @@ const CreateArticlePage = async () => {
   const response = await fetchCategoriesAction();
 
   if (!response.ok) {
-    console.error("Error fetching articles:", response.message);    
+    console.error("Error fetching articles:", response.message);
   }
 
   return (
