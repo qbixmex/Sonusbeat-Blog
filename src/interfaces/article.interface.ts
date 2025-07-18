@@ -7,7 +7,7 @@ export type Robots =
 export interface Article {
   id?: string;
   title: string;
-  imageURL: string;
+  imageURL: string | null;
   imageAlt: string | null;
   imagePublicID?: string;
   slug: string;

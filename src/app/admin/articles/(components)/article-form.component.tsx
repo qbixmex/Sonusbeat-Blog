@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,28 +44,29 @@ import editArticleSchema from "../[id]/edit/edit-article.schema";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import MdEditorField from "./md-editor-field.component";
+import { CharactersCounter } from "@/components/characters-counter.component";
 
 type Props = Readonly<{
   categories: Category[];
   article?: Article;
 }>;
 
-const demoContent = `\
-Descripción del artículo debe ir aquí. Breve descripción que resuma el contenido del artículo.
-## Título del artículo
-### Subtítulo del artículo
-Este es un ejemplo de contenido que puede incluirse en el artículo. Puedes usar Markdown para form
-**Lista**
-- Item 1
-- Item 2
-- Item 3
-- Item 4
-`;
+type CountCharacters = {
+  count: number;
+  focused: boolean;
+};
 
 export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const route = useRouter();
   const session = useSession();
-  const [imageFieldMounted, setImageFieldMounted] = useState(false);
+  const [articleDescriptionChars, setArticleDescriptionChars] = useState<CountCharacters>({
+    count: article ? article.description.length : 0,
+    focused: false,
+  });
+  const [seoDescriptionChars, setSeoDescriptionChars] = useState<CountCharacters>({
+    count: article && article.seoDescription ? article.seoDescription?.length : 0,
+    focused: false,
+  });
   const formSchema = !article ? createArticleSchema : editArticleSchema;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,7 +75,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       title: article?.title ?? "",
       slug: article?.slug ?? "",
       description: article?.description ?? "",
-      content: article?.content ?? demoContent,
+      content: article?.content ?? "",
       categoryId: article?.category ? (article?.category as Category).id : undefined,
       imageAlt: article?.imageAlt ?? "",
       seoTitle: article?.seoTitle ?? "",
@@ -84,10 +85,6 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       published: article?.published ?? false,
     },
   });
-
-  useEffect(() => {
-    setImageFieldMounted(true);
-  }, []);
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
@@ -266,12 +263,36 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                   <FormItem>
                     <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Textarea {...field} className="resize-none min-h-20" />
+                      <Textarea
+                        {...field}
+                        className="resize-none min-h-20"
+                        onFocus={() => setArticleDescriptionChars((prev) => ({
+                          ...prev,
+                          focused: true
+                        }))}
+                        onBlur={() => setArticleDescriptionChars((prev) => ({
+                          ...prev,
+                          focused: false
+                        }))}
+                        onChange={(event) => {
+                          field.onChange(event);
+                          setArticleDescriptionChars((prev) => ({
+                            ...prev,
+                            count: event.target.value.length
+                          }));
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {articleDescriptionChars.focused && (
+                <CharactersCounter
+                  charactersCount={articleDescriptionChars.count}
+                  limit={250}
+                />
+              )}
             </div>
           </section>
 
@@ -303,7 +324,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
           <section className="flex flex-col md:flex-row gap-5">
             <figure className="w-full md:w-1/2">
               {
-                article?.imageURL ? (
+                (article && article.imageURL) ? (
                   <Dialog>
                     <DialogTrigger className="cursor-pointer">
                       <Image
@@ -318,7 +339,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                         className="w-full h-auto object-cover rounded-lg"
                       />
                     </DialogTrigger>
-                    <DialogContent style={{ maxWidth: "90%" }}>
+                    <DialogContent style={{ maxWidth: "1280px" }}>
                       <DialogHeader>
                         <DialogTitle className="sr-only">
                           {article.imageAlt ?? "Imagen del artículo"}
@@ -345,49 +366,40 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                 )
               }
             </figure>
-            {
-              imageFieldMounted ? (
-                <div className="w-full flex flex-col gap-5">
-                  <FormField
-                    control={form.control}
-                    name="image"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Imagen</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              field.onChange(file);
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="imageAlt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Texto Alternativo de Imagen</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ) : (
-                <div className="w-full flex flex-col gap-y-2">
-                  <div className="w-full h-8 bg-slate-500 rounded animate-pulse" />
-                  <div className="w-full h-8 bg-slate-500 rounded animate-pulse" />
-                </div>
-              )
-            }
+            <div className="w-full flex flex-col gap-5">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagen</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          field.onChange(file);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageAlt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Texto Alternativo de Imagen</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </section>
 
           <div className="my-10 h-0.5 bg-gray-700"></div>
@@ -431,12 +443,36 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                   <FormItem>
                     <FormLabel>Descripción SEO</FormLabel>
                     <FormControl>
-                      <Textarea {...field} className="resize-none min-h-20" />
+                      <Textarea
+                        {...field}
+                        className="resize-none min-h-20"
+                        onFocus={() => setSeoDescriptionChars((prev) => ({
+                          ...prev,
+                          focused: true
+                        }))}
+                        onBlur={() => setSeoDescriptionChars((prev) => ({
+                          ...prev,
+                          focused: false
+                        }))}
+                        onChange={(event) => {
+                          field.onChange(event);
+                          setSeoDescriptionChars((prev => ({
+                            ...prev,
+                            count: event.target.value.length
+                          })));
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {seoDescriptionChars.focused && (
+                <CharactersCounter
+                  charactersCount={seoDescriptionChars.count}
+                  limit={160}
+                />
+              )}
               <FormField
                 control={form.control}
                 name="seoRobots"
