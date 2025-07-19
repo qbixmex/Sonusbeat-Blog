@@ -10,13 +10,20 @@ import uploadContentImage from "../(actions)/upload-content-image.action";
 type Props = Readonly<{
   value: string;
   setContent: (value: string) => void;
+  updateContentImage: (imageUrl: string) => void;
   articleId?: string;
 }>;
 
-export const MdEditorField: FC<Props> = ({ value, setContent, articleId }) => {
+export const MdEditorField: FC<Props> = ({
+  value,
+  setContent,
+  updateContentImage,
+  articleId
+}) => {
   const handleImageUpload = async (file: File) => {
     const response = await uploadContentImage(file, articleId!);
     if (!response?.imageURL) throw new Error("No image URL returned");
+    updateContentImage(response.imageURL);
     return response.imageURL;
   };
 
