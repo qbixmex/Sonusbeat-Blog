@@ -12,13 +12,7 @@ export const MainContainer: React.FC<Props> = (props) => {
 
 const cssClasses = [
   "w-full",
-  "mx-auto px-5",
-  "md:max-w-[700px]",
-  "lg:max-w-[960px]",
-  "lg:px-8",
-  "lg:pb-10",
-  "xl:max-w-[1200px]",
-  "2xl:max-w-[1360px]",
+  "mx-auto px-8",
 ];
 
 export default MainContainer;

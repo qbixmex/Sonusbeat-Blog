@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useOptimistic } from "react";
+import { type FC, startTransition, useOptimistic } from "react";
 import {
   Table,
   TableBody,
@@ -36,21 +36,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
-import { Article } from "@/interfaces/article.interface";
 import { updateArticleStateAction } from "../(actions)/update-article-state.action";
 import { deleteArticleAction } from "../(actions)/delete-article.action";
-import { cn, getFirstAndLastName, renderRobots } from "@/lib/utils";
+import { getFirstAndLastName } from "@/lib/utils";
+import { AdminArticle } from "../(actions)/fetch-articles.action";
+import Image from "next/image";
+import RobotsBadges from "@/root/src/components/robots-badges.component";
 
 type Props = Readonly<{
-  articles: Article[];
+  articles: AdminArticle[];
 }>;
 
-export const Articles: React.FC<Props> = ({ articles }) => {
+export const Articles: FC<Props> = ({ articles }) => {
 
-  const [ optimisticState, setOptimisticState ] = useOptimistic(articles, (prev, { id, published }) => {
-    return prev.map(article => 
+  const [optimisticState, setOptimisticState] = useOptimistic(articles, (prev, { id, published }) => {
+    return prev.map(article =>
       article.id === id ? { ...article, published } : article
     );
   });
@@ -107,8 +107,8 @@ export const Articles: React.FC<Props> = ({ articles }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Título</TableHead>
-              <TableHead className="hidden md:table-cell">Fecha de Publicación</TableHead>
+              <TableHead>Imagen</TableHead>
+              <TableHead>Título</TableHead>
               <TableHead className="hidden lg:table-cell">Categoría</TableHead>
               <TableHead className="hidden lg:table-cell">Author</TableHead>
               <TableHead>Activo</TableHead>
@@ -119,10 +119,22 @@ export const Articles: React.FC<Props> = ({ articles }) => {
           <TableBody>
             {optimisticState.map((article) => (
               <TableRow key={article.id}>
-                <TableCell>{article.title}</TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {format(article.publishedAt, "EEE MMMM dd, yyyy")}
+                <TableCell>
+                  <Image
+                    src={
+                      article.imageURL?.startsWith('https')
+                        ? article.imageURL
+                        : `/images/blog/${article.imageURL}`
+                    }
+                    alt={article.title as string}
+                    className="w-[150px] h-[75px] object-cover rounded"
+                    width={150}
+                    height={75}
+                  />
                 </TableCell>
+                <TableCell>{
+                  article.title.substring(0, 40) + ' ...'
+                }</TableCell>
                 <TableCell className="hidden lg:table-cell">
                   <Link
                     href={`/admin/categories/${(article?.category as { id: string }).id}`}
@@ -148,73 +160,68 @@ export const Articles: React.FC<Props> = ({ articles }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <Badge className={cn("text-sm lowercase", {
-                    "bg-emerald-500 text-emerald-50 dark:bg-emerald-600 dark:text-emerald-100": article.seoRobots === "index_follow",
-                    "bg-purple-400 text-purple-50 dark:bg-purple-600 dark:text-purple-200": article.seoRobots === "noindex_follow",
-                    "bg-amber-400 text-amber-900 dark:bg-amber-600 dark:text-amber-100": article.seoRobots === "index_nofollow",
-                    "bg-stone-700 text-stone-300 dark:bg-stone-700 dark:text-bg-stone-100": article.seoRobots === "noindex_nofollow",
-                  })}>
-                    {renderRobots(article.seoRobots)}
-                  </Badge>
+                  <RobotsBadges seoRobots={article.seoRobots as string} />
                 </TableCell>
-                <TableCell className="flex items-center gap-2">
-                  <Button
-                    variant="default"
-                    size="icon"
-                    className="bg-sky-600 hover:bg-sky-700"
-                    title="Ver artículo"
-                    asChild
-                  >
-                    <Link
-                      href={`/admin/articles/${article.id}`}
+                <TableCell>
+                  <div className="flex items-center gap-x-2">
+                    <Button
+                      variant="default"
+                      size="icon"
+                      className="bg-sky-600 hover:bg-sky-700"
                       title="Ver artículo"
+                      asChild
                     >
-                      <span className="sr-only">Ver artículo</span>
-                      <Eye className="size-5" />
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="icon"
-                    className="bg-amber-600 hover:bg-amber-700"
-                    asChild
-                  >
-                    <Link
-                      href={`/admin/articles/${article.id}/edit`}
-                      title="Editar artículo"
-                    >
-                      <span className="sr-only">Editar artículo</span>
-                      <FileEdit className="size-5" />
-                    </Link>
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="default"
-                        size="icon"
-                        className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
-                        title="Eliminar artículo"
+                      <Link
+                        href={`/admin/articles/${article.id}`}
+                        title="Ver artículo"
                       >
-                        <span className="sr-only">Eliminar Artículo</span>
-                        <Trash className="size-5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>¿ Estas seguro de eliminar este artículo ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta acción no se puede deshacer.
-                          Esto eliminará el artículo y todos sus datos asociados de forma permanente.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDeleteArticle(article.id as string)}
-                        >Continuar</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        <span className="sr-only">Ver artículo</span>
+                        <Eye className="size-5" />
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="icon"
+                      className="bg-amber-600 hover:bg-amber-700"
+                      asChild
+                    >
+                      <Link
+                        href={`/admin/articles/${article.id}/edit`}
+                        title="Editar artículo"
+                      >
+                        <span className="sr-only">Editar artículo</span>
+                        <FileEdit className="size-5" />
+                      </Link>
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="default"
+                          size="icon"
+                          className="bg-pink-600 hover:bg-pink-700 cursor-pointer"
+                          title="Eliminar artículo"
+                        >
+                          <span className="sr-only">Eliminar Artículo</span>
+                          <Trash className="size-5" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿ Estas seguro de eliminar este artículo ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer.
+                            Esto eliminará el artículo y todos sus datos asociados de forma permanente.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteArticle(article.id as string)}
+                          >Continuar</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
