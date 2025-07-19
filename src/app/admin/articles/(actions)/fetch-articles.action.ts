@@ -1,10 +1,27 @@
 import prisma from "@/lib/prisma";
-import { Article } from "@/interfaces/article.interface";
+
+export type AdminArticle = {
+  id: string;
+  title: string;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  author: {
+    id: string;
+    name: string;
+  };
+  imageURL: string | null;
+  imageAlt: string | null;
+  seoRobots: string | null;
+  published: boolean;
+};
 
 type ResponseFetchArticles = {
   ok: boolean;
   message: string;
-  articles: Article[] | null;
+  articles: AdminArticle[] | null;
 };
 
 /**
@@ -30,7 +47,13 @@ export const fetchArticlesAction = async (props?: {
   try {
     const data = await prisma.article.findMany({
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        imageURL: true,
+        imageAlt: true,
+        seoRobots: true,
+        published: true,
         author: {
           select: {
             id: true,
@@ -57,9 +80,6 @@ export const fetchArticlesAction = async (props?: {
         title: item.title,
         imageURL: item.imageURL as string,
         imageAlt: item.imageAlt,
-        slug: item.slug,
-        description: item.description,
-        content: item.content,
         author: {
           id: item.author.id,
           name: item.author.name!,
@@ -69,13 +89,8 @@ export const fetchArticlesAction = async (props?: {
           name: item.category?.name as string,
           slug: item.category?.slug as string,
         },
-        seoTitle: item.seoTitle,
-        seoDescription: item.seoDescription,
         seoRobots: item.seoRobots,
-        publishedAt: item.publishedAt as Date,
         published: item.published,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
       })),
     }
   } catch (error) {
