@@ -120,21 +120,25 @@ export const Articles: FC<Props> = ({ articles }) => {
             {optimisticState.map((article) => (
               <TableRow key={article.id}>
                 <TableCell>
-                  <Image
-                    src={
-                      article.imageURL?.startsWith('https')
-                        ? article.imageURL
-                        : `/images/blog/${article.imageURL}`
-                    }
-                    alt={article.title as string}
-                    className="w-[150px] h-[75px] object-cover rounded"
-                    width={150}
-                    height={75}
-                  />
+                  <Link href={`/admin/articles/${article.id}`}>
+                    <Image
+                      src={
+                        article.imageURL?.startsWith('https')
+                          ? article.imageURL
+                          : `/images/blog/${article.imageURL}`
+                      }
+                      alt={article.title as string}
+                      className="w-[150px] h-[75px] object-cover rounded"
+                      width={150}
+                      height={75}
+                    />
+                  </Link>
                 </TableCell>
-                <TableCell>{
-                  article.title.substring(0, 40) + ' ...'
-                }</TableCell>
+                <TableCell className="whitespace-break-spaces break-words max-w-xs">
+                  <Link href={`/admin/articles/${article.id}`}>
+                    {article.title}
+                  </Link>
+                </TableCell>
                 <TableCell className="hidden lg:table-cell">
                   <Link
                     href={`/admin/categories/${(article?.category as { id: string }).id}`}
