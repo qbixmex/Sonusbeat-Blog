@@ -10,6 +10,7 @@ export interface Article {
   imageURL: string | null;
   imageAlt: string | null;
   imagePublicID?: string;
+  images?: string[];
   slug: string;
   description: string;
   content: string;
