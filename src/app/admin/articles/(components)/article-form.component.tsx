@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon } from "lucide-react";
+import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon, X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,8 @@ import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import MdEditorField from "./md-editor-field.component";
 import { CharactersCounter } from "@/components/characters-counter.component";
+import Divider from "@/components/divider.component";
+import deleteContentImageAction from "../(actions)/delete-content-image";
 
 type Props = Readonly<{
   categories: Category[];
@@ -68,6 +70,16 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     focused: false,
   });
   const formSchema = !article ? createArticleSchema : editArticleSchema;
+  const [isDeletingImage, setIsDeletingImage] = useState<string | null>(null);
+  const [contentImages, setContentImages] = useState<string[]>(article?.images ?? []);
+
+  const updateContentImage = (imageUrl: string) => {
+    setContentImages((prevUrlImages) => [...prevUrlImages, imageUrl]);
+  };
+
+  useEffect(() => {
+    setContentImages(article?.images ?? []);
+  }, [article?.images]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,6 +99,23 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
   });
 
   const [openCalendar, setOpenCalendar] = useState(false);
+
+  const handleDeleteImage = async (imageUrl: string) => {
+    setIsDeletingImage(imageUrl);
+
+    const response = await deleteContentImageAction(article?.id as string, imageUrl);
+
+    if (response.ok) {
+      setContentImages(prevImages => prevImages.filter(img => img !== imageUrl));
+      setIsDeletingImage(null);
+      toast.success("Imagen eliminada correctamente 👍");
+    }
+
+    if (!response.ok) {
+      setIsDeletingImage(null);
+      toast.error("¡ No se pudo eliminar la imagen !");
+    }
+  };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
@@ -308,6 +337,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                       value={field.value}
                       setContent={value => field.onChange(value)}
                       articleId={article?.id ?? undefined}
+                      updateContentImage={updateContentImage}
                     />
                   </FormControl>
                   <FormMessage />
@@ -315,9 +345,46 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
               )}
             />
 
+            {
+              (contentImages.length > 0) && (
+                <>
+                  <h3 className="text-3xl mt-8 font-semibold mb-5">
+                    Imágenes del contenido
+                  </h3>
+                  <div className="flex flex-wrap gap-5">
+                    {contentImages.map((image) => (
+                      <figure key={image} className="relative w-fit">
+                        <Image
+                          src={image}
+                          alt="Imagen del contenido"
+                          width={150}
+                          height={150}
+                          className="w-[150px] h-[150px] object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          disabled={isDeletingImage === image}
+                          className={cn("!bg-pink-600/70 hover:!bg-pink-600 absolute top-0 right-0 cursor-pointer", {
+                            "cursor-not-allowed !bg-gray-500": isDeletingImage === image,
+                          })}
+                          onClick={() => handleDeleteImage(image)}
+                        >
+                          {isDeletingImage === image
+                            ? <LoaderCircle className="animate-spin" />
+                            : <X className="size-[25px]" />
+                          }
+                        </Button>
+                      </figure>
+                    ))}
+                  </div>
+                </>
+              )}
+
           </section>
 
-          <div className="my-10 h-0.5 bg-gray-700"></div>
+          <Divider />
 
           <h2 className="my-8 text-2xl font-semibold">IMAGEN</h2>
 
