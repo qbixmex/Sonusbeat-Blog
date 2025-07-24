@@ -9,10 +9,10 @@ import { CalendarDays, ChevronsDownUp, Ellipsis, Folder, User } from 'lucide-rea
 import { Button } from '@/root/src/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import styles from './article.module.css';
-import { PublicArticle } from '@/interfaces/article.interface';
+import { PublicArticleForHomePage } from '@/interfaces/article.interface';
 
 type Props = Readonly<{
-  article: PublicArticle;
+  article: PublicArticleForHomePage;
   feature?: boolean;
 }>;
 

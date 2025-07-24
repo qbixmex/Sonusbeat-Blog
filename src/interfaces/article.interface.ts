@@ -47,8 +47,27 @@ export interface PublicArticle {
     name: string;
     slug: string;
   };
+  content: string;
   seoTitle: string;
   seoDescription: string;
   seoRobots: Robots;
+  publishedAt: Date;
+}
+
+export interface PublicArticleForHomePage {
+  id: string;
+  title: string;
+  imageURL: string;
+  imageAlt: string;
+  slug: string;
+  description: string;
+  author: {
+    name: string;
+    username: string;
+  };
+  category: {
+    name: string;
+    slug: string;
+  };
   publishedAt: Date;
 }

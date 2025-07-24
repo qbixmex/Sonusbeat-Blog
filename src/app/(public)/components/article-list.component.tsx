@@ -1,9 +1,9 @@
 import { type FC } from 'react';
 import Article from './article.component';
-import { type PublicArticle } from '@/interfaces/article.interface';
+import { type PublicArticleForHomePage } from '@/interfaces/article.interface';
 
 type Props = Readonly<{
-  articles: PublicArticle[];
+  articles: PublicArticleForHomePage[];
 }>;
 
 export const ArticlesList: FC<Props> = ({ articles }) => {
