@@ -1,10 +1,10 @@
-import { PublicArticlesList } from "@/interfaces/article.interface";
+import { PublicArticle } from "@/interfaces/article.interface";
 import prisma from "@/lib/prisma";
 
 type ResponseFetchArticles = {
   ok: boolean;
   message: string;
-  articles: PublicArticlesList[] | null;
+  articles: PublicArticle[] | null;
 };
 
 /**

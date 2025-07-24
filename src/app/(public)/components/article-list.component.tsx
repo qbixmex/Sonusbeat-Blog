@@ -1,18 +1,16 @@
-import { FC, Fragment } from 'react';
-import { PublicArticlesList } from '@/interfaces/article.interface';
+import { type FC } from 'react';
 import Article from './article.component';
+import { type PublicArticle } from '@/interfaces/article.interface';
 
 type Props = Readonly<{
-  articles: PublicArticlesList[];
+  articles: PublicArticle[];
 }>;
 
 export const ArticlesList: FC<Props> = ({ articles }) => {
   return (
-    <div className="grid grid-cols-1 gap-5 xl:grid-cols-2 2xl:grid-cols-3 lg:gap-8">
-      {(articles.length > 0) && articles.map((data) => (
-        <Fragment key={data.id}>
-          <Article article={data} />
-        </Fragment>
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-3">
+      {articles.map((article) => (
+        <Article key={article.id} article={article} />
       ))}
     </div>
   );

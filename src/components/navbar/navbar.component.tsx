@@ -83,11 +83,11 @@ export const Navbar: React.FC = () => {
 
 const cssClasses = [
   "w-full",
-  "mx-auto px-8 py-5",
-  "md:max-w-3xl",
-  "lg:max-w-4xl",
-  "xl:max-w-5xl",
-  "2xl:max-w-[1366px]",
+  "mx-auto px-8 pt-5 pb-10",
+  "md:max-w-[95%] md:px-0",
+  "lg:max-w-[90%]",
+  "xl:max-w-[85%]",
+  "2xl:max-w-[80%]",
 ];
 
 type Props = Readonly<{
