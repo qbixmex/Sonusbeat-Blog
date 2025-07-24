@@ -6,6 +6,7 @@ declare global {
       AUTH_GOOGLE_SECRET: string | null;
       AUTH_GITHUB_ID: string | null;
       AUTH_GITHUB_SECRET: string | null;
+      NEXT_PUBLIC_GA_ID: string | null;
       DATABASE_URL: string | null;
       DB_USER: string | null;
       DB_PASSWORD: string | null;
