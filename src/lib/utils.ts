@@ -69,19 +69,18 @@ export const articleFormatDate = (date: Date, lang?: Locale) => {
     "d MMMM yyyy",
     { locale: lang ? lang : undefined }
   );
+
+  // Capitalizes the month in Spanish
+  const capitalizedDate = spanishFormattedDate.replace(
+    /(\d+)\s([a-záéíóúñ]+)\s(\d{4})/,
+    (_, day, month, year) =>
+      `${day} ${month.charAt(0).toUpperCase()}${month.slice(1)} ${year}`
+  );
+
   const englishFormattedDate = format(
     new Date(date),
-    "MMMM d, yyyy",
+    "MMMM d yyyy",
     { locale: lang ? lang : undefined }
   );
-  const segments = spanishFormattedDate.split(' ');
-  if (lang === es) {
-    return segments.at(0)
-      + " de "
-      + segments[1][0].toUpperCase()
-      + segments[1].slice(1)
-      + ", "
-      + segments.at(2)
-  }
-  return englishFormattedDate;
+  return (lang === es) ? capitalizedDate : englishFormattedDate;
 };

@@ -32,7 +32,7 @@ export interface Article {
   updatedAt?: Date;
 }
 
-export interface PublicArticlesList {
+export interface PublicArticle {
   id: string;
   title: string;
   imageURL: string;
@@ -47,19 +47,20 @@ export interface PublicArticlesList {
     name: string;
     slug: string;
   };
+  content: string;
   seoTitle: string;
   seoDescription: string;
   seoRobots: Robots;
   publishedAt: Date;
 }
 
-export interface PublicArticle {
+export interface PublicArticleForHomePage {
   id: string;
   title: string;
-  description: string;
-  content: string;
   imageURL: string;
   imageAlt: string;
+  slug: string;
+  description: string;
   author: {
     name: string;
     username: string;
@@ -68,8 +69,5 @@ export interface PublicArticle {
     name: string;
     slug: string;
   };
-  seoTitle: string;
-  seoDescription: string;
-  seoRobots: Robots;
   publishedAt: Date;
 }

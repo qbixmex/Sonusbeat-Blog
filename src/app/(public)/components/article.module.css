@@ -1,0 +1,17 @@
+@reference "tailwindcss";
+
+.articleData {
+  @apply flex items-center gap-2 justify-between sm:gap-3 md:justify-start md:gap-5 lg:gap-3;
+}
+
+.articleDataRow {
+  @apply flex items-center gap-2 lg:gap-1;
+}
+
+.articleDataIcon {
+  @apply text-pink-600 size-[20px] md:size-[24px];
+}
+
+.articleDataText {
+  @apply text-[0.75rem] text-stone-600 italic font-semibold md:text-sm;
+}
