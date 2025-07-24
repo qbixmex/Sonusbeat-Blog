@@ -1,10 +1,15 @@
 import type { PublicArticle, Robots } from "@/interfaces/article.interface";
 import prisma from "@/lib/prisma";
 
+interface PublicArticleWithContent extends PublicArticle {
+  content: string;
+}
+
+
 type ResponseFetchArticles = {
   ok: boolean;
   message: string;
-  article: PublicArticle | null;
+  article: PublicArticleWithContent | null;
 };
 
 /**
@@ -26,6 +31,7 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
       select: {
         id: true,
         title: true,
+        slug: true,
         imageURL: true,
         imageAlt: true,
         description: true,
@@ -55,6 +61,7 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
       article: {
         id: data?.id as string,
         title: data?.title as string,
+        slug: data?.slug as string,
         imageURL: data?.imageURL as string,
         imageAlt: data?.imageAlt as string,
         description: data?.description as string,

@@ -10,11 +10,11 @@ import { useEffect, useState } from "react";
 
 const links = [
   { id: "8ybq", url: '/', label: 'Home' },
-  { id: "4c65", url: '/news', label: 'News' },
-  { id: "cxy7", url: '/tutorials', label: 'Tutorials' },
-  { id: "d41c", url: '/articles', label: 'Articles' },
-  { id: "e6ea", url: '/music', label: 'Music' },
-  { id: "9abg", url: '/videos', label: 'Videos' },
+  // { id: "4c65", url: '/news', label: 'News' },
+  // { id: "cxy7", url: '/tutorials', label: 'Tutorials' },
+  // { id: "d41c", url: '/articles', label: 'Articles' },
+  // { id: "e6ea", url: '/music', label: 'Music' },
+  // { id: "9abg", url: '/videos', label: 'Videos' },
 ];
 
 export const Navbar: React.FC = () => {
@@ -60,7 +60,7 @@ export const Navbar: React.FC = () => {
           <ModeToggle />
         </div>
         {mobileMenu && (
-          <div className="absolute top-0 left-0 w-screen h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center gap-5 p-5 md:hidden text-2xl">
+          <div className="absolute top-0 left-0 z-[1000] w-screen h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center gap-5 p-5 md:hidden text-2xl">
             <CircleX
               size={30}
               className="text-gray-400 cursor-pointer absolute top-10 right-10"
@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
               <Link
                 key={id}
                 href={url}
-                className={cn(path === url && "text-primary")}
+                className={cn(path === url && "text-stone-800 dark:text-stone-200")}
                 onClick={toggleMobileMenu}
               >{label}</Link>
             ))}
@@ -83,13 +83,11 @@ export const Navbar: React.FC = () => {
 
 const cssClasses = [
   "w-full",
-  "mx-auto px-5 mt-5 mb-5 lg:mb-0",
-  "md:max-w-[700px]",
-  "lg:max-w-[960px]",
-  "lg:px-8",
-  "lg:pb-10",
-  "xl:max-w-[1200px]",
-  "2xl:max-w-[1360px]",
+  "mx-auto px-8 pt-5 pb-10",
+  "md:max-w-[95%] md:px-0",
+  "lg:max-w-[90%]",
+  "xl:max-w-[85%]",
+  "2xl:max-w-[80%]",
 ];
 
 type Props = Readonly<{

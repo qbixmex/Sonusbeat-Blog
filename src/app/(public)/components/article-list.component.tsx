@@ -1,24 +1,18 @@
-import { FC, Fragment } from 'react';
-import { PublicArticlesList } from '@/interfaces/article.interface';
+import { type FC } from 'react';
 import Article from './article.component';
-import Divider from '@/components/divider.component';
+import { type PublicArticleForHomePage } from '@/interfaces/article.interface';
 
 type Props = Readonly<{
-  articles: PublicArticlesList[];
+  articles: PublicArticleForHomePage[];
 }>;
 
 export const ArticlesList: FC<Props> = ({ articles }) => {
   return (
-    <>
-      <section>
-        {(articles.length > 0) && articles.map((data, index, array) => (
-          <Fragment key={data.id}>
-            <Article article={data} />
-            { (index < array.length - 1) && <Divider /> }
-          </Fragment>
-        ))}
-      </section>
-    </>
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-3">
+      {articles.map((article) => (
+        <Article key={article.id} article={article} />
+      ))}
+    </div>
   );
 };
 

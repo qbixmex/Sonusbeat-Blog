@@ -9,8 +9,6 @@ const HomePage = async () => {
   const response = await fetchPublicArticlesAction();
   const articles = response.articles ?? [];
 
-  console.log("ARTICLES:", articles.length);
-
   return (
     <PublicLayout>
       <MainContainer>
