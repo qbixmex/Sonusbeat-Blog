@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { montserrat, notoSansMono } from "@/fonts";
 
-
 import "./globals.css";
 import Providers from "./providers";
 
