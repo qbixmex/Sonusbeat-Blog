@@ -9,8 +9,10 @@ import hljs from "highlight.js";
 import "highlight.js/styles/tokyo-night-dark.min.css";
 import "./markdown-styles.css";
 import uploadContentImage from "../(actions)/upload-content-image.action";
+import markdownItYoutube from "@/components/markdown-it-youtube";
 
 const mdParser = new MarkdownIt({
+  html: true, // Allows embedded HTML
   highlight: (str, lang) => {
     const languageClass = lang ? `language-${lang}` : '';
     if (lang && hljs.getLanguage(lang)) {
@@ -28,7 +30,9 @@ const mdParser = new MarkdownIt({
       "</code></pre>";
     return output;
   },
-}).use(markdownItTable);
+})
+  .use(markdownItTable)
+  .use(markdownItYoutube);
 
 type Props = Readonly<{
   value: string;
