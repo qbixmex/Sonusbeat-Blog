@@ -5,6 +5,9 @@ type Metadata = {
   seoDescription: string;
   seoRobots: string;
   author: { name: string };
+  publishedAt: Date;
+  imageUrl: string;
+  category: { slug: string };
 };
 
 type ResponseFetchArticleMetadata = {
@@ -22,6 +25,11 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
         seoDescription: true,
         seoRobots: true,
         author: {select: { name: true }},
+        imageURL: true,
+        publishedAt: true,
+        category: {
+          select: { slug: true }
+        }
       }
     }) as Metadata | null;
 
