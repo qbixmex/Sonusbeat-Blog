@@ -4,7 +4,10 @@ import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns/format';
+import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/tokyo-night-dark.min.css";
 import { User, FolderOpen, CalendarDays } from 'lucide-react';
 import { cn } from '@/root/src/lib/utils';
 import { PublicArticle } from '@/interfaces/article.interface';
@@ -80,7 +83,12 @@ export const SingleArticle: FC<Props> = ({ article }) => {
             styles.articleContent,
           ])}
         >
-          <ReactMarkdown>{article.content}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+          >
+            {article.content}
+          </ReactMarkdown>
         </section>
       </main>
     </article>
