@@ -13,6 +13,8 @@ import { cn } from '@/root/src/lib/utils';
 import { PublicArticle } from '@/interfaces/article.interface';
 import styles from './styles.module.css';
 import Divider from '@/components/divider.component';
+import rehypeRaw from "rehype-raw";
+import rehypeYoutube from '@/lib/rehype-youtube';
 
 type Props = Readonly<{
   article: PublicArticle;
@@ -85,7 +87,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
+            rehypePlugins={[rehypeHighlight, rehypeRaw, rehypeYoutube]}
           >
             {article.content}
           </ReactMarkdown>

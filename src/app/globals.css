@@ -252,6 +252,24 @@ article {
     @apply py-2 mr-10;
   }
 
+  .youtube-responsive {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+  }
+
+  .youtube-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
   .hide-element {
     @apply absolute -top-[9999px] -left-[9999px];
   }
