@@ -21,3 +21,60 @@
     @apply text-stone-300;
   }
 }
+
+.dark .md-editor table {
+  @apply w-full border-0 mx-0 text-[1rem];
+}
+
+.dark .md-editor tr {
+  @apply rounded-t-lg border-0;
+}
+
+.dark .md-editor thead tr th {
+  @apply bg-stone-800;
+}
+
+.dark .md-editor thead tr th:first-child {
+  @apply rounded-tl;
+}
+
+.dark .md-editor thead tr th:last-child {
+  @apply rounded-tr;
+}
+
+.dark .md-editor tr:nth-child(odd) {
+  @apply bg-stone-800/60;
+}
+
+.dark .md-editor tr:nth-child(even) {
+  @apply bg-stone-700/40;
+}
+
+.dark .md-editor th,
+.dark .md-editor td {
+  @apply border-0 px-[0.5em] py-[1em] text-left;
+}
+
+.dark .md-editor tbody tr:last-child td:first-child {
+  @apply rounded-bl;
+}
+
+.dark .md-editor tbody tr:last-child td:last-child {
+  @apply rounded-br;
+}
+
+.dark .md-editor pre {
+  @apply bg-transparent;
+}
+
+.dark .md-editor pre code {
+  @apply bg-stone-900 rounded-lg;
+}
+
+.dark .md-editor blockquote {
+  @apply border-l-4 border-stone-600 pl-4;
+}
+
+.dark .md-editor blockquote p {
+  @apply text-stone-400 italic;
+}

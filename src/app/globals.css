@@ -47,11 +47,22 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
-p, a, span, li, div, section, article {
+p,
+a,
+span,
+li,
+div,
+section,
+article {
   font-family: var(--font-noto-sans-mono), Arial, Helvetica, sans-serif;
 }
 
@@ -136,6 +147,7 @@ p, a, span, li, div, section, article {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -145,19 +157,19 @@ p, a, span, li, div, section, article {
   .prose h2 {
     @apply text-blue-500 font-semibold text-4xl;
   }
-  
+
   .prose h3 {
     @apply text-pink-500 text-3xl;
   }
-  
+
   .prose h4 {
     @apply text-orange-500 text-2xl;
   }
-  
+
   .prose h5 {
     @apply text-emerald-500 text-xl;
   }
-  
+
   .prose h6 {
     @apply text-sky-500 text-lg;
   }
@@ -166,7 +178,8 @@ p, a, span, li, div, section, article {
     @apply text-muted-foreground text-xl leading-8 text-pretty;
   }
 
-  .prose b, .prose strong {
+  .prose b,
+  .prose strong {
     @apply text-stone-500 font-bold;
   }
 
@@ -179,11 +192,64 @@ p, a, span, li, div, section, article {
   }
 
   .prose ul {
-    @apply pl-5;
+    @apply ml-2;
   }
 
   .prose li {
     @apply text-muted-foreground leading-8;
+  }
+
+  .prose table {
+    @apply inline-block border-0 mx-0 text-[1rem];
+  }
+
+  .prose tr {
+    @apply rounded-t-lg border-0;
+  }
+
+  .prose thead {
+    @apply border-0;
+  }
+
+  .prose thead tr th {
+    @apply bg-slate-900/80;
+  }
+
+  .prose thead tr th:first-child {
+    @apply rounded-tl;
+  }
+
+  .prose thead tr th:last-child {
+    @apply rounded-tr;
+  }
+
+  .prose tr:nth-child(odd) {
+    @apply bg-slate-800/20;
+  }
+
+  .prose tr:nth-child(even) {
+    @apply bg-slate-800/40;
+  }
+
+  .prose th,
+  .prose td {
+    @apply border-0 px-6 py-3 text-left;
+  }
+
+  .prose tbody tr:last-child td:first-child {
+    @apply rounded-bl;
+  }
+
+  .prose tbody tr:last-child td:last-child {
+    @apply rounded-br;
+  }
+
+  .prose blockquote {
+    @apply bg-slate-900 inline-block rounded-r-lg;
+  }
+
+  .prose blockquote p {
+    @apply py-2 mr-10;
   }
 
   .hide-element {
