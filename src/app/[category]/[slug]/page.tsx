@@ -32,13 +32,17 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     description: metaDescription,
     robots: metaRobots,
     authors: [{ name: metadata?.author.name }],
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
     // social media
-    // openGraph: {
-    //   title: metaTitle,
-    //   description: metaDescription,
-    //   // images: ['https://example.com/image-1.jpg', 'https://example.com/image-2.jpg'],
-    //   images: [`/products/${product?.images[1]}`],
-    // },
+    openGraph: {
+      title: metaTitle,
+      description: metaDescription,
+      siteName: "Sonusbeat Blog",
+      locale: "es_MX",
+      publishedTime: (metadata?.publishedAt as Date).toISOString(),
+      authors: [metadata?.author.name as string],
+      images: [`/${metadata?.category.slug}/${metadata?.imageUrl}`],
+    },
   }
 };
 
