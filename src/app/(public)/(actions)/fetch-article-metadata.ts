@@ -5,7 +5,7 @@ type Metadata = {
   seoDescription: string;
   seoRobots: string;
   author: { name: string };
-  publishedAt: Date;
+  publishedAt: Date | null;
   imageUrl: string;
   category: { slug: string };
 };
@@ -31,7 +31,7 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
           select: { slug: true }
         }
       }
-    }) as Metadata | null;
+    });
 
     if (!metadata) {
       return {
@@ -43,7 +43,19 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
 
     return {
       ok: true,
-      metadata,
+      metadata: {
+        seoTitle: metadata.seoTitle as string,
+        seoDescription: metadata.seoDescription as string,
+        seoRobots: metadata.seoRobots as string,
+        author: {
+          name: metadata.author.name as string
+        },
+        publishedAt: metadata.publishedAt,
+        imageUrl: metadata.imageURL as string,
+        category: {
+          slug: metadata.category?.slug as string
+        }
+      },
       message: "Article fetched successfully 👍",
     };
   } catch(error) {
