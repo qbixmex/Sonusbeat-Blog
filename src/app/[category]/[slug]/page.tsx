@@ -37,9 +37,10 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     openGraph: {
       title: metaTitle,
       description: metaDescription,
+      type: "article",
       siteName: "Sonusbeat Blog",
       locale: "es_MX",
-      publishedTime: (metadata?.publishedAt as Date).toISOString(),
+      publishedTime: metadata?.publishedAt?.toISOString(),
       authors: [metadata?.author.name as string],
       images: [`/${metadata?.category.slug}/${metadata?.imageUrl}`],
     },
