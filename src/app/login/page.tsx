@@ -1,6 +1,11 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth.config";
 import { LoginForm } from "./(components)/login-form.component";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, },
+};
 
 const LoginPage = async () => {
   const session = await auth();

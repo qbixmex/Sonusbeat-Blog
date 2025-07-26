@@ -84,3 +84,16 @@ export const articleFormatDate = (date: Date, lang?: Locale) => {
   );
   return (lang === es) ? capitalizedDate : englishFormattedDate;
 };
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param text - The text to capitalize
+ * @example ```typescript
+ * capitalizeFirstLetter("music");
+ * // Returns "Music"
+ * ```
+ * @returns The capitalized text
+ */
+export const capitalizeFirstLetter = (text: string) => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};

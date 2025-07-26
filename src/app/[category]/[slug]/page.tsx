@@ -42,7 +42,11 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
       locale: "es_MX",
       publishedTime: metadata?.publishedAt?.toISOString(),
       authors: [metadata?.author.name as string],
-      images: [`/${metadata?.category.slug}/${metadata?.imageUrl}`],
+      images: [
+        metadata?.imageUrl?.startsWith("https")
+          ? metadata?.imageUrl
+          : `/${metadata?.category.slug}/${metadata?.imageUrl}`,
+      ],
     },
   }
 };
