@@ -7,14 +7,10 @@ import { ModeToggle } from "../switch-mode";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import LanguageSwitcher from "../../app/admin/(components)/navbar/language-switcher.component";
 
 const links = [
   { id: "8ybq", url: '/', label: 'Home' },
-  // { id: "4c65", url: '/news', label: 'News' },
-  // { id: "cxy7", url: '/tutorials', label: 'Tutorials' },
-  // { id: "d41c", url: '/articles', label: 'Articles' },
-  // { id: "e6ea", url: '/music', label: 'Music' },
-  // { id: "9abg", url: '/videos', label: 'Videos' },
 ];
 
 export const Navbar: React.FC = () => {
@@ -57,6 +53,7 @@ export const Navbar: React.FC = () => {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <MobileMenu toggleMobileMenu={toggleMobileMenu} />
+          <LanguageSwitcher />
           <ModeToggle />
         </div>
         {mobileMenu && (
