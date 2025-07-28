@@ -13,17 +13,18 @@ import { PublicArticleForHomePage } from '@/interfaces/article.interface';
 
 type Props = Readonly<{
   article: PublicArticleForHomePage;
+  locale: string;
   feature?: boolean;
 }>;
 
 const CHARACTERS_LENGTH = 110;
 
-export const Article: FC<Props> = ({ article, feature = false }) => {
+export const Article: FC<Props> = ({ article, feature = false, locale }) => {
   const [fullDescription, setFullDescription] = useState(false);
 
   return (
     <article className="flex flex-col gap-5">
-      <Link href={`/${article.category.slug}/${article.slug}`}>
+      <Link href={`/${locale}/${article.category.slug}/${article.slug}`}>
         <Image
           src={
             article.imageURL.startsWith("https")
@@ -38,7 +39,7 @@ export const Article: FC<Props> = ({ article, feature = false }) => {
       </Link>
 
       <h2 className="text-xl font-semibold text-stone-700 md:text-2xl dark:text-stone-100">
-        <Link href={`/${article.category.slug}/${article.slug}`}>
+        <Link href={`/${locale}/${article.category.slug}/${article.slug}`}>
           {article.title}
         </Link>
       </h2>

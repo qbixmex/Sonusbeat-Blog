@@ -14,11 +14,13 @@ const fontsVariables = [
   montserrat.variable,
 ];
 
-type Props = Readonly<{ children: React.ReactNode; }>;
+type Props = Readonly<{
+  children: React.ReactNode;
+}>;
 
-const RootLayout: React.FC<Props> = (props) => {
+const RootLayout: React.FC<Props> = ({ children }) => {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/sonusbeat_32_32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -26,7 +28,7 @@ const RootLayout: React.FC<Props> = (props) => {
       <body className={`${fontsVariables.join(' ')} antialiased`}>
         <Providers>
           <main className="w-full">
-            {props.children}
+            {children}
           </main>
         </Providers>
       </body>
