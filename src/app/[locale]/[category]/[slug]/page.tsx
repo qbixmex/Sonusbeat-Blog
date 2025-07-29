@@ -13,6 +13,12 @@ type Props = Readonly<{
   params: Promise<{ slug: string; }>;
 }>;
 
+type StaticParams = {
+  locale: string;
+  slug: string;
+  category: string
+};
+
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const slug = (await params).slug;
 
@@ -39,7 +45,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
       description: metaDescription,
       type: "article",
       siteName: "Sonusbeat Blog",
-      locale: "es_MX",
+      locale: "es",
       publishedTime: metadata?.publishedAt?.toISOString(),
       authors: [metadata?.author.name as string],
       images: [
@@ -53,20 +59,30 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 //* ONLY BUILD TIME
 export const generateStaticParams = async () => {
-
   const result = await getStaticArticlesSlugs(100);
 
   if (!result.ok) {
     throw new Error(result.error);
   }
 
-  return result.slugs.map((permalink) => ({ permalink }));
+  const { slugs, categories } = result;
+  const locales = ["es", "en"];
+
+  return locales.flatMap((locale) => {
+    return slugs.map((slug, index) => {
+      return {
+        locale,
+        category: categories[index],
+        slug,
+      } as StaticParams;
+    });
+  });
 };
 
 //* This re-validates the page every 7 days
 export const revalidate = 604800;
 
-const ArticlePage: FC<Props> = async ({ params }) => {  
+const ArticlePage: FC<Props> = async ({ params }) => {
   const slug = (await params).slug;
 
   const response = await fetchPublicArticleAction(slug);
