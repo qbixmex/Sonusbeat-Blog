@@ -11,6 +11,7 @@ export const fetchCategoryAction = async (categoryId: string): Promise<FetchCate
   try {
     const category = await prisma.category.findUnique({
       where: { id: categoryId },
+      include: { translations: true },
     });
 
     if (!category) {
@@ -28,6 +29,7 @@ export const fetchCategoryAction = async (categoryId: string): Promise<FetchCate
         id: category.id,
         name: category.name,
         slug: category.slug,
+        translations: category.translations,
         createdAt: category.createdAt,
         updatedAt: category.updatedAt,
       },

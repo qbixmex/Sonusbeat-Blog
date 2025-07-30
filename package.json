@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "bun run prisma:deploy && next build",
+    "debug": "NODE_OPTIONS='--inspect' next dev",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",

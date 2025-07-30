@@ -32,6 +32,7 @@ export const fetchCategoriesAction = async (props?: {
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
+      include: { translations: true },
     });
 
     return {
@@ -41,6 +42,7 @@ export const fetchCategoriesAction = async (props?: {
         id: item.id,
         name: item.name,
         slug: item.slug,
+        translations: item.translations,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
       })),

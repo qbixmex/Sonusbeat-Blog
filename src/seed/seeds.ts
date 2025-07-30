@@ -40,19 +40,67 @@ const users: User[] = [
 const categories: Category[] = [
   {
     name: 'Tutoriales',
-    slug: 'tutoriales'
+    slug: 'tutoriales',
+    translations: [
+      {
+        language: 'es',
+        name: 'Tutoriales',
+        slug: 'tutoriales',
+      },
+      {
+        language: 'en',
+        name: 'Tutorials',
+        slug: 'tutorials',
+      },
+    ],
   },
   {
     name: 'Música',
     slug: 'musica',
+    translations: [
+      {
+        language: 'es',
+        name: 'Música',
+        slug: 'musica',
+      },
+      {
+        language: 'en',
+        name: 'Music',
+        slug: 'music',
+      },
+    ],
   },
   {
     name: 'Cursos',
     slug: 'cursos',
+    translations: [
+      {
+        language: 'es',
+        name: 'Cursos',
+        slug: 'cursos',
+      },
+      {
+        language: 'en',
+        name: 'Courses',
+        slug: 'courses',
+      },
+    ],
   },
   {
     name: 'Videos',
     slug: 'videos',
+    translations: [
+      {
+        language: 'es',
+        name: 'Videos',
+        slug: 'videos',
+      },
+      {
+        language: 'en',
+        name: 'Videos',
+        slug: 'videos',
+      },
+    ],
   }
 ];
 
