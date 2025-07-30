@@ -1,6 +1,6 @@
 export interface CategoryTranslation {
   id?: string;
-  categoryId: string;
+  categoryId?: string;
   language: string;
   name: string;
   slug: string;
