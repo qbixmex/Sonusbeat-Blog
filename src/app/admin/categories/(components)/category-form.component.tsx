@@ -38,23 +38,15 @@ export const CategoryForm: FC<Props> = ({ category }) => {
     defaultValues: {
       name: category ? category.name : "",
       slug: category ? category.slug : "",
-      translations: (category && category.translations)
-        ? category?.translations.map((t) => ({
+      translations: (category && category.translations && category.translations.length > 0)
+        ? category.translations.map((t) => ({
           name: t.name,
           slug: t.slug,
           language: t.language,
         }))
         : [
-          {
-            name: "",
-            slug: "",
-            language: "es",
-          },
-          {
-            name: "",
-            slug: "",
-            language: "en",
-          },
+          { name: "", slug: "", language: "es", },
+          { name: "", slug: "", language: "en", },
         ],
     },
   });
@@ -171,7 +163,10 @@ export const CategoryForm: FC<Props> = ({ category }) => {
                   name={`translations.${index}.slug`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel>
+                        {(fields[index].language === "es") && "Enlace Permanente"}
+                        {(fields[index].language === "en") && "Slug"}
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
