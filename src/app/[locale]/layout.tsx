@@ -1,11 +1,27 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { setRequestLocale } from 'next-intl/server';
+import Providers from "@/app/providers";
+
+import type { Metadata } from "next";
+import { montserrat, notoSansMono } from "@/fonts";
+import "@/app/globals.css";
 
 type Props = Readonly<{
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>;
+
+export const metadata: Metadata = {
+  title: "Sonusbeat Blog",
+  description: "Un blog sobre música electrónica, producción musical y tutoriales para la producción de música.",
+};
+
+const fontsVariables = [
+  notoSansMono.variable,
+  montserrat.variable,
+];
 
 const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
   // Ensure that the incoming `locale` is valid
@@ -14,11 +30,26 @@ const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
- 
+
+  // Enable static rendering
+  setRequestLocale(locale);
+
   return (
-    <NextIntlClientProvider>
-      {children}
-    </NextIntlClientProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/png" href="/sonusbeat_32_32.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </head>
+      <body className={`${fontsVariables.join(' ')} antialiased`}>
+        <NextIntlClientProvider locale={locale}>
+          <main className="w-full">
+            <Providers>
+              {children}
+            </Providers>
+          </main>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
 

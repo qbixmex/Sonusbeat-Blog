@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -27,6 +28,7 @@ type Props = { className?: string; } & React.ComponentProps<"div">;
 export const LoginForm: React.FC<Props> = ({ className, ...props }) => {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
+  const t = useTranslations('LoginPage');
 
   const [notification, setNotification] = useState<Notification>({
     type: 'default',
@@ -69,9 +71,9 @@ export const LoginForm: React.FC<Props> = ({ className, ...props }) => {
       }
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Bienvenido de Vuelta</CardTitle>
+          <CardTitle className="text-xl">{t('title')}</CardTitle>
           <CardDescription>
-            Accede con tu cuenta de Github ó Google
+            {t('socialMediaInstructions')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -104,7 +106,7 @@ export const LoginForm: React.FC<Props> = ({ className, ...props }) => {
             </div>
             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
               <span className="bg-card text-muted-foreground relative z-10 px-2">
-                Accede con tus credenciales
+                {t('credentialsInstructions')}
               </span>
             </div>
             <Credentials />
