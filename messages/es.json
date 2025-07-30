@@ -1,7 +1,16 @@
 {
+  "SiteName": "El blog de Sonusbeat",
   "HomePage": {
-    "title": "Bienvenido a SonusBeat",
+    "title": "Bienvenidos a el Blog de Sonusbeat",
     "description": "Descubre lo último en tecnología musical y de sonido.",
     "articles": "Últimos Artículos"
+  },
+  "LoginPage": {
+    "title": "Accede a tu cuenta",
+    "socialMediaInstructions": "Acceso con redes sociales",
+    "credentialsInstructions": "ó accede con tus credenciales",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "loginButton": "Iniciar Sesión"
   }
 }

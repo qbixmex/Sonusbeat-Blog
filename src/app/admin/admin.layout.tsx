@@ -21,7 +21,7 @@ const AdminLayout: React.FC<Props> = async ({ children }) => {
   const session = await auth();
 
   if (!session) {
-    redirect("/login");
+    redirect("/en/login");
   }
 
   if (!session.user?.emailVerified) {

@@ -1,6 +1,7 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from 'next-intl/server';
 import PublicLayout from "@/app/(public)/public.layout";
 import MainContainer from "@/components/main-container.component";
 import { SingleArticle } from "./(components)/single-article.component";
@@ -10,7 +11,10 @@ import { getArticleMetadataBySlug } from "@/app/(public)/(actions)/fetch-article
 import { renderSeoRobots } from "@/lib/utils";
 
 type Props = Readonly<{
-  params: Promise<{ slug: string; }>;
+  params: Promise<{
+    slug: string;
+    locale: string;
+  }>;
 }>;
 
 type StaticParams = {
@@ -20,10 +24,14 @@ type StaticParams = {
 };
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
-  const slug = (await params).slug;
+  const { locale, slug } = await params;
 
-  // fetch data
+  // Fetch data
   const { metadata } = await getArticleMetadataBySlug(slug);
+
+  // Translate Dynamic Content
+  const t = await getTranslations({ locale });
+  const siteNameTranslation = t('SiteName');
 
   const metaTitle = metadata?.seoTitle;
   const metaDescription = metadata?.seoDescription
@@ -44,8 +52,8 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
       title: metaTitle,
       description: metaDescription,
       type: "article",
-      siteName: "Sonusbeat Blog",
-      locale: "es",
+      siteName: siteNameTranslation,
+      locale,
       publishedTime: metadata?.publishedAt?.toISOString(),
       authors: [metadata?.author.name as string],
       images: [

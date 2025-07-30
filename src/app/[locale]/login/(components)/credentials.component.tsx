@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import {
@@ -33,6 +34,7 @@ const formSchema = z.object({
 });
 
 export const Credentials = () => {
+  const t = useTranslations('LoginPage');
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,7 +66,7 @@ export const Credentials = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Correo Electrónico</FormLabel>
+                  <FormLabel>{t('email')}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -79,7 +81,7 @@ export const Credentials = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
+                  <FormLabel>{t('password')}</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -102,7 +104,7 @@ export const Credentials = () => {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span>Acceder</span> <Send />
+                <span>{t('loginButton')}</span> <Send />
               </div>
             )}
           </Button>
