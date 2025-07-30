@@ -1,4 +1,6 @@
-import { FC } from "react";
+import { type FC, use } from "react";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import fetchPublicArticlesAction from "@/app/(public)/(actions)/fetch-articles.action";
 import PublicLayout from "@/app/(public)/public.layout";
 import ArticlesList from "@/app/(public)/components/article-list.component";
@@ -10,16 +12,23 @@ type Props = Readonly<{
   params: Promise<{ locale: string }>;
 }>;
 
-const HomePage: FC<Props> = async ({ params }) => {
-  const { locale } = await params;
+const HomePage: FC<Props> = ({ params }) => {
+  const { locale } = use(params);
 
-  const response = await fetchPublicArticlesAction();
+  // Enable static rendering
+  setRequestLocale(locale);
+
+  const response = use(fetchPublicArticlesAction());
   const articles = response.articles ?? [];
+
+  // Once the request locale is set, you
+  // can call hooks from `next-intl`
+  const t = useTranslations('HomePage');
 
   return (
     <PublicLayout>
       <MainContainer>
-        <h1 className="hide-element">Sonusbeat Blog</h1>
+        <h1 className="hide-element">{t('title')}</h1>
         <ArticlesList articles={articles} locale={locale} />
       </MainContainer>
     </PublicLayout>

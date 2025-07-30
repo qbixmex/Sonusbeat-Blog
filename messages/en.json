@@ -1,7 +1,16 @@
 {
+  "SiteName": "Sonusbeat Blog",
   "HomePage": {
     "title": "Welcome to SonusBeat",
     "description": "Discover the latest in music and sound technology.",
     "articles": "Latest Articles"
+  },
+  "LoginPage": {
+    "title": "Welcome to SonusBeat",
+    "socialMediaInstructions": "Login with social media",
+    "credentialsInstructions": "or login with your credentials",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login"
   }
 }
