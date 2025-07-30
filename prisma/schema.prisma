@@ -137,10 +137,31 @@ model Article {
   publishedAt DateTime?
   published   Boolean   @default(false)
 
+  translations ArticleTranslation[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("articles")
+}
+
+model ArticleTranslation {
+  id          String   @id @default(uuid())
+  article     Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId   String
+
+  language    String   // 'es', 'en', 'it', 'fr', etc.
+  title       String   @db.VarChar(255)
+  slug        String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  content     String   @db.Text
+  imageAlt    String   @map("image_alt")
+
+  seoTitle       String
+  seoDescription String
+
+  @@unique([articleId, language])
+  @@map("article_translations")
 }
 
 model VerificationToken {

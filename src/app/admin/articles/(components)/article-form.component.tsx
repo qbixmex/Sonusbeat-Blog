@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -95,6 +95,21 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       seoRobots: article?.seoRobots ?? "noindex_nofollow",
       publishedAt: article?.publishedAt ?? new Date(),
       published: article?.published ?? false,
+      translations: (article && article.translations && article.translations.length > 0)
+        ? article.translations.map((t) => ({
+          language: t.language,
+          title: t.title,
+          slug: t.slug,
+          description: t.description,
+          content: t.content,
+          imageAlt: t.imageAlt,
+          seoTitle: t.seoTitle,
+          seoDescription: t.seoDescription,
+        }))
+        : [
+          { language: "es", title: "", slug: "", description: "", content: "", imageAlt: "", seoTitle: "", seoDescription: "" },
+          { language: "en", title: "", slug: "", description: "", content: "", imageAlt: "", seoTitle: "", seoDescription: "" }
+        ],
     },
   });
 
@@ -140,10 +155,13 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       formData.append("image", data.image);
     }
 
+    formData.append("translations", JSON.stringify(data.translations));
+
     if (article && article.id) {
       const response = await updateArticleAction(
         formData,
         article.id as string,
+        session.data?.user.id ?? ""
       );
 
       if (!response.ok) {
@@ -178,6 +196,11 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
       }
     }
   };
+
+  const { fields } = useFieldArray({
+    control: form.control,
+    name: "translations",
+  });
 
   return (
     <div className="w-full lg:max-w-[768px] mx-auto">
@@ -568,7 +591,200 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
             </div>
           </section>
 
-          <div className="my-10 h-0.5 bg-gray-700"></div>
+          <Divider spaceY="md" />
+
+          <h2 className="my-8 text-2xl font-semibold">Traducciones</h2>
+
+          <section className="flex flex-col gap-5">
+            {fields.map((field, index) => (
+              <div key={field.id} className="mb-5">
+                <input type="hidden" {...form.register(`translations.${index}.language`)} />
+                <div className="flex flex-col md:flex-row gap-5 mb-5">
+                  <div className="w-full md:w-1/2">
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Título"}
+                            {(fields[index].language === "en") && "Title"}
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="w-full md:w-1/2">
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.slug`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Enlace Permanente"}
+                            {(fields[index].language === "en") && "Slug"}
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="mb-5">
+                  <FormField
+                    control={form.control}
+                    name={`translations.${index}.description`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {(fields[index].language === "es") && "Descripción"}
+                          {(fields[index].language === "en") && "Description"}
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            className="resize-none min-h-20"
+                            onFocus={() => setArticleDescriptionChars((prev) => ({
+                              ...prev,
+                              focused: true
+                            }))}
+                            onBlur={() => setArticleDescriptionChars((prev) => ({
+                              ...prev,
+                              focused: false
+                            }))}
+                            onChange={(event) => {
+                              field.onChange(event);
+                              setArticleDescriptionChars((prev) => ({
+                                ...prev,
+                                count: event.target.value.length
+                              }));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {articleDescriptionChars.focused && (
+                    <CharactersCounter
+                      charactersCount={articleDescriptionChars.count}
+                      limit={250}
+                    />
+                  )}
+                </div>
+                <div className="mb-5">
+                  <FormField
+                    control={form.control}
+                    name={`translations.${index}.content`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {(fields[index].language === "es") && "Contenido"}
+                          {(fields[index].language === "en") && "Content"}
+                        </FormLabel>
+                        <FormControl>
+                          <MdEditorField
+                            value={field.value}
+                            setContent={value => field.onChange(value)}
+                            articleId={article?.id ?? undefined}
+                            updateContentImage={updateContentImage}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col md:flex-row gap-5 mb-5">
+                  <div className="w-full md:w-1/2 flex flex-col gap-5">
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.seoTitle`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Título Seo"}
+                            {(fields[index].language === "en") && "Seo Title"}
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.imageAlt`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Texto alternativo de Imagen"}
+                            {(fields[index].language === "en") && "Image alternative text"}
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="w-full md:w-1/2">
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.seoDescription`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Descripción Seo"}
+                            {(fields[index].language === "en") && "Seo Description"}
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              className="resize-none min-h-20"
+                              onFocus={() => setSeoDescriptionChars((prev) => ({
+                                ...prev,
+                                focused: true
+                              }))}
+                              onBlur={() => setSeoDescriptionChars((prev) => ({
+                                ...prev,
+                                focused: false
+                              }))}
+                              onChange={(event) => {
+                                field.onChange(event);
+                                setSeoDescriptionChars((prev => ({
+                                  ...prev,
+                                  count: event.target.value.length
+                                })));
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {seoDescriptionChars.focused && (
+                      <CharactersCounter
+                        charactersCount={seoDescriptionChars.count}
+                        limit={160}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <Divider spaceY="md" />
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">
             <Button

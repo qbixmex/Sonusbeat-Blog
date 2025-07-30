@@ -5,6 +5,9 @@ import prisma from "@/lib/prisma";
 import { createFormSchema } from "./create-article.schema";
 import { revalidatePath } from "next/cache";
 import uploadImage from "./upload-image.action";
+import z from "zod";
+
+type CreateArticleInput = z.infer<typeof createFormSchema>;
 
 export const createArticleAction = async (
   formData: FormData,
@@ -17,14 +20,44 @@ export const createArticleAction = async (
       user: null,
     };
   }
+  const translationsRaw = formData.get("translations") as string | null;
 
-  const rawData = Object.fromEntries(formData);
+  let translations: CreateArticleInput["translations"] = [];
 
-  const articleParsed = createFormSchema.safeParse({
-    ...rawData,
-    publishedAt: new Date(rawData.publishedAt as string),
-    published: rawData.published === 'true' ? true : false,
-  });
+  if (translationsRaw) {
+    try {
+      translations = JSON.parse(translationsRaw);
+    } catch {
+      translations = [];
+    }
+  }
+
+  const rawData = {
+    title: formData.get("title") as string,
+    slug: formData.get("title") as string,
+    description: formData.get("description") as string,
+    categoryId: formData.get("categoryId") as string,
+    content: formData.get("content") as string,
+    image: formData.get("image") as File,
+    imageAlt: formData.get("imageAlt") as string,
+    seoTitle: formData.get("seoTitle") as string,
+    seoDescription: formData.get("seoDescription") as string,
+    seoRobots: formData.get("seoRobots") as string,
+    published: ((formData.get("published") as string) === "true") ? true : false,
+    publishedAt: new Date(formData.get("publishedAt") as string),
+    translations: translations.map((translation) => ({
+      language: translation.language.trim(),
+      title: translation.title.trim(),
+      description: translation.description.trim(),
+      slug: translation.slug.trim(),
+      content: translation.content.trim(),
+      imageAlt: translation.imageAlt ? translation.imageAlt.trim() : "",
+      seoTitle: translation.seoTitle.trim(),
+      seoDescription: translation.seoDescription.trim(),
+    })),
+  };
+
+  const articleParsed = createFormSchema.safeParse(rawData);
 
   if (!articleParsed.success) {
     return {
@@ -61,7 +94,22 @@ export const createArticleAction = async (
           seoRobots: articleToSave.seoRobots,
           publishedAt: articleToSave.publishedAt,
           published: articleToSave.published,
+          translations: {
+            create: articleToSave.translations.map((translation) => ({
+              language: translation.language,
+              title: translation.title,
+              slug: translation.slug,
+              description: translation.description,
+              content: translation.content,
+              imageAlt: translation.imageAlt as string,
+              seoTitle: translation.seoTitle,
+              seoDescription: translation.seoDescription,
+            })),
+          },
         },
+        include: {
+          translations: true,
+        }
       });
 
       return {
@@ -85,6 +133,7 @@ export const createArticleAction = async (
           published: createdArticle.published,
           createdAt: createdArticle.createdAt,
           updatedAt: createdArticle.updatedAt,
+          translations: createdArticle.translations,
         },
       };
     });
