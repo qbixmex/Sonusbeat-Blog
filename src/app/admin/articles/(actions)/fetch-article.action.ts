@@ -24,7 +24,8 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
             name: true,
             slug: true,
           }
-        }
+        },
+        translations: true,
       }
     });
 
@@ -56,6 +57,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
         published: article.published,
         createdAt: article.createdAt,
         updatedAt: article.updatedAt,
+        translations: article.translations,
       },
     };
   } catch (error) {

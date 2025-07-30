@@ -108,6 +108,7 @@ const main = async () => {
         ...attributesRest,
         authorId: usersMap[(author as string).toLowerCase()],
         categoryId: categoriesMap[(category as string).toLowerCase()],
+        translations: { create: attributesRest.translations },
       },
     });
   });
