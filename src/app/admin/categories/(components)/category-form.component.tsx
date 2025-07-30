@@ -4,6 +4,7 @@ import { FC } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -18,11 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoaderCircle, Save, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formSchema } from "../new/create-article.schema";
+import { createCategorySchema } from "../new/create-article.schema";
 import { Category } from "@/interfaces/category.interface";
 import { toast } from "sonner";
 import { createCategoryAction } from "../(actions)/create-category.action";
 import { editCategoryAction } from "../(actions)/edit-category.action";
+import Divider from "@/root/src/components/divider.component";
 
 type Props = Readonly<{
   category?: Category;
@@ -31,20 +33,40 @@ type Props = Readonly<{
 export const CategoryForm: FC<Props> = ({ category }) => {
   const route = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof createCategorySchema>>({
+    resolver: zodResolver(createCategorySchema),
     defaultValues: {
-      name: category?.name ?? "",
-      slug: category?.slug ?? "",
+      name: category ? category.name : "",
+      slug: category ? category.slug : "",
+      translations: (category && category.translations)
+        ? category?.translations.map((t) => ({
+          name: t.name,
+          slug: t.slug,
+          language: t.language,
+        }))
+        : [
+          {
+            name: "",
+            slug: "",
+            language: "es",
+          },
+          {
+            name: "",
+            slug: "",
+            language: "en",
+          },
+        ],
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof createCategorySchema>) => {
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    formData.append("name", data.name.trim());
+    formData.append("slug", data.slug.trim());
+
+    formData.append("translations", JSON.stringify(data.translations));
+
 
     if (category && category.id) {
       const response = await editCategoryAction(
@@ -82,10 +104,15 @@ export const CategoryForm: FC<Props> = ({ category }) => {
     }
   };
 
+  const { fields } = useFieldArray({
+    control: form.control,
+    name: "translations",
+  });
+
   return (
     <div className="w-full lg:max-w-[768px] mx-auto">
       <h1 className="text-3xl md:text-5xl font-semibold text-center">
-        { category ? 'Editar' : 'Crear' } Categoría
+        {category ? 'Editar' : 'Crear'} Categoría
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -118,9 +145,47 @@ export const CategoryForm: FC<Props> = ({ category }) => {
                 </FormItem>
               )}
             />
+            <Divider spaceY="xs" />
+
+            {/* Translates */}
+            {fields.map((field, index) => (
+              <section key={field.id} className="flex flex-col gap-5">
+                <FormField
+                  control={form.control}
+                  name={`translations.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {(fields[index].language === "es") && "Nombre"}
+                        {(fields[index].language === "en") && "Name"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`translations.${index}.slug`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <input type="hidden" {...form.register(`translations.${index}.language`)} />
+                {((index + 1) < fields.length) && <Divider spaceY="xs" />}
+              </section>
+            ))}
           </section>
 
-          <div className="my-5 h-0.5"></div>
+          <Divider spaceY="md" />
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">
             <Button

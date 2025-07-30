@@ -17,7 +17,7 @@ export const Providers: React.FC<Props> = ({ children }) => {
           enableSystem
           disableTransitionOnChange
         >
-          { children }
+          {children}
           <Toaster richColors position="top-right" />
         </ThemeProvider>
       </SessionProvider>

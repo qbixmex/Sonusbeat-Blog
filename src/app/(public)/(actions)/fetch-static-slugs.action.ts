@@ -14,24 +14,34 @@ import prisma from "@/lib/prisma";
 export const getStaticArticlesSlugs = async (quantity: number): Promise<{
   ok: boolean;
   slugs: string[];
+  categories: string[];
   error?: string;
 }> => {
   try {
-    const events = await prisma.article.findMany({
-      select: { slug: true },
+    const articles = await prisma.article.findMany({
+      select: {
+        slug: true,
+        category: {
+          select: {
+            slug: true,
+          }
+        }
+      },
       take: quantity,
       orderBy: { createdAt: 'desc' }
     });
 
     return {
       ok: true,
-      slugs: events.map((article) => article.slug),
+      categories: articles.map((article) => article.category?.slug as string),
+      slugs: articles.map((article) => article.slug),
     };
   } catch(error) {
     console.error(error);
     return {
       ok: false,
       slugs: [],
+      categories: [],
       error: "Something went wrong !, check logs for details",
     };
   }
