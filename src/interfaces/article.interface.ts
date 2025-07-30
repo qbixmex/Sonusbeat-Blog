@@ -30,6 +30,18 @@ export interface Article {
   published: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  translations: ArticleTranslation[];
+}
+
+interface ArticleTranslation {
+  language: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  imageAlt: string;
+  seoTitle: string;
+  seoDescription: string;
 }
 
 export interface PublicArticle {

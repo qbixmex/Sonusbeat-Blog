@@ -130,7 +130,6 @@ export const editCategoryAction = async (
             name: data.name,
             slug: data.slug,
             translations: {
-              // 1. Update existing translations
               upsert: data.translations?.map((translation) => ({
                 where: {
                   categoryId_language: {
