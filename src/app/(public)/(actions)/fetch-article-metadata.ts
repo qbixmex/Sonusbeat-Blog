@@ -18,8 +18,10 @@ type ResponseFetchArticleMetadata = {
 
 export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFetchArticleMetadata> => {
   try {
-    const metadata = await prisma.article.findUnique({
-      where: { slug: slug },
+    const metadata = await prisma.article.findFirst({
+      where: {
+        translations: { some: { slug } },
+      },
       select: {
         seoTitle: true,
         seoDescription: true,

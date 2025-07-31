@@ -13,17 +13,39 @@ import prisma from "@/lib/prisma";
  */
 export const getStaticArticlesSlugs = async (quantity: number): Promise<{
   ok: boolean;
-  slugs: string[];
-  categories: string[];
+  articles: {
+    slug: string;
+    category: string;
+    categoryTranslations: {
+      language: string;
+      slug: string;
+    }[];
+    articleTranslations: {
+      language: string;
+      slug: string;
+    }[];
+  }[];
   error?: string;
 }> => {
   try {
     const articles = await prisma.article.findMany({
       select: {
         slug: true,
+        translations: {
+          select: {
+            language: true,
+            slug: true,
+          }
+        },
         category: {
           select: {
             slug: true,
+            translations: {
+              select: {
+                language: true,
+                slug: true,
+              }
+            }
           }
         }
       },
@@ -33,15 +55,18 @@ export const getStaticArticlesSlugs = async (quantity: number): Promise<{
 
     return {
       ok: true,
-      categories: articles.map((article) => article.category?.slug as string),
-      slugs: articles.map((article) => article.slug),
+      articles: articles.map((article) => ({
+        slug: article.slug,
+        category: article.category?.slug ?? "un-categorized",
+        categoryTranslations: article.category?.translations ?? [],
+        articleTranslations: article.translations ?? [],
+      })),
     };
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     return {
       ok: false,
-      slugs: [],
-      categories: [],
+      articles: [],
       error: "Something went wrong !, check logs for details",
     };
   }
