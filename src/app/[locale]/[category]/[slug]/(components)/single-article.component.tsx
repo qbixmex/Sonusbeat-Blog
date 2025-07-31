@@ -3,37 +3,40 @@
 import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns/format';
+import { es, enUS } from 'date-fns/locale';
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/tokyo-night-dark.min.css";
 import { User, FolderOpen, CalendarDays } from 'lucide-react';
-import { cn } from '@/root/src/lib/utils';
+import { articleFormatDate, cn } from '@/root/src/lib/utils';
 import { PublicArticle } from '@/interfaces/article.interface';
 import styles from './styles.module.css';
 import Divider from '@/components/divider.component';
 import rehypeRaw from "rehype-raw";
 import rehypeYoutube from '@/lib/rehype-youtube';
+import { isValid, parseISO } from 'date-fns';
 
 type Props = Readonly<{
   article: PublicArticle;
 }>;
 
 export const SingleArticle: FC<Props> = ({ article }) => {
+  const lang = article.translation?.language ?? 'en';
+
   const imageURL = article.imageURL && article.imageURL.startsWith("https")
     ? article.imageURL
-    : `/images/blog/${article.imageURL}`
+    : `/images/blog/${article.imageURL}`;
 
-    return (
+  return (
     <article>
       <header className={styles.header}>
         <h1 className={cn(["text-primary", styles.headerTitle])}>
-          {article.title}
+          {article.translation?.title ?? "No Title Available"}
         </h1>
         <Image
           src={imageURL}
-          alt={article.imageAlt}
+          alt={article.translation?.imageAlt ?? "No Image Alt Available"}
           width={1200}
           height={600}
           className={styles.headerImage}
@@ -61,8 +64,11 @@ export const SingleArticle: FC<Props> = ({ article }) => {
             <CalendarDays className={styles.headerInfoIcon} />
             <p className={styles.headerInfoDate}>
               {
-                article.publishedAt
-                  ? format(new Date(article.publishedAt), 'MMMM dd, yyyy')
+                article.publishedAt && isValid(parseISO(article.publishedAt.toString()))
+                  ? articleFormatDate(
+                    article.publishedAt,
+                    lang === 'es' ? es : enUS
+                  )
                   : 'Fecha desconocida'
               }
             </p>
@@ -71,7 +77,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
       </header>
 
       <section className={styles.articleDescription}>
-        {article.description}
+        {article.translation?.description ?? "No description available."}
       </section>
 
       <Divider />
@@ -89,7 +95,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight, rehypeRaw, rehypeYoutube]}
           >
-            {article.content}
+            {article.translation?.content ?? "No content available."}
           </ReactMarkdown>
         </section>
       </main>

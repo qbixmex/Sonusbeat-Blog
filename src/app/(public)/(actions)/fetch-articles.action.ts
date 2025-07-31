@@ -28,18 +28,13 @@ export const fetchPublicArticlesAction = async (props?: {
   const { limit, offset } = props ?? { limit: 10, offset: 0 };
 
   try {
-    const data = await prisma.article.findMany({
+    const articles = await prisma.article.findMany({
       orderBy: { publishedAt: 'desc' },
       where: { published: true },
       select: {
         id: true,
-        title: true,
         slug: true,
         imageURL: true,
-        imageAlt: true,
-        description: true,
-        seoTitle: true,
-        seoDescription: true,
         seoRobots: true,
         publishedAt: true,
         author: {
@@ -52,8 +47,26 @@ export const fetchPublicArticlesAction = async (props?: {
           select: {
             name: true,
             slug: true,
+            translations: {
+              select: {
+                language: true,
+                slug: true,
+                name: true,
+              }
+            },
           }
-        }
+        },
+        translations: {
+          select: {
+            language: true,
+            title: true,
+            slug: true,
+            description: true,
+            imageAlt: true,
+            seoTitle: true,
+            seoDescription: true,
+          },
+        },
       },
       take: limit,
       skip: offset,
@@ -62,25 +75,34 @@ export const fetchPublicArticlesAction = async (props?: {
     return {
       ok: true,
       message: 'Los artículos fueron obtenidos satisfactoriamente',
-      articles: data.map((item) => ({
-        id: item.id,
-        title: item.title,
-        imageURL: item.imageURL as string,
-        imageAlt: item.imageAlt ?? 'Not provided',
-        slug: item.slug,
-        description: item.description,
+      articles: articles.map((article) => ({
+        id: article.id,
+        imageURL: article.imageURL as string,
+        slug: article.slug,
         author: {
-          name: item.author.name!,
-          username: item.author.username ?? 'Not provided',
+          name: article.author.name!,
+          username: article.author.username ?? 'Not provided',
         },
         category: {
-          name: item.category?.name as string,
-          slug: item.category?.slug as string,
+          name: article.category?.name as string,
+          slug: article.category?.slug as string,
+          translations: article.category?.translations.map((translation) => ({
+            language: translation.language,
+            slug: translation.slug,
+            name: translation.name,
+          })) ?? [],
         },
-        seoTitle: item.seoTitle!,
-        seoDescription: item.seoDescription!,
-        seoRobots: item.seoRobots,
-        publishedAt: item.publishedAt as Date,
+        seoRobots: article.seoRobots,
+        publishedAt: article.publishedAt as Date,
+        translations: article.translations.map((translation) => ({
+          language: translation.language,
+          title: translation.title,
+          slug: translation.slug,
+          description: translation.description,
+          imageAlt: translation.imageAlt,
+          seoTitle: translation.seoTitle,
+          seoDescription: translation.seoDescription,
+        })),
       })),
     }
   } catch (error) {

@@ -5,7 +5,6 @@ interface PublicArticleWithContent extends PublicArticle {
   content: string;
 }
 
-
 type ResponseFetchArticles = {
   ok: boolean;
   message: string;
@@ -18,14 +17,15 @@ type ResponseFetchArticles = {
  * @description This action retrieves a specific article by its slug from the database.
  * @example```typescript
  * fetchPublicArticleAction("how-to-make-a-baseline");
+ * fetchPublicArticleAction("como-hace-un-bajo");
  * ```
  * @returns Response object containing the status, message, and article data.
  */
-export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFetchArticles> => {
+export const fetchPublicArticleAction = async (slug: string, locale: string): Promise<ResponseFetchArticles> => {
   try {
-    const data = await prisma.article.findUnique({
+    const article = await prisma.article.findFirst({
       where: {
-        slug,
+        translations: { some: { slug }},
         published: true,
       },
       select: {
@@ -46,12 +46,30 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
           select: {
             name: true,
             slug: true,
+            translations: {
+              select: {
+                language: true,
+                slug: true,
+              }
+            }
           }
         },
         seoTitle: true,
         seoDescription: true,
         seoRobots: true,
         publishedAt: true,
+        translations: {
+          select: {
+            language: true,
+            title: true,
+            slug: true,
+            description: true,
+            content: true,
+            imageAlt: true,
+            seoTitle: true,
+            seoDescription: true,
+          }
+        },
       },
     });
 
@@ -59,25 +77,34 @@ export const fetchPublicArticleAction = async (slug: string): Promise<ResponseFe
       ok: true,
       message: 'Los artículos fueron obtenidos satisfactoriamente',
       article: {
-        id: data?.id as string,
-        title: data?.title as string,
-        slug: data?.slug as string,
-        imageURL: data?.imageURL as string,
-        imageAlt: data?.imageAlt as string,
-        description: data?.description as string,
-        content: data?.content as string,
+        id: article?.id as string,
+        title: article?.title as string,
+        slug: article?.slug as string,
+        imageURL: article?.imageURL as string,
+        imageAlt: article?.imageAlt as string,
+        description: article?.description as string,
+        content: article?.content as string,
         author: {
-          name: data?.author.name as string,
-          username: data?.author.username as string,
+          name: article?.author.name as string,
+          username: article?.author.username as string,
         },
         category: {
-          name: data?.category?.name as string,
-          slug: data?.category?.slug as string,
+          name: article?.category?.name as string,
+          slug: article?.category?.slug as string,
+          translations: article?.category?.translations.map((t) => ({
+            language: t.language,
+            slug: t.slug,
+          })) ?? [],
         },
-        seoTitle: data?.seoTitle as string,
-        seoDescription: data?.seoDescription as string,
-        seoRobots: data?.seoRobots as Robots,
-        publishedAt: data?.publishedAt as Date,
+        seoTitle: article?.seoTitle as string,
+        seoDescription: article?.seoDescription as string,
+        seoRobots: article?.seoRobots as Robots,
+        publishedAt: article?.publishedAt as Date,
+        translation: article?.translations.find(t => t.language === locale) ?? null,
+        allTranslations: article?.translations.map(t => ({
+          language: t.language,
+          slug: t.slug,
+        })) ?? [],
       },
     }
   } catch (error) {

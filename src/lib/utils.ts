@@ -63,26 +63,26 @@ export const getFirstAndLastName = (full_name: string): string => {
   return `${names.at(0)} ${names.at(1)}`;
 };
 
-export const articleFormatDate = (date: Date, lang?: Locale) => {
-  const spanishFormattedDate = format(
-    new Date(date),
-    "d MMMM yyyy",
-    { locale: lang ? lang : undefined }
-  );
+export const articleFormatDate = (date: Date | string, lang?: Locale) => {
+  const jsDate = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(jsDate.getTime())) return 'Fecha desconocida';
 
-  // Capitalizes the month in Spanish
-  const capitalizedDate = spanishFormattedDate.replace(
-    /(\d+)\s([a-záéíóúñ]+)\s(\d{4})/,
-    (_, day, month, year) =>
-      `${day} ${month.charAt(0).toUpperCase()}${month.slice(1)} ${year}`
-  );
+  // Detectar idioma para el formato
+  const isSpanish = lang === es;
+  const formatStr = isSpanish ? "d MMMM yyyy" : "MMMM d yyyy";
 
-  const englishFormattedDate = format(
-    new Date(date),
-    "MMMM d yyyy",
-    { locale: lang ? lang : undefined }
-  );
-  return (lang === es) ? capitalizedDate : englishFormattedDate;
+  let formatted = format(jsDate, formatStr, { locale: lang });
+
+  // Capitalizar mes en español
+  if (isSpanish) {
+    formatted = formatted.replace(
+      /(\d+)\s([a-záéíóúñ]+)\s(\d{4})/,
+      (_, day, month, year) =>
+        `${day} ${month.charAt(0).toUpperCase()}${month.slice(1)} ${year}`
+    );
+  }
+
+  return formatted;
 };
 
 /**

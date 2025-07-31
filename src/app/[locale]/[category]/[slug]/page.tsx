@@ -17,12 +17,6 @@ type Props = Readonly<{
   }>;
 }>;
 
-type StaticParams = {
-  locale: string;
-  slug: string;
-  category: string
-};
-
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { locale, slug } = await params;
 
@@ -67,43 +61,56 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 //* ONLY BUILD TIME
 export const generateStaticParams = async () => {
-  const result = await getStaticArticlesSlugs(100);
+  const response = await getStaticArticlesSlugs(100);
 
-  if (!result.ok) {
-    throw new Error(result.error);
+  if (!response.ok) {
+    throw new Error(response.error);
   }
 
-  const { slugs, categories } = result;
-  const locales = ["es", "en"];
-
-  return locales.flatMap((locale) => {
-    return slugs.map((slug, index) => {
+  const params = response.articles.flatMap(article =>
+    article.articleTranslations.map((articleTranslation) => {
+      const categoryTranslation = article.categoryTranslations.find(
+        (categoryTranslation) => categoryTranslation.language === articleTranslation.language
+      );
       return {
-        locale,
-        category: categories[index],
-        slug,
-      } as StaticParams;
-    });
-  });
+        locale: articleTranslation.language,
+        category: categoryTranslation ? categoryTranslation.slug : article.category,
+        slug: articleTranslation.slug,
+      };
+    })
+  );
+
+  return params;
 };
 
 //* This re-validates the page every 7 days
 export const revalidate = 604800;
 
 const ArticlePage: FC<Props> = async ({ params }) => {
-  const slug = (await params).slug;
+  const { slug, locale } = await params;
 
-  const response = await fetchPublicArticleAction(slug);
+  const response = await fetchPublicArticleAction(slug, locale);
 
   if (!response.ok || !response.article) {
     redirect("/");
   }
 
-
   const article = response.article;
 
+  // Generar urlParams dinámicamente según las traducciones del artículo y la categoría
+  const urlParams = article.allTranslations.map(articleTranslation => {
+    const categoryTranslation = article.category.translations.find((categoryTranslation) =>
+      categoryTranslation.language === articleTranslation.language
+    );
+    return {
+      locale: articleTranslation.language,
+      category: categoryTranslation ? categoryTranslation.slug : article.category.slug,
+      slug: articleTranslation.slug,
+    };
+  });
+
   return (
-    <PublicLayout>
+    <PublicLayout urlParams={urlParams}>
       <MainContainer>
         <SingleArticle article={article} />
       </MainContainer>
