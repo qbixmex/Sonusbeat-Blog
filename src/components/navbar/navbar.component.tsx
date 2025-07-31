@@ -13,7 +13,15 @@ const links = [
   { id: "8ybq", url: '/', label: 'Home' },
 ];
 
-export const Navbar: React.FC = () => {
+type NavbarProps = Readonly<{
+  urlParams?: {
+    locale: string;
+    category: string;
+    slug: string;
+  }[];
+}>;
+
+export const Navbar: React.FC<NavbarProps> = ({ urlParams }) => {
   const path = usePathname();
   const [ mobileMenu, setMobileMenu ] = useState(false);
 
@@ -53,7 +61,7 @@ export const Navbar: React.FC = () => {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <MobileMenu toggleMobileMenu={toggleMobileMenu} />
-          <LanguageSwitcher />
+          <LanguageSwitcher urlParams={urlParams} />
           <ModeToggle />
         </div>
         {mobileMenu && (
@@ -87,12 +95,12 @@ const cssClasses = [
   "2xl:max-w-[80%]",
 ];
 
-type Props = Readonly<{
+type MobileMenuProps = Readonly<{
   className?: string;
   toggleMobileMenu: () => void;
 }>;
 
-const MobileMenu: React.FC<Props> = (props) => {
+const MobileMenu: React.FC<MobileMenuProps> = (props) => {
   const { className, toggleMobileMenu } = props;
 
   return (

@@ -58,21 +58,28 @@ export interface PublicArticle {
   category: {
     name: string;
     slug: string;
+    translations: CategoryTranslation[];
   };
   content: string;
   seoTitle: string;
   seoDescription: string;
   seoRobots: Robots;
   publishedAt: Date;
+  translation: ArticleTranslation | null;
+  allTranslations: {
+    language: string;
+    slug: string;
+  }[];
 }
+
+export interface CategoryTranslation {
+  language: string;
+  slug: string;
+};
 
 export interface PublicArticleForHomePage {
   id: string;
-  title: string;
   imageURL: string;
-  imageAlt: string;
-  slug: string;
-  description: string;
   author: {
     name: string;
     username: string;
@@ -80,6 +87,20 @@ export interface PublicArticleForHomePage {
   category: {
     name: string;
     slug: string;
+    translations: {
+      language: string;
+      slug: string;
+      name: string;
+    }[],
   };
   publishedAt: Date;
+  translations: {
+    language: string;
+    title: string;
+    slug: string;
+    description: string;
+    imageAlt: string;
+    seoTitle: string;
+    seoDescription: string;
+  }[],
 }
