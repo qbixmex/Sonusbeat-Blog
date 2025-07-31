@@ -43,7 +43,7 @@ export const updateArticleAction = async (
 
   const rawData = {
     title: formData.get("title") as string,
-    slug: formData.get("title") as string,
+    slug: formData.get("slug") as string,
     description: formData.get("description") as string,
     categoryId: formData.get("categoryId") as string,
     content: formData.get("content") as string,

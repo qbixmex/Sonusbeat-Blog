@@ -3,7 +3,7 @@
 import { FC } from 'react';
 
 import { useLocale } from 'next-intl';
-import { usePathname, redirect } from '@/i18n/navigation';
+import { redirect, usePathname } from '@/i18n/navigation';
 import MexicoFlagIcon from '@/components/icons/mexico-flag-icon.component';
 import USAFlagIcon from '@/components/icons/usa-flag-icon.component';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,14 +13,32 @@ const locales = [
   { code: "es", label: "Español", icon: <MexicoFlagIcon /> },
 ];
 
-export const LanguageSwitcher: FC = () => {
-  const locale = useLocale();
+type Props = Readonly<{
+  urlParams?: {
+    locale: string;
+    category: string;
+    slug: string;
+  }[];
+}>;
+
+export const LanguageSwitcher: FC<Props> = ({ urlParams }) => {
   const pathname = usePathname();
+  const locale = useLocale();
 
   const current = locales.find(object => object.code === locale);
 
   return (
     <Select value={locale} onValueChange={(newLocale) => {
+      if (urlParams) {
+        const translation = urlParams.find(t => t.locale === newLocale);
+        redirect({
+          href: {
+            pathname: `/${translation?.category}/${translation?.slug}`,
+          },
+          locale: newLocale,
+        });
+        return;
+      }
       redirect({ href: pathname, locale: newLocale });
     }}>
       <SelectTrigger className="w-36">
