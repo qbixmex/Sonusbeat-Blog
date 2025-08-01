@@ -63,7 +63,18 @@ const main = async () => {
 
   console.log('Users Inserted 👍');
 
-  await prisma.category.createMany({ data: categories });
+  await Promise.all(
+    categories.map(({ translations, ...categoryData }) => {
+      return prisma.category.create({
+        data: {
+          ...categoryData,
+          translations: {
+            create: translations,
+          },
+        },
+      });
+    })
+  );
 
   console.log('Categories Inserted 👍');
 
