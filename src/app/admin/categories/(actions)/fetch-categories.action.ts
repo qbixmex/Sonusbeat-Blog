@@ -28,23 +28,29 @@ export const fetchCategoriesAction = async (props?: {
   const { limit, offset } = props ?? { limit: 10, offset: 0 };
 
   try {
-    const data = await prisma.category.findMany({
+    const categories = await prisma.category.findMany({
       orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
-      include: { translations: true },
+      select: {
+        id: true,
+        translations: {
+          select: {
+            id: true,
+            language: true,
+            name: true,
+            slug: true,
+          }
+        },
+      },
     });
 
     return {
       ok: true,
       message: 'Las categorías fueron obtenidas satisfactoriamente',
-      categories: data.map((item) => ({
-        id: item.id,
-        name: item.name,
-        slug: item.slug,
-        translations: item.translations,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
+      categories: categories.map((category) => ({
+        id: category.id,
+        translations: category.translations,
       })),
     }
   } catch (error) {

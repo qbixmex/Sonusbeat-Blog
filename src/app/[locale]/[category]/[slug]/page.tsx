@@ -50,11 +50,9 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
       locale,
       publishedTime: metadata?.publishedAt?.toISOString(),
       authors: [metadata?.author.name as string],
-      images: [
-        metadata?.imageUrl?.startsWith("https")
-          ? metadata?.imageUrl
-          : `/${metadata?.category.slug}/${metadata?.imageUrl}`,
-      ],
+      images: metadata?.imageUrl?.startsWith("https")
+        ? [metadata.imageUrl]
+        : [`/images/blog/${metadata?.imageUrl}`],
     },
   }
 };
@@ -74,7 +72,7 @@ export const generateStaticParams = async () => {
       );
       return {
         locale: articleTranslation.language,
-        category: categoryTranslation ? categoryTranslation.slug : article.category,
+        category: categoryTranslation?.slug ?? "",
         slug: articleTranslation.slug,
       };
     })
@@ -104,7 +102,7 @@ const ArticlePage: FC<Props> = async ({ params }) => {
     );
     return {
       locale: articleTranslation.language,
-      category: categoryTranslation ? categoryTranslation.slug : article.category.slug,
+      category: categoryTranslation?.slug ?? "",
       slug: articleTranslation.slug,
     };
   });

@@ -21,8 +21,13 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
         category: {
           select: {
             id: true,
-            name: true,
-            slug: true,
+            translations: {
+              select: {
+                language: true,
+                name: true,
+                slug: true,
+              }
+            }
           }
         },
         translations: true,
@@ -40,8 +45,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
         content: article.content,
         category: {
           id: article?.category?.id as string,
-          name: article?.category?.name as string,
-          slug: article?.category?.slug as string,
+          translations: article?.category?.translations ?? [],
         },
         imageURL: article.imageURL,
         imageAlt: article.imageAlt,

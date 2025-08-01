@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
@@ -65,28 +65,38 @@ const Page: FC<Props> = async ({ params }) => {
                     <section className="w-full md:w-1/2 lg:w-2/3 xl:3/4">
                       <Table>
                         <TableBody>
-                          <TableRow>
-                            <TableHead className="text-sm font-semibold">Nombre:</TableHead>
-                            <TableCell className="text-pretty text-muted-foreground">
-                              { category?.name }
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableHead className="text-sm font-semibold">Slug:</TableHead>
-                            <TableCell className="text-pretty text-muted-foreground">
-                              { category?.slug }
-                            </TableCell>
-                          </TableRow>
+                          {
+                            category?.translations.map((translation) => (
+                              <Fragment key={translation.id}>
+                                <TableRow>
+                                  <TableHead className="text-sm font-semibold">
+                                    {translation.language === 'es' ? 'Categoría' : 'Category'}
+                                  </TableHead>
+                                  <TableCell className="text-pretty text-muted-foreground">
+                                    {translation.name}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow >
+                                  <TableHead className="text-sm font-semibold">
+                                    {translation.language === 'es' ? 'Enlace Permanente' : 'Slug'}
+                                  </TableHead>
+                                  <TableCell className="text-pretty text-muted-foreground">
+                                    {translation.slug}
+                                  </TableCell>
+                                </TableRow>
+                              </Fragment>
+                            ))
+                          }
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Fecha de Creación:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              { format(new Date(category?.createdAt as Date), "PPpp") }
+                              {format(new Date(category?.createdAt as Date), "PPpp")}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableHead className="text-sm font-semibold">Fecha de Actualización:</TableHead>
                             <TableCell className="text-pretty text-muted-foreground">
-                              { format(new Date(category?.updatedAt as Date), "PPpp") }
+                              {format(new Date(category?.updatedAt as Date), "PPpp")}
                             </TableCell>
                           </TableRow>
                           <TableRow>

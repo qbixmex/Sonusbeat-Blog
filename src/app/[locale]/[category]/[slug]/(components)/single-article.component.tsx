@@ -23,6 +23,7 @@ type Props = Readonly<{
 
 export const SingleArticle: FC<Props> = ({ article }) => {
   const lang = article.translation?.language ?? 'en';
+  const category = article.category.translations.find((t) => t.language === lang);
 
   const imageURL = article.imageURL && article.imageURL.startsWith("https")
     ? article.imageURL
@@ -54,10 +55,10 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           <section className={styles.headerInfoSection}>
             <FolderOpen className={styles.headerInfoIcon} />
             <Link
+              href={category ? `/${category?.slug}/articles` : '#'}
               className={styles.headerInfoLink}
-              href={`/${article.category.slug}/articles`}
             >
-              {article.category.name}
+              { category?.name ?? "No Category Available" }
             </Link>
           </section>
           <section className={styles.headerInfoSection}>
