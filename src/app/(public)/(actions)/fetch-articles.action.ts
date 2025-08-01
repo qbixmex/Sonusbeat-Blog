@@ -45,8 +45,6 @@ export const fetchPublicArticlesAction = async (props?: {
         },
         category: {
           select: {
-            name: true,
-            slug: true,
             translations: {
               select: {
                 language: true,
@@ -84,8 +82,6 @@ export const fetchPublicArticlesAction = async (props?: {
           username: article.author.username ?? 'Not provided',
         },
         category: {
-          name: article.category?.name as string,
-          slug: article.category?.slug as string,
           translations: article.category?.translations.map((translation) => ({
             language: translation.language,
             slug: translation.slug,

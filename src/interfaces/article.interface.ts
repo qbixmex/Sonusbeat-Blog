@@ -1,3 +1,5 @@
+import { Category } from "./category.interface";
+
 export type Robots =
   'index_follow'
   | 'noindex_follow'
@@ -18,11 +20,7 @@ export interface Article {
     id: string;
     name: string;
   } | string;
-  category?: {
-    id: string;
-    name: string;
-    slug: string;
-  } | string;
+  category: Category | string;
   seoTitle: string | null;
   seoDescription: string | null;
   seoRobots: Robots;
@@ -56,8 +54,6 @@ export interface PublicArticle {
     username: string;
   };
   category: {
-    name: string;
-    slug: string;
     translations: CategoryTranslation[];
   };
   content: string;
@@ -74,6 +70,7 @@ export interface PublicArticle {
 
 export interface CategoryTranslation {
   language: string;
+  name: string;
   slug: string;
 };
 
@@ -85,8 +82,6 @@ export interface PublicArticleForHomePage {
     username: string;
   };
   category: {
-    name: string;
-    slug: string;
     translations: {
       language: string;
       slug: string;

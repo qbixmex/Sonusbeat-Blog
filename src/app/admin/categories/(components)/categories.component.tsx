@@ -84,8 +84,8 @@ export const Categories: React.FC<Props> = ({ categories }) => {
             <TableBody>
               {categories.map((category) => (
                 <TableRow key={category.id}>
-                  <TableCell>{category.name}</TableCell>
-                  <TableCell>{category.slug}</TableCell>
+                  <TableCell>{category.translations[0].name}</TableCell>
+                  <TableCell>{category.translations[0].slug}</TableCell>
                   <TableCell className="flex items-center justify-end gap-2">
                     <Button
                       variant="default"

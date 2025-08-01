@@ -5,64 +5,44 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
-const translationSchema = z.object({
-  language: z
-    .string({
-      required_error: "El idioma es obligatorio",
-      invalid_type_error: "El idioma debe ser un string",
-    })
-    .trim()
-    .min(2, "El idioma debe ser por lo menos de 2 caracteres")
-    .max(2, "El idioma debe ser máximo 2 caracteres"),
-  name: z
-    .string({
-      required_error: "El nombre es obligatorio",
-      invalid_type_error: "El nombre debe ser un string",
-    })
-    .trim()
-    .min(3, "El nombre debe ser por lo menos de 3 caracteres")
-    .max(255, "El nombre debe ser máximo 255 caracteres"),
-  slug: z
-    .string({
-      required_error: "El slug es obligatorio",
-      invalid_type_error: "El slug debe ser un string",
-    })
-    .trim()
-    .min(3, "El slug debe ser por lo menos de 3 caracteres")
-    .max(255, "El slug debe ser máximo 255 caracteres"),
-});
-
 const createFormSchema = z.object({
-  name: z
-    .string({
-      required_error: "El nombre es obligatorio",
-      invalid_type_error: "El nombre debe ser un string",
+  translations: z.array(
+    z.object({
+      language: z
+        .string({
+          required_error: "El idioma es obligatorio",
+          invalid_type_error: "El idioma debe ser un string",
+        })
+        .trim()
+        .min(2, "El idioma debe ser por lo menos de 2 caracteres")
+        .max(2, "El idioma debe ser máximo 2 caracteres"),
+      name: z
+        .string({
+          required_error: "El nombre es obligatorio",
+          invalid_type_error: "El nombre debe ser un string",
+        })
+        .trim()
+        .min(3, "El nombre debe ser por lo menos de 3 caracteres")
+        .max(255, "El nombre debe ser máximo 255 caracteres"),
+      slug: z
+        .string({
+          required_error: "El slug es obligatorio",
+          invalid_type_error: "El slug debe ser un string",
+        })
+        .trim()
+        .min(3, "El slug debe ser por lo menos de 3 caracteres")
+        .max(255, "El slug debe ser máximo 255 caracteres"),
     })
-    .trim()
-    .min(3, "El nombre debe ser por lo menos de 3 caracteres")
-    .max(250, "El nombre debe ser máximo 250 caracteres"),
-  slug: z
-    .string({
-      required_error: "El slug es obligatorio",
-      invalid_type_error: "El slug debe ser un string",
-    })
-    .trim()
-    .min(3, "El slug debe ser por lo menos de 3 caracteres")
-    .max(250, "El slug debe ser máximo 250 caracteres"),
-  translations: z.array(translationSchema).min(1, "Debe haber al menos una traducción"),
+  ).min(1, "Debe haber al menos una traducción"),
 });
 
 type CreateCategoryInput = z.infer<typeof createFormSchema>;
 
 export const createCategoryAction = async (formData: FormData) => {
   const rawData: CreateCategoryInput = {
-    name: "",
-    slug: "",
     translations: [],
   };
 
-  const name = formData.get("name") as string;
-  const slug = formData.get("slug") as string;
   const translationsRaw = formData.get("translations") as string | null;
 
   let translations: CreateCategoryInput["translations"] = [];
@@ -75,8 +55,6 @@ export const createCategoryAction = async (formData: FormData) => {
     }
   }
 
-  rawData.name = name.trim();
-  rawData.slug = slug.trim();
   rawData.translations = translations.map((translation) => ({
     language: translation.language.trim(),
     name: translation.name.trim(),
@@ -99,8 +77,6 @@ export const createCategoryAction = async (formData: FormData) => {
     const prismaTransaction = await prisma.$transaction(async (transaction) => {
       const createdCategory = await transaction.category.create({
         data: {
-          name: data.name,
-          slug: data.slug,
           translations: {
             create: data.translations.map((translation) => ({
               language: translation.language,

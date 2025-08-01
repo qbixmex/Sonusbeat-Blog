@@ -141,10 +141,10 @@ export const Articles: FC<Props> = ({ articles }) => {
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">
                   <Link
-                    href={`/admin/categories/${(article?.category as { id: string }).id}`}
+                    href={`/admin/categories/${article.category.translations[0].id}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {(article.category as { name: string }).name}
+                    { article.category.translations[0].name }
                   </Link>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">

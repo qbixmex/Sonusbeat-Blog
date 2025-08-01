@@ -88,10 +88,13 @@ const main = async () => {
   const categoriesDB = await prisma.category.findMany({
     select: {
       id: true,
-      name: true,
-      slug: true,
-    },
-  }) as Pick<Category, 'id' | 'slug'>[];
+      translations: {
+        select: {
+          slug: true,
+        },
+      },  
+    }
+  }) as Pick<Category, 'id' | 'translations'>[];
 
   const usersMap = usersDB.reduce((map, user) => {
     map[user.username.toLowerCase()] = user.id as string;
@@ -103,7 +106,9 @@ const main = async () => {
   );
 
   const categoriesMap = categoriesDB.reduce((map, category) => {
-    map[category.slug.toLowerCase()] = category.id as string;
+    category.translations.forEach((translation) => {
+      map[translation.slug.toLowerCase()] = category.id as string;
+    })
     return map;
   },
     // <category_name, category_id>

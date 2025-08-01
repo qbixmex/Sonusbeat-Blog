@@ -5,8 +5,12 @@ export type AdminArticle = {
   title: string;
   category: {
     id: string;
-    name: string;
-    slug: string;
+    translations: {
+      id: string;
+      language: string;
+      name: string;
+      slug: string;
+    }[];
   };
   author: {
     id: string;
@@ -45,7 +49,7 @@ export const fetchArticlesAction = async (props?: {
   const { limit, offset } = props ?? { limit: 10, offset: 0 };
 
   try {
-    const data = await prisma.article.findMany({
+    const articles = await prisma.article.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -63,8 +67,14 @@ export const fetchArticlesAction = async (props?: {
         category: {
           select: {
             id: true,
-            name: true,
-            slug: true,
+            translations: {
+              select: {
+                id: true,
+                language: true,
+                name: true,
+                slug: true,
+              }
+            }
           }
         }
       },
@@ -75,22 +85,21 @@ export const fetchArticlesAction = async (props?: {
     return {
       ok: true,
       message: 'Los artículos fueron obtenidos satisfactoriamente',
-      articles: data.map((item) => ({
-        id: item.id,
-        title: item.title,
-        imageURL: item.imageURL as string,
-        imageAlt: item.imageAlt,
+      articles: articles.map((article) => ({
+        id: article.id,
+        title: article.title,
+        imageURL: article.imageURL as string,
+        imageAlt: article.imageAlt,
         author: {
-          id: item.author.id,
-          name: item.author.name!,
+          id: article.author.id,
+          name: article.author.name!,
         },
         category: {
-          id: item.category?.id as string,
-          name: item.category?.name as string,
-          slug: item.category?.slug as string,
+          id: article.category?.id as string,
+          translations: article.category?.translations ?? [],
         },
-        seoRobots: item.seoRobots,
-        published: item.published,
+        seoRobots: article.seoRobots,
+        published: article.published,
       })),
     }
   } catch (error) {

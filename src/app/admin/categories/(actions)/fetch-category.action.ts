@@ -27,8 +27,6 @@ export const fetchCategoryAction = async (categoryId: string): Promise<FetchCate
       message: "Categoría obtenida correctamente 👍",
       category: {
         id: category.id,
-        name: category.name,
-        slug: category.slug,
         translations: category.translations,
         createdAt: category.createdAt,
         updatedAt: category.updatedAt,

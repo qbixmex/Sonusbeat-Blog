@@ -136,8 +136,13 @@ export const updateArticleAction = async (
             category: {
               select: {
                 id: true,
-                name: true,
-                slug: true,
+                translations: {
+                  select: {
+                    language: true,
+                    name: true,
+                    slug: true,
+                  },
+                }
               },
             },
             translations: true,
@@ -175,7 +180,9 @@ export const updateArticleAction = async (
 
         // Revalidate Paths
         revalidatePath('/');
-        revalidatePath(`/${updatedArticle.category?.slug}/${updatedArticle.slug}`);
+        updatedArticle.category?.translations.forEach((translation) => {
+          revalidatePath(`/${translation.slug}/${updatedArticle.slug}`);
+        });
 
         return {
           ok: true,
@@ -192,8 +199,7 @@ export const updateArticleAction = async (
             },
             category: {
               id: updatedArticle.category?.id as string,
-              name: updatedArticle.category?.name as string,
-              slug: updatedArticle.category?.slug as string,
+              translations: updatedArticle.category?.translations ?? [],
             },
             imageURL: updatedArticle.imageURL ?? 'no-image.png',
             imagePublicID: updatedArticle.imagePublicID ?? '',

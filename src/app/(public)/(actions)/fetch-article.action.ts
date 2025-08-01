@@ -44,11 +44,10 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
         },
         category: {
           select: {
-            name: true,
-            slug: true,
             translations: {
               select: {
                 language: true,
+                name: true,
                 slug: true,
               }
             }
@@ -89,12 +88,7 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
           username: article?.author.username as string,
         },
         category: {
-          name: article?.category?.name as string,
-          slug: article?.category?.slug as string,
-          translations: article?.category?.translations.map((t) => ({
-            language: t.language,
-            slug: t.slug,
-          })) ?? [],
+          translations: article?.category?.translations ?? [],
         },
         seoTitle: article?.seoTitle as string,
         seoDescription: article?.seoDescription as string,

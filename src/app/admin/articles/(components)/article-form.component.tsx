@@ -298,7 +298,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                               key={category.id}
                               value={category.id as string}
                             >
-                              {category.name}
+                              {category.translations[0].name}
                             </SelectItem>
                           ))}
                         </SelectContent>

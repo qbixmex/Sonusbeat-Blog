@@ -35,8 +35,6 @@ export const CategoryForm: FC<Props> = ({ category }) => {
   const form = useForm<z.infer<typeof createCategorySchema>>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
-      name: category ? category.name : "",
-      slug: category ? category.slug : "",
       translations: (category && category.translations && category.translations.length > 0)
         ? category.translations.map((t) => ({
           name: t.name,
@@ -53,11 +51,7 @@ export const CategoryForm: FC<Props> = ({ category }) => {
   const onSubmit = async (data: z.infer<typeof createCategorySchema>) => {
     const formData = new FormData();
 
-    formData.append("name", data.name.trim());
-    formData.append("slug", data.slug.trim());
-
     formData.append("translations", JSON.stringify(data.translations));
-
 
     if (category && category.id) {
       const response = await editCategoryAction(
@@ -105,40 +99,12 @@ export const CategoryForm: FC<Props> = ({ category }) => {
       <h1 className="text-3xl md:text-5xl font-semibold text-center">
         {category ? 'Editar' : 'Crear'} Categoría
       </h1>
+
+      <h2 className="my-8 text-2xl font-semibold">DETALLES</h2>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <h2 className="my-8 text-2xl font-semibold">DETALLES</h2>
-
           <section className="flex flex-col gap-5">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="slug"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Slug</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Divider spaceY="xs" />
-
-            {/* Translates */}
             {fields.map((field, index) => (
               <section key={field.id} className="flex flex-col gap-5">
                 <FormField
