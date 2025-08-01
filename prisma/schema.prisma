@@ -83,8 +83,6 @@ enum SeoRobotsOption {
 
 model Category {
   id   String @id @default(uuid())
-  name String @unique @db.VarChar(100)
-  slug String @unique @db.VarChar(100)
 
   articles Article[] @relation("CategoryArticles")
 

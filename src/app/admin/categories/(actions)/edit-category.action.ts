@@ -5,54 +5,34 @@ import prisma from "@/lib/prisma";
 import { Category } from "@/interfaces/category.interface";
 import z from "zod";
 
-const translationSchema = z.object({
-  language: z
-    .string({
-      required_error: "El idioma es obligatorio",
-      invalid_type_error: "El idioma debe ser un string",
-    })
-    .trim()
-    .min(2, "El idioma debe ser por lo menos de 2 caracteres")
-    .max(2, "El idioma debe ser máximo 2 caracteres"),
-  name: z
-    .string({
-      required_error: "El nombre es obligatorio",
-      invalid_type_error: "El nombre debe ser un string",
-    })
-    .trim()
-    .min(3, "El nombre debe ser por lo menos de 3 caracteres")
-    .max(255, "El nombre debe ser máximo 255 caracteres"),
-  slug: z
-    .string({
-      required_error: "El slug es obligatorio",
-      invalid_type_error: "El slug debe ser un string",
-    })
-    .trim()
-    .min(3, "El slug debe ser por lo menos de 3 caracteres")
-    .max(255, "El slug debe ser máximo 255 caracteres"),
-});
-
 const editFormSchema = z.object({
-  name: z
-    .string({
-      required_error: "El nombre es obligatorio",
-      invalid_type_error: "El nombre debe ser un string",
-    })
-    .trim()
-    .min(3, "El nombre debe ser por lo menos de 3 caracteres")
-    .max(250, "El nombre debe ser máximo 250 caracteres")
-    .optional(),
-  slug: z
-    .string({
-      required_error: "El slug es obligatorio",
-      invalid_type_error: "El slug debe ser un string",
-    })
-    .trim()
-    .min(3, "El slug debe ser por lo menos de 3 caracteres")
-    .max(250, "El slug debe ser máximo 250 caracteres")
-    .optional(),
   translations: z
-    .array(translationSchema)
+    .array(z.object({
+      language: z
+        .string({
+          required_error: "El idioma es obligatorio",
+          invalid_type_error: "El idioma debe ser un string",
+        })
+        .trim()
+        .min(2, "El idioma debe ser por lo menos de 2 caracteres")
+        .max(2, "El idioma debe ser máximo 2 caracteres"),
+      name: z
+        .string({
+          required_error: "El nombre es obligatorio",
+          invalid_type_error: "El nombre debe ser un string",
+        })
+        .trim()
+        .min(3, "El nombre debe ser por lo menos de 3 caracteres")
+        .max(255, "El nombre debe ser máximo 255 caracteres"),
+      slug: z
+        .string({
+          required_error: "El slug es obligatorio",
+          invalid_type_error: "El slug debe ser un string",
+        })
+        .trim()
+        .min(3, "El slug debe ser por lo menos de 3 caracteres")
+        .max(255, "El slug debe ser máximo 255 caracteres"),
+    }))
     .min(1, "Debe haber al menos una traducción")
     .optional(),
 });
@@ -70,13 +50,9 @@ export const editCategoryAction = async (
   categoryId: string,
 ): Promise<EditCategoryResponse> => {
   const rawData: UpdateCategoryInput = {
-    name: "",
-    slug: "",
     translations: [],
   };
 
-  const name = formData.get("name") as string;
-  const slug = formData.get("slug") as string;
   const translationsRaw = formData.get("translations") as string | null;
 
   let translations: UpdateCategoryInput["translations"] = [];
@@ -89,8 +65,6 @@ export const editCategoryAction = async (
     }
   }
 
-  rawData.name = name.trim();
-  rawData.slug = slug.trim();
   rawData.translations = translations?.map((translation) => ({
     language: translation.language.trim(),
     name: translation.name.trim(),
@@ -127,8 +101,6 @@ export const editCategoryAction = async (
         const updatedCategory = await transaction.category.update({
           where: { id: categoryId },
           data: {
-            name: data.name,
-            slug: data.slug,
             translations: {
               upsert: data.translations?.map((translation) => ({
                 where: {
@@ -159,8 +131,6 @@ export const editCategoryAction = async (
           message: 'Categoría Actualizada 👍',
           category: {
             id: updatedCategory.id,
-            name: updatedCategory.name,
-            slug: updatedCategory.slug,
             translations: updatedCategory.translations,
             createdAt: updatedCategory.createdAt,
             updatedAt: updatedCategory.updatedAt,

@@ -39,8 +39,6 @@ const users: User[] = [
 
 const categories: Category[] = [
   {
-    name: 'Tutoriales',
-    slug: 'tutoriales',
     translations: [
       {
         language: 'es',
@@ -55,8 +53,6 @@ const categories: Category[] = [
     ],
   },
   {
-    name: 'Música',
-    slug: 'musica',
     translations: [
       {
         language: 'es',
@@ -71,8 +67,6 @@ const categories: Category[] = [
     ],
   },
   {
-    name: 'Cursos',
-    slug: 'cursos',
     translations: [
       {
         language: 'es',
@@ -87,8 +81,6 @@ const categories: Category[] = [
     ],
   },
   {
-    name: 'Videos',
-    slug: 'videos',
     translations: [
       {
         language: 'es',
@@ -105,7 +97,7 @@ const categories: Category[] = [
 ];
 
 const articles: Article[] = [
-    {
+  {
     title: "¿ La IA nos prepara para un contacto extraterrestre en 2030 ?",
     slug: "inteligencia-artificial-nos-prepara-para-contacto-extraterrestre",
     description: "Descubre cómo la IA podría ayudarnos a comunicarnos con seres de otros mundos, ¿acaso nos están preparando para algo? Entonces para el 2030 Elon Musk tiene planeado.",
@@ -253,7 +245,7 @@ const articles: Article[] = [
       }
     ],
   },
-    {
+  {
     title: "¿ Cómo superar el bloqueo creativo en la Música Electrónica ?",
     slug: "como-superar-el-bloqueo-creativo-en-la-musica-electronica",
     description: "Descubre cómo romper el bloqueo musical con IA, letras generadas y fuentes de inspiración como la filosofía o la ciencia ficción.",
