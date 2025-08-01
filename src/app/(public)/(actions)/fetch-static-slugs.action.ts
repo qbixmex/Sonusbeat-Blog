@@ -15,7 +15,6 @@ export const getStaticArticlesSlugs = async (quantity: number): Promise<{
   ok: boolean;
   articles: {
     slug: string;
-    category: string;
     categoryTranslations: {
       language: string;
       slug: string;
@@ -39,7 +38,6 @@ export const getStaticArticlesSlugs = async (quantity: number): Promise<{
         },
         category: {
           select: {
-            slug: true,
             translations: {
               select: {
                 language: true,
@@ -57,7 +55,6 @@ export const getStaticArticlesSlugs = async (quantity: number): Promise<{
       ok: true,
       articles: articles.map((article) => ({
         slug: article.slug,
-        category: article.category?.slug ?? "un-categorized",
         categoryTranslations: article.category?.translations ?? [],
         articleTranslations: article.translations ?? [],
       })),

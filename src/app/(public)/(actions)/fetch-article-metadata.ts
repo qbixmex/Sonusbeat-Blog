@@ -7,7 +7,6 @@ type Metadata = {
   author: { name: string };
   publishedAt: Date | null;
   imageUrl: string;
-  category: { slug: string };
 };
 
 type ResponseFetchArticleMetadata = {
@@ -29,9 +28,6 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
         author: {select: { name: true }},
         imageURL: true,
         publishedAt: true,
-        category: {
-          select: { slug: true }
-        }
       }
     });
 
@@ -54,9 +50,6 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
         },
         publishedAt: metadata.publishedAt,
         imageUrl: metadata.imageURL as string,
-        category: {
-          slug: metadata.category?.slug as string
-        }
       },
       message: "Article fetched successfully 👍",
     };

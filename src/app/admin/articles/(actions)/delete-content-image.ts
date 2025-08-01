@@ -18,13 +18,17 @@ export const deleteContentImageAction = async (
     where: { id: articleId },
     select: {
       id: true,
+      slug: true,
       images: true,
       category: {
         select: {
-          slug: true,
+          translations: {
+            select: {
+              slug: true,
+            },
+          },
         },
       },
-      slug: true,
     },
   });
 
@@ -61,10 +65,12 @@ export const deleteContentImageAction = async (
     const folder = segments[segments.length - 2];
     const imageId = segments[segments.length - 1].replace('.jpg', '');
     const publicId = `${folder}/${imageId}`;
-    await deleteImage(publicId); 
+    await deleteImage(publicId);
   }
 
-  revalidatePath(`/${article!.category?.slug}/${article.slug}`);
+  article.category?.translations.forEach((translation) => {
+    revalidatePath(`/${translation.slug}/${article.slug}`);
+  });
   revalidatePath(`/admin/articles/${article.id}`);
   revalidatePath(`/admin/articles/${article.id}/edit`);
 

@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { renderRobots } from "@/root/src/lib/utils";
 import "./styles.module.css";
+import { Category } from "@/root/src/interfaces/category.interface";
 
 type Props = Readonly<{
   params: Promise<{
@@ -86,13 +87,13 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                           <TableRow>
                             <TableHead>URL de la Imagen:</TableHead>
                             <TableCell className="text-muted-foreground break-all whitespace-normal">
-                              { article?.imageURL }
+                              {article?.imageURL}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableHead>Texto Alternativo:</TableHead>
                             <TableCell className="text-muted-foreground">
-                              { article?.imageAlt }
+                              {article?.imageAlt}
                             </TableCell>
                           </TableRow>
                         </TableBody>
@@ -135,10 +136,14 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                         <TableHead className="text-sm font-semibold">Categoría:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground">
                           <Link
-                            href={`/admin/categories/${(article?.category as { id: string }).id}`}
+                            href={
+                              (article && (article.category as Category).translations.length > 0)
+                                ? `/admin/categories/${(article?.category as Category).translations[0].name}`
+                                : "#"
+                            }
                             className="text-blue-500 hover:underline"
                           >
-                            {(article?.category as { name: string }).name}
+                            {(article?.category as Category).translations[0].name ?? "Sin Categoría"}
                           </Link>
                         </TableCell>
                       </TableRow>
