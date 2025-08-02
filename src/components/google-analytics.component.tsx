@@ -11,7 +11,12 @@ export const GoogleAnalyticsWrapper: React.FC = () => {
       || !pathname.startsWith('/login')
       || !pathname.startsWith('/admin')
   ) {
-    <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+    return (
+      <>
+        {`<!-- Google Analytics -->`}
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+      </>
+    );
   }
   return null;
 };
