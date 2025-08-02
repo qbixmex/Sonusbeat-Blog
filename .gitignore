@@ -43,3 +43,8 @@ next-env.d.ts
 # Database
 /src/generated/prisma
 /postgres
+
+
+# Sitemap
+/public/sitemap-*.xml
+/public/sitemap.xml
