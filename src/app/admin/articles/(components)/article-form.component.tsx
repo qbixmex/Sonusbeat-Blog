@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +44,7 @@ import editArticleSchema from "../[id]/edit/edit-article.schema";
 import { Article } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import MdEditorField from "./md-editor-field.component";
-import { CharactersCounter } from "@/components/characters-counter.component";
+// import { CharactersCounter } from "@/components/characters-counter.component";
 import Divider from "@/components/divider.component";
 import deleteContentImageAction from "../(actions)/delete-content-image";
 
@@ -53,22 +53,25 @@ type Props = Readonly<{
   article?: Article;
 }>;
 
-type CountCharacters = {
-  count: number;
-  focused: boolean;
-};
+// type CountCharacters = {
+//   count: number;
+//   focused: boolean;
+// };
 
 export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const route = useRouter();
   const session = useSession();
-  const [articleDescriptionChars, setArticleDescriptionChars] = useState<CountCharacters>({
-    count: article ? article.description.length : 0,
-    focused: false,
-  });
-  const [seoDescriptionChars, setSeoDescriptionChars] = useState<CountCharacters>({
-    count: article && article.seoDescription ? article.seoDescription?.length : 0,
-    focused: false,
-  });
+
+  // const [articleDescriptionChars, setArticleDescriptionChars] = useState<CountCharacters>({
+  //   count: article ? article.description.length : 0,
+  //   focused: false,
+  // });
+
+  // const [seoDescriptionChars, setSeoDescriptionChars] = useState<CountCharacters>({
+  //   count: article && article.seoDescription ? article.seoDescription?.length : 0,
+  //   focused: false,
+  // });
+
   const formSchema = !article ? createArticleSchema : editArticleSchema;
   const [isDeletingImage, setIsDeletingImage] = useState<string | null>(null);
   const [contentImages, setContentImages] = useState<string[]>(article?.images ?? []);
@@ -84,28 +87,28 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: article?.title ?? "",
-      slug: article?.slug ?? "",
-      description: article?.description ?? "",
-      content: article?.content ?? "",
       categoryId: article?.category ? (article?.category as Category).id : undefined,
-      imageAlt: article?.imageAlt ?? "",
-      seoTitle: article?.seoTitle ?? "",
-      seoDescription: article?.seoDescription ?? "",
       seoRobots: article?.seoRobots ?? "noindex_nofollow",
       publishedAt: article?.publishedAt ?? new Date(),
       published: article?.published ?? false,
       translations: (article && article.translations && article.translations.length > 0)
-        ? article.translations.map((t) => ({
-          language: t.language,
-          title: t.title,
-          slug: t.slug,
-          description: t.description,
-          content: t.content,
-          imageAlt: t.imageAlt,
-          seoTitle: t.seoTitle,
-          seoDescription: t.seoDescription,
-        }))
+        ? [...article.translations]
+          .sort((a, b) => {
+            if (a.language === b.language) return 0;
+            if (a.language === "es") return -1;
+            if (b.language === "es") return 1;
+            return 0;
+          })
+          .map((t) => ({
+            language: t.language,
+            title: t.title,
+            slug: t.slug,
+            description: t.description,
+            content: t.content,
+            imageAlt: t.imageAlt,
+            seoTitle: t.seoTitle,
+            seoDescription: t.seoDescription,
+          }))
         : [
           { language: "es", title: "", slug: "", description: "", content: "", imageAlt: "", seoTitle: "", seoDescription: "" },
           { language: "en", title: "", slug: "", description: "", content: "", imageAlt: "", seoTitle: "", seoDescription: "" }
@@ -135,14 +138,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
 
-    formData.append("title", data.title);
-    formData.append("slug", data.slug);
-    formData.append("description", data.description);
-    formData.append("content", data.content);
     formData.append("categoryId", data.categoryId);
-    formData.append("imageAlt", data.imageAlt!);
-    formData.append("seoTitle", data.seoTitle);
-    formData.append("seoDescription", data.seoDescription);
     formData.append("seoRobots", data.seoRobots);
     formData.append("publishedAt",
       data.publishedAt
@@ -204,74 +200,385 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
   return (
     <div className="w-full lg:max-w-[768px] mx-auto">
-      <h1 className="text-3xl md:text-5xl font-semibold text-center">
+      <h1 className="text-3xl md:text-5xl font-semibold text-center mb-10">
         {article ? 'Editar' : 'Crear'} Articulo
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <h2 className="my-8 text-2xl font-semibold">DETALLES</h2>
+          <section className="flex flex-col gap-5">
+            {fields.map((field, index) => (
+              <Fragment key={field.id}>
+                <section>
+                  <h2 className="text-3xl font-semibold mb-10">
+                    {field.language === "es" ? "Español" : "English"}
+                  </h2>
+                  <input type="hidden" {...form.register(`translations.${index}.language`)} />
+                  {/* Title and Slug */}
+                  <div className="flex flex-col md:flex-row gap-5 mb-5">
+                    <div className="w-full md:w-1/2">
+                      <FormField
+                        control={form.control}
+                        name={`translations.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {(fields[index].language === "es") && "Título"}
+                              {(fields[index].language === "en") && "Title"}
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full md:w-1/2">
+                      <FormField
+                        control={form.control}
+                        name={`translations.${index}.slug`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {(fields[index].language === "es") && "Enlace Permanente"}
+                              {(fields[index].language === "en") && "Slug"}
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  {/* Description */}
+                  <section>
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.description`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Descripción"}
+                            {(fields[index].language === "en") && "Description"}
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              className="resize-none min-h-20"
+                              // onFocus={() => setArticleDescriptionChars((prev) => ({
+                              //   ...prev,
+                              //   focused: true
+                              // }))}
+                              // onBlur={() => setArticleDescriptionChars((prev) => ({
+                              //   ...prev,
+                              //   focused: false
+                              // }))}
+                              onChange={(event) => {
+                                field.onChange(event);
+                                // setArticleDescriptionChars((prev) => ({
+                                //   ...prev,
+                                //   count: event.target.value.length
+                                // }));
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* {articleDescriptionChars.focused && (
+                      <CharactersCounter
+                        charactersCount={articleDescriptionChars.count}
+                        limit={250}
+                      />
+                    )} */}
+                  </section>
+                  <Divider spaceY="lg" />
+                  {/* Content */}
+                  <section>
+                    <FormField
+                      control={form.control}
+                      name={`translations.${index}.content`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {(fields[index].language === "es") && "Contenido"}
+                            {(fields[index].language === "en") && "Content"}
+                          </FormLabel>
+                          <FormControl>
+                            <MdEditorField
+                              value={field.value}
+                              setContent={value => field.onChange(value)}
+                              articleId={article?.id ?? undefined}
+                              updateContentImage={updateContentImage}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </section>
+                  <Divider spaceY="lg" />
+                  {/* SEO */}
+                  <div className="flex flex-col md:flex-row gap-5">
+                    <div className="w-full md:w-1/2 flex flex-col gap-5">
+                      <FormField
+                        control={form.control}
+                        name={`translations.${index}.seoTitle`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {(fields[index].language === "es") && "Título Seo"}
+                              {(fields[index].language === "en") && "Seo Title"}
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`translations.${index}.imageAlt`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {(fields[index].language === "es") && "Texto alternativo de la Imagen"}
+                              {(fields[index].language === "en") && "Image alternative text"}
+                            </FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="w-full md:w-1/2">
+                      <FormField
+                        control={form.control}
+                        name={`translations.${index}.seoDescription`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {(fields[index].language === "es") && "Descripción Seo"}
+                              {(fields[index].language === "en") && "Seo Description"}
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                className="resize-none min-h-20"
+                                // onFocus={() => setSeoDescriptionChars((prev) => ({
+                                //   ...prev,
+                                //   focused: true
+                                // }))}
+                                // onBlur={() => setSeoDescriptionChars((prev) => ({
+                                //   ...prev,
+                                //   focused: false
+                                // }))}
+                                onChange={(event) => {
+                                  field.onChange(event);
+                                  // setSeoDescriptionChars((prev => ({
+                                  //   ...prev,
+                                  //   count: event.target.value.length
+                                  // })));
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {/* {seoDescriptionChars.focused && (
+                        <CharactersCounter
+                          charactersCount={seoDescriptionChars.count}
+                          limit={160}
+                        />
+                      )} */}
+                    </div>
+                  </div>
+                </section>
+                <Divider spaceY="lg" />
+              </Fragment>
+            ))}
+          </section>
+
+          <section>
+            {
+              (contentImages.length > 0) && (
+                <>
+                  <h2 className="text-3xl mt-8 font-semibold mb-5">
+                    Imágenes del contenido
+                  </h2>
+                  <div className="flex flex-wrap gap-5">
+                    {contentImages.map((image) => (
+                      <figure key={image} className="relative w-fit">
+                        <Image
+                          src={image}
+                          alt="Imagen del contenido"
+                          width={150}
+                          height={150}
+                          className="w-[150px] h-[150px] object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          disabled={isDeletingImage === image}
+                          className={cn("!bg-pink-600/70 hover:!bg-pink-600 absolute top-0 right-0 cursor-pointer", {
+                            "cursor-not-allowed !bg-gray-500": isDeletingImage === image,
+                          })}
+                          onClick={() => handleDeleteImage(image)}
+                        >
+                          {isDeletingImage === image
+                            ? <LoaderCircle className="animate-spin" />
+                            : <X className="size-[25px]" />
+                          }
+                        </Button>
+                      </figure>
+                    ))}
+                  </div>
+                </>
+              )}
+          </section>
+
+          <h2 className="my-8 text-2xl font-semibold uppercase">
+            {!article ? "Cargar Imagen" : "Remplazar Imagen"}
+          </h2>
+
+          <section className="flex flex-col gap-5">
+            <div className="w-full md:w-1/2">
+              <figure>
+                {
+                  (article && article.imageURL) ? (
+                    <Dialog>
+                      <DialogTrigger className="cursor-pointer">
+                        <Image
+                          src={
+                            article.imageURL.startsWith("http")
+                              ? article.imageURL
+                              : `/images/blog/${article.imageURL}`
+                          }
+                          alt={article.translations[0].imageAlt ?? "Imagen del artículo"}
+                          width={300}
+                          height={200}
+                          className="w-full h-auto object-cover rounded-lg"
+                        />
+                      </DialogTrigger>
+                      <DialogContent style={{ maxWidth: "1280px" }}>
+                        <DialogHeader>
+                          <DialogTitle className="sr-only">
+                            {article.translations[0].imageAlt ?? "Imagen del artículo"}
+                          </DialogTitle>
+                        </DialogHeader>
+                        <Image
+                          src={
+                            article.imageURL.startsWith("http")
+                              ? article.imageURL
+                              : `/images/blog/${article.imageURL}`
+                          }
+                          alt={article.translations[0].imageAlt ?? "Imagen del artículo"}
+                          width={1280}
+                          height={720}
+                          className="w-full max-w-[1280px] h-auto object-cover rounded-lg"
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <ImageIcon
+                      strokeWidth={0.5}
+                      className="w-full h-full text-neutral-500 relative"
+                    />
+                  )
+                }
+              </figure>
+            </div>
+            <div className="w-full md:w-1/2">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Imagen</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          field.onChange(file);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </section>
+
+          <Divider spaceY="lg" />
 
           <section className="flex flex-col md:flex-row gap-5 mb-5">
             <div className="w-full md:w-1/2 flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full flex items-center gap-2">
-                    <p>Fecha de Publicación</p>
-                    <CalendarIcon />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 w-auto">
-                  <FormField
-                    control={form.control}
-                    name="publishedAt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(date) => field.onChange(date)}
-                            className="rounded-lg border"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormField
-                control={form.control}
-                name="published"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Estado</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                        {field.value ? "Publicado" : "No Publicado"}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div>
+                <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full flex items-center gap-2">
+                      <p>Fecha de Publicación</p>
+                      <CalendarIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0 w-auto">
+                    <FormField
+                      control={form.control}
+                      name="publishedAt"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => field.onChange(date)}
+                              className="rounded-lg border"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="seoRobots"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Robots SEO</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Seleccione una opción" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="index_follow">Indexar y Seguir</SelectItem>
+                            <SelectItem value="noindex_follow">No Indexar y Seguir</SelectItem>
+                            <SelectItem value="index_nofollow">Indexar y No Seguir</SelectItem>
+                            <SelectItem value="noindex_nofollow">No Indexar y No Seguir</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="w-full md:w-1/2 flex flex-col gap-5">
               <FormField
@@ -310,180 +617,18 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
               />
               <FormField
                 control={form.control}
-                name="description"
+                name="published"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descripción</FormLabel>
+                    <FormLabel>Estado</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        className="resize-none min-h-20"
-                        onFocus={() => setArticleDescriptionChars((prev) => ({
-                          ...prev,
-                          focused: true
-                        }))}
-                        onBlur={() => setArticleDescriptionChars((prev) => ({
-                          ...prev,
-                          focused: false
-                        }))}
-                        onChange={(event) => {
-                          field.onChange(event);
-                          setArticleDescriptionChars((prev) => ({
-                            ...prev,
-                            count: event.target.value.length
-                          }));
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {articleDescriptionChars.focused && (
-                <CharactersCounter
-                  charactersCount={articleDescriptionChars.count}
-                  limit={250}
-                />
-              )}
-            </div>
-          </section>
-
-          <section>
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contenido</FormLabel>
-                  <FormControl>
-                    <MdEditorField
-                      value={field.value}
-                      setContent={value => field.onChange(value)}
-                      articleId={article?.id ?? undefined}
-                      updateContentImage={updateContentImage}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {
-              (contentImages.length > 0) && (
-                <>
-                  <h3 className="text-3xl mt-8 font-semibold mb-5">
-                    Imágenes del contenido
-                  </h3>
-                  <div className="flex flex-wrap gap-5">
-                    {contentImages.map((image) => (
-                      <figure key={image} className="relative w-fit">
-                        <Image
-                          src={image}
-                          alt="Imagen del contenido"
-                          width={150}
-                          height={150}
-                          className="w-[150px] h-[150px] object-cover rounded-lg"
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked)}
                         />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          disabled={isDeletingImage === image}
-                          className={cn("!bg-pink-600/70 hover:!bg-pink-600 absolute top-0 right-0 cursor-pointer", {
-                            "cursor-not-allowed !bg-gray-500": isDeletingImage === image,
-                          })}
-                          onClick={() => handleDeleteImage(image)}
-                        >
-                          {isDeletingImage === image
-                            ? <LoaderCircle className="animate-spin" />
-                            : <X className="size-[25px]" />
-                          }
-                        </Button>
-                      </figure>
-                    ))}
-                  </div>
-                </>
-              )}
-
-          </section>
-
-          <Divider />
-
-          <h2 className="my-8 text-2xl font-semibold">IMAGEN</h2>
-
-          <section className="flex flex-col md:flex-row gap-5">
-            <figure className="w-full md:w-1/2">
-              {
-                (article && article.imageURL) ? (
-                  <Dialog>
-                    <DialogTrigger className="cursor-pointer">
-                      <Image
-                        src={
-                          article.imageURL.startsWith("http")
-                            ? article.imageURL
-                            : `/images/blog/${article.imageURL}`
-                        }
-                        alt={article.imageAlt ?? "Imagen del artículo"}
-                        width={300}
-                        height={200}
-                        className="w-full h-auto object-cover rounded-lg"
-                      />
-                    </DialogTrigger>
-                    <DialogContent style={{ maxWidth: "1280px" }}>
-                      <DialogHeader>
-                        <DialogTitle className="sr-only">
-                          {article.imageAlt ?? "Imagen del artículo"}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <Image
-                        src={
-                          article.imageURL.startsWith("http")
-                            ? article.imageURL
-                            : `/images/blog/${article.imageURL}`
-                        }
-                        alt={article.imageAlt ?? "Imagen del artículo"}
-                        width={1280}
-                        height={720}
-                        className="w-full max-w-[1280px] h-auto object-cover rounded-lg"
-                      />
-                    </DialogContent>
-                  </Dialog>
-                ) : (
-                  <ImageIcon
-                    strokeWidth={0.5}
-                    className="w-full h-full text-neutral-500 relative"
-                  />
-                )
-              }
-            </figure>
-            <div className="w-full flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Imagen</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          field.onChange(file);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageAlt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Texto Alternativo de Imagen</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
+                        {field.value ? "Publicado" : "No Publicado"}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -492,299 +637,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
             </div>
           </section>
 
-          <div className="my-10 h-0.5 bg-gray-700"></div>
-
-          <h2 className="my-8 text-2xl font-semibold">SEO</h2>
-
-          <section className="flex flex-col md:flex-row gap-5 mb-5">
-            <div className="w-full md:w-1/2 flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="seoTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título Seo</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="w-full md:w-1/2 flex flex-col gap-5">
-              <FormField
-                control={form.control}
-                name="seoDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción SEO</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        className="resize-none min-h-20"
-                        onFocus={() => setSeoDescriptionChars((prev) => ({
-                          ...prev,
-                          focused: true
-                        }))}
-                        onBlur={() => setSeoDescriptionChars((prev) => ({
-                          ...prev,
-                          focused: false
-                        }))}
-                        onChange={(event) => {
-                          field.onChange(event);
-                          setSeoDescriptionChars((prev => ({
-                            ...prev,
-                            count: event.target.value.length
-                          })));
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {seoDescriptionChars.focused && (
-                <CharactersCounter
-                  charactersCount={seoDescriptionChars.count}
-                  limit={160}
-                />
-              )}
-              <FormField
-                control={form.control}
-                name="seoRobots"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Robots SEO</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccione una opción" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="index_follow">Indexar y Seguir</SelectItem>
-                          <SelectItem value="noindex_follow">No Indexar y Seguir</SelectItem>
-                          <SelectItem value="index_nofollow">Indexar y No Seguir</SelectItem>
-                          <SelectItem value="noindex_nofollow">No Indexar y No Seguir</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </section>
-
-          <Divider spaceY="md" />
-
-          <h2 className="my-8 text-2xl font-semibold">Traducciones</h2>
-
-          <section className="flex flex-col gap-5">
-            {fields.map((field, index) => (
-              <div key={field.id} className="mb-5">
-                <input type="hidden" {...form.register(`translations.${index}.language`)} />
-                <div className="flex flex-col md:flex-row gap-5 mb-5">
-                  <div className="w-full md:w-1/2">
-                    <FormField
-                      control={form.control}
-                      name={`translations.${index}.title`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {(fields[index].language === "es") && "Título"}
-                            {(fields[index].language === "en") && "Title"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="w-full md:w-1/2">
-                    <FormField
-                      control={form.control}
-                      name={`translations.${index}.slug`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {(fields[index].language === "es") && "Enlace Permanente"}
-                            {(fields[index].language === "en") && "Slug"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="mb-5">
-                  <FormField
-                    control={form.control}
-                    name={`translations.${index}.description`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {(fields[index].language === "es") && "Descripción"}
-                          {(fields[index].language === "en") && "Description"}
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            className="resize-none min-h-20"
-                            onFocus={() => setArticleDescriptionChars((prev) => ({
-                              ...prev,
-                              focused: true
-                            }))}
-                            onBlur={() => setArticleDescriptionChars((prev) => ({
-                              ...prev,
-                              focused: false
-                            }))}
-                            onChange={(event) => {
-                              field.onChange(event);
-                              setArticleDescriptionChars((prev) => ({
-                                ...prev,
-                                count: event.target.value.length
-                              }));
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {articleDescriptionChars.focused && (
-                    <CharactersCounter
-                      charactersCount={articleDescriptionChars.count}
-                      limit={250}
-                    />
-                  )}
-                </div>
-                <div className="mb-5">
-                  <FormField
-                    control={form.control}
-                    name={`translations.${index}.content`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {(fields[index].language === "es") && "Contenido"}
-                          {(fields[index].language === "en") && "Content"}
-                        </FormLabel>
-                        <FormControl>
-                          <MdEditorField
-                            value={field.value}
-                            setContent={value => field.onChange(value)}
-                            articleId={article?.id ?? undefined}
-                            updateContentImage={updateContentImage}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col md:flex-row gap-5 mb-5">
-                  <div className="w-full md:w-1/2 flex flex-col gap-5">
-                    <FormField
-                      control={form.control}
-                      name={`translations.${index}.seoTitle`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {(fields[index].language === "es") && "Título Seo"}
-                            {(fields[index].language === "en") && "Seo Title"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`translations.${index}.imageAlt`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {(fields[index].language === "es") && "Texto alternativo de Imagen"}
-                            {(fields[index].language === "en") && "Image alternative text"}
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="w-full md:w-1/2">
-                    <FormField
-                      control={form.control}
-                      name={`translations.${index}.seoDescription`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {(fields[index].language === "es") && "Descripción Seo"}
-                            {(fields[index].language === "en") && "Seo Description"}
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              className="resize-none min-h-20"
-                              onFocus={() => setSeoDescriptionChars((prev) => ({
-                                ...prev,
-                                focused: true
-                              }))}
-                              onBlur={() => setSeoDescriptionChars((prev) => ({
-                                ...prev,
-                                focused: false
-                              }))}
-                              onChange={(event) => {
-                                field.onChange(event);
-                                setSeoDescriptionChars((prev => ({
-                                  ...prev,
-                                  count: event.target.value.length
-                                })));
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {seoDescriptionChars.focused && (
-                      <CharactersCounter
-                        charactersCount={seoDescriptionChars.count}
-                        limit={160}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </section>
-
-          <Divider spaceY="md" />
+          <Divider spaceY="lg" />
 
           <section className="flex flex-col gap-3 md:flex-row md:justify-end">
             <Button

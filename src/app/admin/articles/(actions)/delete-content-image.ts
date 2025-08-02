@@ -18,15 +18,21 @@ export const deleteContentImageAction = async (
     where: { id: articleId },
     select: {
       id: true,
-      slug: true,
       images: true,
       category: {
         select: {
           translations: {
             select: {
+              language: true,
               slug: true,
             },
           },
+        },
+      },
+      translations: {
+        select: {
+          language: true,
+          slug: true,
         },
       },
     },
@@ -68,8 +74,12 @@ export const deleteContentImageAction = async (
     await deleteImage(publicId);
   }
 
-  article.category?.translations.forEach((translation) => {
-    revalidatePath(`/${translation.slug}/${article.slug}`);
+  article.category?.translations.forEach((categoryTranslation) => {
+    article.translations.forEach((articleTranslation) => {
+      if (articleTranslation.language === categoryTranslation.language) {
+        revalidatePath(`/${categoryTranslation.slug}/${articleTranslation.slug}`);
+      }
+    });
   });
   revalidatePath(`/admin/articles/${article.id}`);
   revalidatePath(`/admin/articles/${article.id}/edit`);

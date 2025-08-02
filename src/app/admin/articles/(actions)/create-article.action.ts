@@ -33,15 +33,8 @@ export const createArticleAction = async (
   }
 
   const rawData = {
-    title: formData.get("title") as string,
-    slug: formData.get("title") as string,
-    description: formData.get("description") as string,
     categoryId: formData.get("categoryId") as string,
-    content: formData.get("content") as string,
     image: formData.get("image") as File,
-    imageAlt: formData.get("imageAlt") as string,
-    seoTitle: formData.get("seoTitle") as string,
-    seoDescription: formData.get("seoDescription") as string,
     seoRobots: formData.get("seoRobots") as string,
     published: ((formData.get("published") as string) === "true") ? true : false,
     publishedAt: new Date(formData.get("publishedAt") as string),
@@ -80,17 +73,10 @@ export const createArticleAction = async (
     const prismaTransaction = await prisma.$transaction(async (transaction) => {
       const createdArticle = await transaction.article.create({
         data: {
-          title: articleToSave.title,
-          slug: articleToSave.slug,
-          description: articleToSave.description,
           categoryId: articleToSave.categoryId,
-          content: articleToSave.content,
           imageURL: imageUploaded.secureUrl,
           imagePublicID: imageUploaded.publicId,
-          imageAlt: articleToSave.imageAlt,
           authorId: authenticatedUserId,
-          seoTitle: articleToSave.seoTitle,
-          seoDescription: articleToSave.seoDescription,
           seoRobots: articleToSave.seoRobots,
           publishedAt: articleToSave.publishedAt,
           published: articleToSave.published,
@@ -117,17 +103,10 @@ export const createArticleAction = async (
         message: 'Artículo Creado 👍',
         article: {
           id: createdArticle.id,
-          title: createdArticle.title,
-          slug: createdArticle.slug,
-          description: createdArticle.description,
           categoryId: createdArticle.categoryId,
-          content: createdArticle.content,
           imageURL: imageUploaded.secureUrl,
           imagePublicID: imageUploaded.publicId,
-          imageAlt: createdArticle.imageAlt,
           authorId: authenticatedUserId,
-          seoTitle: createdArticle.seoTitle,
-          seoDescription: createdArticle.seoDescription,
           seoRobots: createdArticle.seoRobots,
           publishedAt: createdArticle.publishedAt,
           published: createdArticle.published,

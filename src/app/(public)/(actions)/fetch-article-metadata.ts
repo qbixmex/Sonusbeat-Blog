@@ -1,12 +1,15 @@
 import prisma from "@/lib/prisma";
 
 type Metadata = {
-  seoTitle: string;
-  seoDescription: string;
   seoRobots: string;
   author: { name: string };
   publishedAt: Date | null;
   imageUrl: string;
+  translations: {
+    language: string;
+    seoTitle: string;
+    seoDescription: string;
+  }[];
 };
 
 type ResponseFetchArticleMetadata = {
@@ -19,15 +22,22 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
   try {
     const metadata = await prisma.article.findFirst({
       where: {
-        translations: { some: { slug } },
+        translations: {
+          some: { slug },
+        },
       },
       select: {
-        seoTitle: true,
-        seoDescription: true,
         seoRobots: true,
         author: {select: { name: true }},
         imageURL: true,
         publishedAt: true,
+        translations: {
+          select: {
+            language: true,
+            seoTitle: true,
+            seoDescription: true,
+          }
+        }
       }
     });
 
@@ -42,14 +52,17 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
     return {
       ok: true,
       metadata: {
-        seoTitle: metadata.seoTitle as string,
-        seoDescription: metadata.seoDescription as string,
         seoRobots: metadata.seoRobots as string,
         author: {
           name: metadata.author.name as string
         },
         publishedAt: metadata.publishedAt,
         imageUrl: metadata.imageURL as string,
+        translations: metadata.translations.map((translation) => ({
+          language: translation.language,
+          seoTitle: translation.seoTitle,
+          seoDescription: translation.seoDescription,
+        })),
       },
       message: "Article fetched successfully 👍",
     };

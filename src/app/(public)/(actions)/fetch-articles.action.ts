@@ -33,7 +33,6 @@ export const fetchPublicArticlesAction = async (props?: {
       where: { published: true },
       select: {
         id: true,
-        slug: true,
         imageURL: true,
         seoRobots: true,
         publishedAt: true,
@@ -76,7 +75,6 @@ export const fetchPublicArticlesAction = async (props?: {
       articles: articles.map((article) => ({
         id: article.id,
         imageURL: article.imageURL as string,
-        slug: article.slug,
         author: {
           name: article.author.name!,
           username: article.author.username ?? 'Not provided',

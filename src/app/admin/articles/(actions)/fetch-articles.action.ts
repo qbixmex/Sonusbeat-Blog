@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 
 export type AdminArticle = {
   id: string;
-  title: string;
   category: {
     id: string;
     translations: {
@@ -17,9 +16,13 @@ export type AdminArticle = {
     name: string;
   };
   imageURL: string | null;
-  imageAlt: string | null;
   seoRobots: string | null;
   published: boolean;
+  translations: {
+    language: string;
+    title: string;
+    imageAlt: string;
+  }[];
 };
 
 type ResponseFetchArticles = {
@@ -53,9 +56,7 @@ export const fetchArticlesAction = async (props?: {
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
-        title: true,
         imageURL: true,
-        imageAlt: true,
         seoRobots: true,
         published: true,
         author: {
@@ -76,6 +77,13 @@ export const fetchArticlesAction = async (props?: {
               }
             }
           }
+        },
+        translations: {
+          select: {
+            language: true,
+            title: true,
+            imageAlt: true,
+          }
         }
       },
       take: limit,
@@ -87,9 +95,7 @@ export const fetchArticlesAction = async (props?: {
       message: 'Los artículos fueron obtenidos satisfactoriamente',
       articles: articles.map((article) => ({
         id: article.id,
-        title: article.title,
         imageURL: article.imageURL as string,
-        imageAlt: article.imageAlt,
         author: {
           id: article.author.id,
           name: article.author.name!,
@@ -100,6 +106,7 @@ export const fetchArticlesAction = async (props?: {
         },
         seoRobots: article.seoRobots,
         published: article.published,
+        translations: article.translations,
       })),
     }
   } catch (error) {
