@@ -2,6 +2,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { setRequestLocale } from 'next-intl/server';
+import GoogleAnalyticsWrapper from "@/components/google-analytics.component";
 import Providers from "@/app/providers";
 
 import type { Metadata } from "next";
@@ -45,6 +46,7 @@ const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
           <main className="w-full">
             <Providers>
               {children}
+              <GoogleAnalyticsWrapper />
             </Providers>
           </main>
         </NextIntlClientProvider>

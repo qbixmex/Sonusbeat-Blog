@@ -1,11 +1,19 @@
 'use client';
 
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { usePathname } from '../i18n/navigation';
 
 export const GoogleAnalyticsWrapper: React.FC = () => {
-  if (!process.env.NEXT_PUBLIC_GA_ID) return null
+  const pathname = usePathname();
 
-  return <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+  if (
+    process.env.NEXT_PUBLIC_GA_ID
+      || !pathname.startsWith('/login')
+      || !pathname.startsWith('/admin')
+  ) {
+    <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+  }
+  return null;
 };
 
 export default GoogleAnalyticsWrapper;
