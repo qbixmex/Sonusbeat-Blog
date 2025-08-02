@@ -93,7 +93,7 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                           <TableRow>
                             <TableHead>Texto Alternativo:</TableHead>
                             <TableCell className="text-muted-foreground">
-                              {article?.imageAlt}
+                              {article?.translations[0].imageAlt}
                             </TableCell>
                           </TableRow>
                         </TableBody>
@@ -106,19 +106,19 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                       <TableRow>
                         <TableHead className="text-sm font-semibold">Título:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground break-words">
-                          {article?.title}
+                          {article?.translations[0].title}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableHead className="text-sm font-semibold">Slug:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground break-words">
-                          {article?.slug}
+                          {article?.translations[0].slug}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableHead className="text-sm font-semibold align-top">Descripción:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.description}
+                          {article?.translations[0].description}
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -150,19 +150,19 @@ const ArticlePage: FC<Props> = async ({ params }) => {
                       <TableRow>
                         <TableHead className="text-sm font-semibold align-top">Contenido:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.content}
+                          {article?.translations[0].content}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableHead className="text-sm font-semibold">Título Seo:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground">
-                          {article?.seoTitle}
+                          {article?.translations[0].seoTitle}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableHead className="text-sm font-semibold align-top">Descripción Seo:</TableHead>
                         <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.seoDescription}
+                          {article?.translations[0].seoDescription}
                         </TableCell>
                       </TableRow>
                       <TableRow>

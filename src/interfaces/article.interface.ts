@@ -8,21 +8,14 @@ export type Robots =
 
 export interface Article {
   id?: string;
-  title: string;
   imageURL: string | null;
-  imageAlt: string | null;
   imagePublicID?: string;
   images?: string[];
-  slug: string;
-  description: string;
-  content: string;
   author?: {
     id: string;
     name: string;
   } | string;
   category: Category | string;
-  seoTitle: string | null;
-  seoDescription: string | null;
   seoRobots: Robots;
   publishedAt: Date;
   published: boolean;
@@ -44,11 +37,7 @@ interface ArticleTranslation {
 
 export interface PublicArticle {
   id: string;
-  title: string;
   imageURL: string;
-  imageAlt: string;
-  slug: string;
-  description: string;
   author: {
     name: string;
     username: string;
@@ -56,9 +45,6 @@ export interface PublicArticle {
   category: {
     translations: CategoryTranslation[];
   };
-  content: string;
-  seoTitle: string;
-  seoDescription: string;
   seoRobots: Robots;
   publishedAt: Date;
   translation: ArticleTranslation | null;

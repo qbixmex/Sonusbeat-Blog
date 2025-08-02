@@ -27,12 +27,10 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   const t = await getTranslations({ locale });
   const siteNameTranslation = t('SiteName');
 
-  const metaTitle = metadata?.seoTitle;
-  const metaDescription = metadata?.seoDescription
-    ? metadata?.seoDescription.length >= 160
-      ? `${metadata?.seoDescription.slice(0, 157)} ...`
-      : metadata?.seoDescription
-    : "";
+  const currentTranslation = metadata?.translations.find((t) => t.language === locale);
+
+  const metaTitle = currentTranslation ? currentTranslation.seoTitle : "";
+  const metaDescription = currentTranslation ? currentTranslation.seoDescription : "";
   const metaRobots = renderSeoRobots(metadata?.seoRobots as string);
 
   return {

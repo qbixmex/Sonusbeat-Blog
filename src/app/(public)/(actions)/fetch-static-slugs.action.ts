@@ -1,5 +1,20 @@
 import prisma from "@/lib/prisma";
 
+type GetStaticArticlesSlugsResponse = Promise<{
+  ok: boolean;
+  articles: {
+    categoryTranslations: {
+      language: string;
+      slug: string;
+    }[];
+    articleTranslations: {
+      language: string;
+      slug: string;
+    }[];
+  }[];
+  error?: string;
+}>;
+
 /**
  * Get slugs of latest articles.
  * 
@@ -11,25 +26,10 @@ import prisma from "@/lib/prisma";
  * 
  * @returns The slugs of the latest required articles.
  */
-export const getStaticArticlesSlugs = async (quantity: number): Promise<{
-  ok: boolean;
-  articles: {
-    slug: string;
-    categoryTranslations: {
-      language: string;
-      slug: string;
-    }[];
-    articleTranslations: {
-      language: string;
-      slug: string;
-    }[];
-  }[];
-  error?: string;
-}> => {
+export const getStaticArticlesSlugs = async (quantity: number): GetStaticArticlesSlugsResponse => {
   try {
     const articles = await prisma.article.findMany({
       select: {
-        slug: true,
         translations: {
           select: {
             language: true,
@@ -54,7 +54,6 @@ export const getStaticArticlesSlugs = async (quantity: number): Promise<{
     return {
       ok: true,
       articles: articles.map((article) => ({
-        slug: article.slug,
         categoryTranslations: article.category?.translations ?? [],
         articleTranslations: article.translations ?? [],
       })),
