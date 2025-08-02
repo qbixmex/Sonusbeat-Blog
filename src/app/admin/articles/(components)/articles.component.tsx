@@ -127,7 +127,11 @@ export const Articles: FC<Props> = ({ articles }) => {
                           ? article.imageURL
                           : `/images/blog/${article.imageURL}`
                       }
-                      alt={article.title as string}
+                      alt={
+                        (article.translations.length > 0)
+                          ? article.translations[0].imageAlt
+                          : "Imagen del artículo"
+                      }
                       className="w-[150px] h-[75px] object-cover rounded"
                       width={150}
                       height={75}
@@ -136,7 +140,11 @@ export const Articles: FC<Props> = ({ articles }) => {
                 </TableCell>
                 <TableCell className="whitespace-break-spaces break-words max-w-xs">
                   <Link href={`/admin/articles/${article.id}`}>
-                    {article.title}
+                    {
+                      (article.translations.length > 0)
+                        ? article.translations[0].title
+                        : "Título del artículo"
+                    }
                   </Link>
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">

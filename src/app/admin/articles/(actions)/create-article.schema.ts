@@ -10,39 +10,10 @@ const ACCEPTED_FILE_TYPES = [
 ];
 
 export const createFormSchema = z.object({
-  title: z
-    .string({
-      required_error: "El título es obligatorio",
-      invalid_type_error: "El título debe ser un string",
-    })
-    .trim()
-    .min(8, "El título debe ser por lo menos de 8 caracteres")
-    .max(250, "El título debe ser máximo 250 caracteres"),
-  slug: z
-    .string({
-      required_error: "El slug es obligatorio",
-      invalid_type_error: "El slug debe ser un string",
-    })
-    .trim()
-    .min(8, "El slug debe ser por lo menos de 8 caracteres")
-    .max(250, "El slug debe ser máximo 250 caracteres"),
-  description: z
-    .string({
-      required_error: "La descripción es obligatoria",
-      invalid_type_error: "La descripción debe ser un string",
-    })
-    .min(8, "La descripción debe ser por lo menos de 8 caracteres")
-    .max(250, "La descripción debe ser máximo 250 caracteres"),
-  content: z
-    .string({
-      required_error: "El contenido es obligatorio",
-      invalid_type_error: "El contenido debe ser un string",
-    })
-    .min(8, "El contenido debe ser por lo menos de 8 caracteres"),
   categoryId: z
     .string({
       required_error: "La categoría es obligatoria",
-      invalid_type_error: "La categoría debe ser un string",
+      invalid_type_error: "El ID de la categoría debe ser un string",
     }),
   image: z
     .instanceof(File, { message: "La imagen debe ser un archivo" })
@@ -52,26 +23,6 @@ export const createFormSchema = z.object({
     .refine((file) => {
       return file && ACCEPTED_FILE_TYPES.includes(file.type);
     }, 'El tipo de archivo debe ser uno de los siguientes: png, jpeg, jpg, gif, webp'),
-  imageAlt: z
-    .string({ invalid_type_error: "El author seo debe ser un string" })
-    .min(3, "El author seo debe ser por lo menos de 3 caracteres")
-    .optional(),
-  seoTitle: z
-    .string({
-      required_error: "El título seo es obligatorio",
-      invalid_type_error: "El título seo debe ser un string",
-    })
-    .trim()
-    .min(8, "El título seo debe ser por lo menos de 8 caracteres")
-    .max(70, "El título seo debe ser máximo 70 caracteres"),
-  seoDescription: z
-    .string({
-      required_error: "La descripción seo es obligatorio",
-      invalid_type_error: "La descripción seo debe ser un string",
-    })
-    .trim()
-    .min(8, "La descripción seo debe ser por lo menos de 8 caracteres")
-    .max(160, "La descripción seo debe ser máximo 160 caracteres"),
   seoRobots: z
     .enum([
       "index_follow",
