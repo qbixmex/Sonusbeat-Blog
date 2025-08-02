@@ -1,6 +1,6 @@
 {
   "name": "sonusbeat-blog",
-  "version": "0.38.2",
+  "version": "0.38.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,7 @@
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && next-sitemap",
     "prisma:deploy": "bunx prisma migrate deploy && bunx prisma generate",
     "seed": "NODE_ENV=development ts-node ./src/seed/seed-database.ts"
   },
@@ -47,6 +47,7 @@
     "next": "^15.4.4",
     "next-auth": "^5.0.0-beta.29",
     "next-intl": "^4.3.4",
+    "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.6",
     "prisma": "^6.13.0",
     "react": "^19.1.0",
