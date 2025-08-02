@@ -7,9 +7,16 @@ type Metadata = {
   imageUrl: string;
   translations: {
     language: string;
+    slug: string;
     seoTitle: string;
     seoDescription: string;
   }[];
+  category: {
+    translations: {
+      language: string;
+      slug: string;
+    }[];
+  };
 };
 
 type ResponseFetchArticleMetadata = {
@@ -31,9 +38,20 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
         author: {select: { name: true }},
         imageURL: true,
         publishedAt: true,
+        category: {
+          select: {
+            translations: {
+              select: {
+                language: true,
+                slug: true,
+              }
+            }
+          },
+        },
         translations: {
           select: {
             language: true,
+            slug: true,
             seoTitle: true,
             seoDescription: true,
           }
@@ -58,7 +76,14 @@ export const getArticleMetadataBySlug = async (slug: string): Promise<ResponseFe
         },
         publishedAt: metadata.publishedAt,
         imageUrl: metadata.imageURL as string,
+        category: {
+          translations: metadata.category?.translations.map((translation) => ({
+            language: translation.language,
+            slug: translation.slug,
+          })) ?? [],
+        },
         translations: metadata.translations.map((translation) => ({
+          slug: translation.slug,
           language: translation.language,
           seoTitle: translation.seoTitle,
           seoDescription: translation.seoDescription,

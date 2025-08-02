@@ -17,6 +17,8 @@ type Props = Readonly<{
   }>;
 }>;
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { locale, slug } = await params;
 
@@ -27,6 +29,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   const t = await getTranslations({ locale });
   const siteNameTranslation = t('SiteName');
 
+  const categoryTranslation = metadata?.category.translations.find((t) => t.language === locale);
   const currentTranslation = metadata?.translations.find((t) => t.language === locale);
 
   const metaTitle = currentTranslation ? currentTranslation.seoTitle : "";
@@ -38,9 +41,13 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     description: metaDescription,
     robots: metaRobots,
     authors: [{ name: metadata?.author.name }],
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(siteUrl),
     // social media
     openGraph: {
+      url: `${siteUrl}`
+        + `/${locale}`
+        + `/${categoryTranslation?.slug}`
+        + `/${currentTranslation?.slug}`,
       title: metaTitle,
       description: metaDescription,
       type: "article",
@@ -106,11 +113,13 @@ const ArticlePage: FC<Props> = async ({ params }) => {
   });
 
   return (
-    <PublicLayout urlParams={urlParams}>
-      <MainContainer>
-        <SingleArticle article={article} />
-      </MainContainer>
-    </PublicLayout>
+    <>
+      <PublicLayout urlParams={urlParams}>
+        <MainContainer>
+          <SingleArticle article={article} />
+        </MainContainer>
+      </PublicLayout>
+    </>
   );
 };
 
