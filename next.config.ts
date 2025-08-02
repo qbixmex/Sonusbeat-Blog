@@ -1,21 +1,9 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
 
 const nextConfig: NextConfig = {
-  siteUrl: SITE_URL ?? 'http://localhost:3000',
-  generateRobotsTxt: true,
-  alternateRefs: [
-    {
-      href: `${SITE_URL}/es`,
-      hreflang: 'es',
-    },
-    {
-      href: `${SITE_URL}/en`,
-      hreflang: 'en',
-    },
-  ],
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
