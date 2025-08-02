@@ -1,3 +1,6 @@
 User-agent: *
 Disallow: /login
 Disallow: /admin/
+
+Allow: /
+Sitemap: https://sonusbeat.blog/sitemap.xml

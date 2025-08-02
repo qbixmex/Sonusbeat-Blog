@@ -40,6 +40,15 @@ const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
       <head>
         <link rel="icon" type="image/png" href="/sonusbeat_32_32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        {process.env.NEXT_PUBLIC_SITE_URL && (
+          <>
+            <link rel="canonical" href={`${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/`} />
+            {/* Google Hreflangs */}
+            <link rel="alternate" hrefLang="es" href={`${process.env.NEXT_PUBLIC_SITE_URL}/es/`} />
+            <link rel="alternate" hrefLang="en" href={`${process.env.NEXT_PUBLIC_SITE_URL}/en/`} />
+            <link rel="alternate" hrefLang="x-default" href={`${process.env.NEXT_PUBLIC_SITE_URL}/`} />
+          </>
+        )}
       </head>
       <body className={`${fontsVariables.join(' ')} antialiased`}>
         <NextIntlClientProvider locale={locale}>
