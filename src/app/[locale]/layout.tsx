@@ -40,6 +40,9 @@ const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
       <head>
         <link rel="icon" type="image/png" href="/sonusbeat_32_32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        { process.env.FACEBOOK_APP_ID && (
+          <meta property="fb:app_id" content={process.env.FACEBOOK_APP_ID} />
+        )}
       </head>
       <body className={`${fontsVariables.join(' ')} antialiased`}>
         <NextIntlClientProvider locale={locale}>

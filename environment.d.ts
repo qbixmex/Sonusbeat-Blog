@@ -12,6 +12,7 @@ declare global {
       DB_USER: string | null;
       DB_PASSWORD: string | null;
       DB_NAME: string | null;
+      FACEBOOK_APP_ID: string | null;
     }
   }
 }
