@@ -112,14 +112,9 @@ model CategoryTranslation {
 
 model Article {
   id          String @id @default(uuid())
-  title       String @db.VarChar(250)
-  slug        String @unique @db.VarChar(250)
-  description String @db.VarChar(250)
-  content     String @db.Text
 
   imageURL      String? @default("article-default.jpg")
   imagePublicID String?
-  imageAlt      String? @db.VarChar(100)
   images        String[]
 
   categoryId String?   @map("category_id")
@@ -128,8 +123,6 @@ model Article {
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  seoTitle       String?
-  seoDescription String?
   seoRobots      SeoRobotsOption @default(noindex_nofollow)
 
   publishedAt DateTime?

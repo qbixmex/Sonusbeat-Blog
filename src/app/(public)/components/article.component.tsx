@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from '@/root/src/i18n/navigation';
-import { isValid, parseISO } from 'date-fns';
+import { isValid } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { articleFormatDate } from '@/lib/utils';
 import { CalendarDays, ChevronsDownUp, Ellipsis, Folder, User } from 'lucide-react';
@@ -109,7 +109,7 @@ export const Article: FC<Props> = ({ article, feature = false, locale }) => {
           <CalendarDays className={styles.articleDataIcon} />
           <span className={styles.articleDataText}>
             {
-              article.publishedAt && isValid(parseISO(article.publishedAt.toString()))
+              isValid(article.publishedAt)
                 ? articleFormatDate(
                   article.publishedAt,
                   (locale === "es") ? es : undefined

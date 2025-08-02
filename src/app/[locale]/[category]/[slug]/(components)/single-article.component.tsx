@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 import Divider from '@/components/divider.component';
 import rehypeRaw from "rehype-raw";
 import rehypeYoutube from '@/lib/rehype-youtube';
-import { isValid, parseISO } from 'date-fns';
+import { isValid } from 'date-fns';
 
 type Props = Readonly<{
   article: PublicArticle;
@@ -46,8 +46,9 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           <section className={styles.headerInfoSection}>
             <User className={styles.headerInfoIcon} />
             <Link
+              // TODO: href={`/author/${article.author.username}`}
               className={styles.headerInfoLink}
-              href={`/author/${article.author.username}`}
+              href="#"
             >
               {article.author.name}
             </Link>
@@ -55,7 +56,8 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           <section className={styles.headerInfoSection}>
             <FolderOpen className={styles.headerInfoIcon} />
             <Link
-              href={category ? `/${category?.slug}/articles` : '#'}
+              // TODO: href={category ? `/${category?.slug}/articles` : '#'}
+              href="#"
               className={styles.headerInfoLink}
             >
               { category?.name ?? "No Category Available" }
@@ -65,7 +67,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
             <CalendarDays className={styles.headerInfoIcon} />
             <p className={styles.headerInfoDate}>
               {
-                article.publishedAt && isValid(parseISO(article.publishedAt.toString()))
+                isValid(article.publishedAt)
                   ? articleFormatDate(
                     article.publishedAt,
                     lang === 'es' ? es : enUS

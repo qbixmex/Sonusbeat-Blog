@@ -42,15 +42,8 @@ export const updateArticleAction = async (
   }
 
   const rawData = {
-    title: formData.get("title") as string,
-    slug: formData.get("slug") as string,
-    description: formData.get("description") as string,
     categoryId: formData.get("categoryId") as string,
-    content: formData.get("content") as string,
     image: formData.get("image") as File,
-    imageAlt: formData.get("imageAlt") as string,
-    seoTitle: formData.get("seoTitle") as string,
-    seoDescription: formData.get("seoDescription") as string,
     seoRobots: formData.get("seoRobots") as string,
     published: ((formData.get("published") as string) === "true") ? true : false,
     publishedAt: new Date(formData.get("publishedAt") as string),
@@ -96,14 +89,7 @@ export const updateArticleAction = async (
         const updatedArticle = await transaction.article.update({
           where: { id: articleId },
           data: {
-            title: articleToSave.title,
-            slug: articleToSave.slug,
             categoryId: articleToSave.categoryId,
-            description: articleToSave.description,
-            content: articleToSave.content,
-            imageAlt: articleToSave.imageAlt ?? '',
-            seoTitle: articleToSave.seoTitle,
-            seoDescription: articleToSave.seoDescription,
             seoRobots: articleToSave.seoRobots,
             publishedAt: articleToSave.publishedAt as Date,
             published: articleToSave.published,
@@ -180,8 +166,12 @@ export const updateArticleAction = async (
 
         // Revalidate Paths
         revalidatePath('/');
-        updatedArticle.category?.translations.forEach((translation) => {
-          revalidatePath(`/${translation.slug}/${updatedArticle.slug}`);
+        updatedArticle.category?.translations.forEach((categoryTranslation) => {
+          updatedArticle.translations.forEach((articleTranslation) => {
+            if (articleTranslation.language === categoryTranslation.language) {
+              revalidatePath(`/${categoryTranslation.slug}/${articleTranslation.slug}`);
+            }
+          });
         });
 
         return {
@@ -189,10 +179,6 @@ export const updateArticleAction = async (
           message: 'Artículo actualizado 👍',
           article: {
             id: updatedArticle.id,
-            title: updatedArticle.title,
-            slug: updatedArticle.slug,
-            description: updatedArticle.description,
-            content: updatedArticle.content,
             author: {
               id: updatedArticle.author.id,
               name: updatedArticle.author.name!,
@@ -203,9 +189,6 @@ export const updateArticleAction = async (
             },
             imageURL: updatedArticle.imageURL ?? 'no-image.png',
             imagePublicID: updatedArticle.imagePublicID ?? '',
-            imageAlt: updatedArticle.imageAlt ?? '',
-            seoTitle: updatedArticle.seoTitle,
-            seoDescription: updatedArticle.seoDescription,
             seoRobots: updatedArticle.seoRobots,
             publishedAt: updatedArticle.publishedAt as Date,
             published: updatedArticle.published,

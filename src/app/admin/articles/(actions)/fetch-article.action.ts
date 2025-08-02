@@ -39,23 +39,16 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
       message: "Artículo fue obtenido correctamente 👍",
       article: {
         id: article.id,
-        title: article.title,
-        slug: article.slug,
-        description: article.description,
-        content: article.content,
         category: {
           id: article?.category?.id as string,
           translations: article?.category?.translations ?? [],
         },
         imageURL: article.imageURL,
-        imageAlt: article.imageAlt,
         images: article.images,
         author: {
           id: article.author.id,
           name: article.author.name!,
         },
-        seoTitle: article.seoTitle,
-        seoDescription: article.seoDescription,
         seoRobots: article.seoRobots,
         publishedAt: article.publishedAt as Date,
         published: article.published,

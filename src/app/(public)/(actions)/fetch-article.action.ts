@@ -1,14 +1,10 @@
 import type { PublicArticle, Robots } from "@/interfaces/article.interface";
 import prisma from "@/lib/prisma";
 
-interface PublicArticleWithContent extends PublicArticle {
-  content: string;
-}
-
 type ResponseFetchArticles = {
   ok: boolean;
   message: string;
-  article: PublicArticleWithContent | null;
+  article: PublicArticle | null;
 };
 
 /**
@@ -30,12 +26,7 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
       },
       select: {
         id: true,
-        title: true,
-        slug: true,
         imageURL: true,
-        imageAlt: true,
-        description: true,
-        content: true,
         author: {
           select: {
             name: true,
@@ -53,8 +44,6 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
             }
           }
         },
-        seoTitle: true,
-        seoDescription: true,
         seoRobots: true,
         publishedAt: true,
         translations: {
@@ -77,12 +66,7 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
       message: 'Los artículos fueron obtenidos satisfactoriamente',
       article: {
         id: article?.id as string,
-        title: article?.title as string,
-        slug: article?.slug as string,
         imageURL: article?.imageURL as string,
-        imageAlt: article?.imageAlt as string,
-        description: article?.description as string,
-        content: article?.content as string,
         author: {
           name: article?.author.name as string,
           username: article?.author.username as string,
@@ -90,8 +74,6 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
         category: {
           translations: article?.category?.translations ?? [],
         },
-        seoTitle: article?.seoTitle as string,
-        seoDescription: article?.seoDescription as string,
         seoRobots: article?.seoRobots as Robots,
         publishedAt: article?.publishedAt as Date,
         translation: article?.translations.find(t => t.language === locale) ?? null,
