@@ -23,12 +23,12 @@ const HomePage: FC<Props> = ({ params }) => {
 
   // Once the request locale is set, you
   // can call hooks from `next-intl`
-  const t = useTranslations('HomePage');
+  const translate = useTranslations('HomePage');
 
   return (
     <PublicLayout>
       <MainContainer>
-        <h1 className="hide-element">{t('title')}</h1>
+        <h1 className="hide-element">{translate('title')}</h1>
         <ArticlesList articles={articles} locale={locale} />
       </MainContainer>
     </PublicLayout>

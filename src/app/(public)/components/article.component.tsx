@@ -101,9 +101,12 @@ export const Article: FC<Props> = ({ article, feature = false, locale }) => {
       <section className={styles.articleData}>
         <div className={styles.articleDataRow}>
           <Folder className={styles.articleDataIcon} />
-          <span className={styles.articleDataText}>
+          <Link
+            href={`/${locale}/${categorySlug}`}
+            className={styles.articleLink}
+          >
             {categoryName}
-          </span>
+          </Link>
         </div>
         <div className={styles.articleDataRow}>
           <CalendarDays className={styles.articleDataIcon} />

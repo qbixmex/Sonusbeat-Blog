@@ -19,6 +19,7 @@ type Props = Readonly<{
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
 
+//* ONLY BUILD TIME
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { locale, slug } = await params;
 
@@ -100,7 +101,7 @@ const ArticlePage: FC<Props> = async ({ params }) => {
 
   const article = response.article;
 
-  // Generar urlParams dinámicamente según las traducciones del artículo y la categoría
+  // Generate urlParams dynamically based on the article and category translations
   const urlParams = article.allTranslations.map(articleTranslation => {
     const categoryTranslation = article.category.translations.find((categoryTranslation) =>
       categoryTranslation.language === articleTranslation.language
