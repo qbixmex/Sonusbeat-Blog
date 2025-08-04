@@ -17,7 +17,7 @@ type NavbarProps = Readonly<{
   urlParams?: {
     locale: string;
     category: string;
-    slug: string;
+    slug?: string;
   }[];
 }>;
 

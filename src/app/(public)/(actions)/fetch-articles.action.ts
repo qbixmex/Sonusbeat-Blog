@@ -18,19 +18,30 @@ type ResponseFetchArticles = {
  * fetchArticlesAction({ offset: 10 });
  * fetchArticlesAction({ limit: 5, offset: 0 });
  * fetchArticlesAction({ limit: 20, offset: 10 });
+ * fetchArticlesAction({ limit: 12, offset: 0, category: 'technology' });
  * ```
  * @returns Response containing the articles or an error message.
  */
 export const fetchPublicArticlesAction = async (props?: {
   limit?: number;
   offset?: number;
+  category?: string;
 }): Promise<ResponseFetchArticles> => {
-  const { limit, offset } = props ?? { limit: 10, offset: 0 };
+  const { limit, offset, category } = props ?? {
+    limit: 10,
+    offset: 0,
+    category: undefined
+  };
 
   try {
     const articles = await prisma.article.findMany({
       orderBy: { publishedAt: 'desc' },
-      where: { published: true },
+      where: {
+        published: true,
+        category: category
+          ? { translations: { some: { slug: category } } }
+          : undefined 
+      },
       select: {
         id: true,
         imageURL: true,
@@ -82,8 +93,8 @@ export const fetchPublicArticlesAction = async (props?: {
         category: {
           translations: article.category?.translations.map((translation) => ({
             language: translation.language,
-            slug: translation.slug,
             name: translation.name,
+            slug: translation.slug,
           })) ?? [],
         },
         seoRobots: article.seoRobots,

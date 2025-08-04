@@ -5,6 +5,9 @@
     "description": "Discover the latest in music and sound technology.",
     "articles": "Latest Articles"
   },
+  "CategoryPage": {
+    "title": "{category} Articles"
+  },
   "LoginPage": {
     "title": "Welcome to SonusBeat",
     "socialMediaInstructions": "Login with social media",

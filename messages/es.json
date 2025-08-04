@@ -5,6 +5,9 @@
     "description": "Descubre lo último en tecnología musical y de sonido.",
     "articles": "Últimos Artículos"
   },
+  "CategoryPage": {
+    "title": "Artículos de {category}"
+  },
   "LoginPage": {
     "title": "Accede a tu cuenta",
     "socialMediaInstructions": "Acceso con redes sociales",
