@@ -17,7 +17,7 @@ type Props = Readonly<{
   urlParams?: {
     locale: string;
     category: string;
-    slug: string;
+    slug?: string;
   }[];
 }>;
 
@@ -31,12 +31,9 @@ export const LanguageSwitcher: FC<Props> = ({ urlParams }) => {
     <Select value={locale} onValueChange={(newLocale) => {
       if (urlParams) {
         const translation = urlParams.find(t => t.locale === newLocale);
-        redirect({
-          href: {
-            pathname: `/${translation?.category}/${translation?.slug}`,
-          },
-          locale: newLocale,
-        });
+        let url = `/${translation?.category}`;
+        url += (translation?.slug) ? `/${translation.slug}` : '';
+        redirect({ href: { pathname: url, }, locale: newLocale, });
         return;
       }
       redirect({ href: pathname, locale: newLocale });

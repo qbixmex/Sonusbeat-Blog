@@ -56,8 +56,7 @@ export const SingleArticle: FC<Props> = ({ article }) => {
           <section className={styles.headerInfoSection}>
             <FolderOpen className={styles.headerInfoIcon} />
             <Link
-              // TODO: href={category ? `/${category?.slug}/articles` : '#'}
-              href="#"
+              href={`/${lang}/${category?.slug}`}
               className={styles.headerInfoLink}
             >
               { category?.name ?? "No Category Available" }
