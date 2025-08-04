@@ -6,7 +6,10 @@
     "articles": "Últimos Artículos"
   },
   "CategoryPage": {
-    "title": "Artículos de {category}"
+    "title": "Artículos, noticias y recursos de {category}",
+    "description": "Explora artículos en la categoría {category}.",
+    "seoTitle": "{category} | Artículos, Noticias y Recursos - Sonusbeat Blog",
+    "seoDescription": "Encuentra los mejores artículos, novedades y recursos sobre {category} en el blog de Sonusbeat. Mantente actualizado con lo último en {category}."
   },
   "LoginPage": {
     "title": "Accede a tu cuenta",
