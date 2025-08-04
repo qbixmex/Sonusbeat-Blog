@@ -13,5 +13,9 @@
 }
 
 .articleDataText {
-  @apply text-[0.75rem] text-stone-600 italic font-semibold md:text-sm;
+  @apply text-[0.75rem] text-amber-600 italic font-semibold md:text-sm;
+}
+
+.articleLink {
+  @apply text-[0.75rem] text-amber-600 italic font-semibold md:text-sm;
 }
