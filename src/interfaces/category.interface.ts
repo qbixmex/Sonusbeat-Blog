@@ -14,3 +14,11 @@ export interface CategoryTranslation {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface PublicCategoryForHomePage {
+  translations: {
+    language: string;
+    name: string;
+    slug: string;
+  }[];
+}
