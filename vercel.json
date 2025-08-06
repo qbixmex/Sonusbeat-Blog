@@ -1,0 +1,8 @@
+{
+  "cron": [
+    {
+      "path": "/api/generate-sitemap",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}
