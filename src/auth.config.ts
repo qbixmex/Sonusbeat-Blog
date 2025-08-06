@@ -14,7 +14,9 @@ import { z } from 'zod';
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   pages: {
-    signIn: '/login',
+    signIn: '/es/login',
+    signOut: '/es/logout',
+    error: '/es/login',
   },
   providers: [
     GitHub({
@@ -78,7 +80,7 @@ export const authConfig: NextAuthConfig = {
       // If user exists but email is not verified, block login !
       if (!dbUser.emailVerified) {
         console.error(`[AUTH] Usuario no verificado: ${user.email}`);
-        return '/login?error=auth';
+        return '/es/login?error=auth';
       }
       return true;
     },

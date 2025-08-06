@@ -169,7 +169,7 @@ export const updateArticleAction = async (
         updatedArticle.category?.translations.forEach((categoryTranslation) => {
           updatedArticle.translations.forEach((articleTranslation) => {
             if (articleTranslation.language === categoryTranslation.language) {
-              revalidatePath(`/${categoryTranslation.slug}/${articleTranslation.slug}`);
+              revalidatePath(`/${categoryTranslation.language}/${categoryTranslation.slug}/${articleTranslation.slug}`);
             }
           });
         });
