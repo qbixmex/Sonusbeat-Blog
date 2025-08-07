@@ -1,9 +1,13 @@
+export const config = {
+  schedule: '0 6 * * *', // Runs every day at 6:00 AM UTC
+};
+
 import { NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 
-const execAsync = promisify(exec)
+const execAsync = promisify(exec);
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
