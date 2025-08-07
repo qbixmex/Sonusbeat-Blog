@@ -106,3 +106,17 @@ npx prisma generate
 ```bash
 npx prisma studio
 ```
+
+## Generate Sitemap
+
+### Generate JWT Token
+
+```bash
+bunx ts-node src/lib/generate-jwt.ts
+```
+
+### Use the generated token to generate the sitemap
+
+```bash
+curl -H "Authorization: Bearer <TOKEN>" https://your_domain.com/api/generate-sitemap
+```
