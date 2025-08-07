@@ -40,7 +40,7 @@ export async function GET(request: Request) {
         catTrans => catTrans.language === translation.language
       );
       return {
-        loc: `${URL}/category_${categoryTranslation?.language ?? 'es'}/${categoryTranslation?.slug ?? 'un-categorized'}/${translation.slug}`,
+        loc: `${URL}/${categoryTranslation?.language ?? 'es'}/${categoryTranslation?.slug ?? 'un-categorized'}/${translation.slug}`,
         lastmod: article.updatedAt.toISOString(),
         changefreq: 'daily' as const,
         priority: 0.8,
