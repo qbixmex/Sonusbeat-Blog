@@ -48,13 +48,15 @@ export async function GET(request: Request) {
     })
   );
 
+  const root = ["es", "en"].map(lang => ({
+    loc: `${URL}/${lang}/`,
+    lastmod: new Date().toISOString(),
+    changefreq: 'daily' as const,
+    priority: 1.0,
+  }));
+
   const fields = [
-    {
-      loc: `${URL}/`,
-      lastmod: new Date().toISOString(),
-      changefreq: 'daily' as const,
-      priority: 1.0,
-    },
+    ...root,
     ...entries,
   ];
 
