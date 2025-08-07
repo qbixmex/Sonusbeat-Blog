@@ -6,10 +6,13 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { SitemapBuilder } from 'next-sitemap';
 import prisma from '@/lib/prisma';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-const URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
 export async function GET(request: Request) {
   const articles = await prisma.article.findMany({
@@ -40,7 +43,7 @@ export async function GET(request: Request) {
         catTrans => catTrans.language === translation.language
       );
       return {
-        loc: `${URL}/${categoryTranslation?.language ?? 'es'}/${categoryTranslation?.slug ?? 'un-categorized'}/${translation.slug}`,
+        loc: `${SITE_URL}/${categoryTranslation?.language ?? 'es'}/${categoryTranslation?.slug ?? 'un-categorized'}/${translation.slug}`,
         lastmod: article.updatedAt.toISOString(),
         changefreq: 'daily' as const,
         priority: 0.8,
@@ -49,7 +52,7 @@ export async function GET(request: Request) {
   );
 
   const root = ["es", "en"].map(lang => ({
-    loc: `${URL}/${lang}/`,
+    loc: `${SITE_URL}/${lang}/`,
     lastmod: new Date().toISOString(),
     changefreq: 'daily' as const,
     priority: 1.0,
@@ -74,9 +77,34 @@ export async function GET(request: Request) {
 
   try {
     const builder = new SitemapBuilder();
-    const sitemapXml = builder.buildSitemapXml(fields);
+    const CHUNK_SIZE = 50000;
+    const publicDir = path.join(process.cwd(), 'public');
 
-    return new NextResponse(sitemapXml, {
+    // Split the fields into chunks of CHUNK_SIZE
+    const chunks = [];
+    for (let i = 0; i < fields.length; i += CHUNK_SIZE) {
+      chunks.push(fields.slice(i, i + CHUNK_SIZE));
+    }
+
+    // Divide the sitemap into multiple files if necessary
+    const sitemapFiles: string[] = [];
+
+    chunks.forEach((chunk, index) => {
+      const xml = builder.buildSitemapXml(chunk);
+      const filename = `sitemap-${index}.xml`;
+      fs.writeFileSync(path.join(publicDir, filename), xml);
+      sitemapFiles.push(`${SITE_URL}/${filename}`);
+    });
+
+    // Generate the sitemap index XML
+    const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>\n`
+      + `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`
+      + sitemapFiles.map(loc => `  <sitemap><loc>${loc}</loc></sitemap>`).join('\n')
+      + `\n</sitemapindex>`;
+
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapIndexXml);
+
+    return new NextResponse(sitemapIndexXml, {
       status: 200,
       headers: { 'Content-Type': 'application/xml' },
     });
