@@ -55,7 +55,7 @@ export const createArticleAction = async (
   if (!articleParsed.success) {
     return {
       ok: false,
-      message: articleParsed.error.errors[0].message,
+      message: articleParsed.error.message,
       user: null,
     };
   }
