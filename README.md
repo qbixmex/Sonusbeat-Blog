@@ -9,9 +9,6 @@
 ```bash
 # NPM
 npm install
-
-# BUN
-bun install
 ```
 
 ## Generate Auth Secret Key
@@ -47,9 +44,6 @@ AUTH_SECRET="RNBUvICd9zpIPyIVAs80Z ..."
 ```bash
 # NPM
 npm run dev
-
-# BUN
-bun dev
 ```
 
 ## Build the project
@@ -57,9 +51,6 @@ bun dev
 ```bash
 # NPM
 npm run build
-
-# BUN
-bun run build
 ```
 
 ## Preview Locally
@@ -69,9 +60,6 @@ bun run build
 ```bash
 # NPM
 npm start
-
-# BUN
-bun start
 ```
 ## Docker
 
@@ -107,16 +95,9 @@ npx prisma generate
 npx prisma studio
 ```
 
-## Generate Sitemap
-
-### Generate JWT Token
+## Run Tests
 
 ```bash
-bunx ts-node src/lib/generate-jwt.ts
-```
-
-### Use the generated token to generate the sitemap
-
-```bash
-curl -H "Authorization: Bearer <TOKEN>" https://your_domain.com/api/generate-sitemap
+# NPM
+npm run test
 ```

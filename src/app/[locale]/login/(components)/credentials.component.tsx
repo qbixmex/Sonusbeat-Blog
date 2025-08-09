@@ -21,12 +21,11 @@ import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   email: z
-    .string({
-      required_error: "¡ El correo electrónico es obligatorio !",
-      invalid_type_error: "¡ El correo electrónico debe ser un string !",
-    })
+    .string({ message: "¡ El correo electrónico debe ser un string !" })
     .trim()
-    .email("¡ Formato inválido de correo electrónico !"),
+    .pipe(
+      z.email({ message: "¡ Formato inválido de correo electrónico !" })
+    ),
   password: z
     .string()
     .trim()
