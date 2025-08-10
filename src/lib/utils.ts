@@ -18,12 +18,9 @@ export const createSlug = (title: string): string => {
   return title
     .trim()
     .toLowerCase()
-    .replace(/\s\?/g, '')
-    .replace(/¿\s/g, '')
-    .replace(/\s\|/g, '')
-    .replace(/\¡\s/g, '')
-    .replace(/\!\s/g, '')
-    .replace(/\s/g, '-');
+    .replace(/[¿?!¡|]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/^-+|-+$/g, '');
 };
 
 export const renderRobots = (robots: string): string => {
@@ -59,11 +56,15 @@ export const renderSeoRobots = (robots: string): string => {
 export const getFirstAndLastName = (full_name: string): string => {
   const names = full_name.split(' ');
   if (full_name.length === 0) return '';
-  if (full_name.length === 1) return names[0];
+  
+  // If there's only one name, return the first letter capitalized
+  // For example: "Daniel" should return "D" and no last name was provided
+  if (names.length === 1) return names[0].charAt(0).toUpperCase();
+
   return `${names.at(0)} ${names.at(1)}`;
 };
 
-export const articleFormatDate = (date: Date | string, lang?: Locale) => {
+export const articleFormatDate = (date: Date | string, lang?: Locale): string => {
   const jsDate = typeof date === 'string' ? new Date(date) : date;
   if (isNaN(jsDate.getTime())) return 'Fecha desconocida';
 
