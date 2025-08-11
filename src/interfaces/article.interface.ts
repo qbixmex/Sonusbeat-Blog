@@ -25,6 +25,7 @@ export interface Article {
 }
 
 interface ArticleTranslation {
+  id?: string;
   language: string;
   title: string;
   slug: string;
