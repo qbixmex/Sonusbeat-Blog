@@ -8,7 +8,7 @@ const ACCEPTED_FILE_TYPES = [
   'image/gif',
   'image/webp',
 ];
-const robots = [
+const SEO_ROBOTS = [
   "index_follow",
   "noindex_follow",
   "index_nofollow",
@@ -29,8 +29,8 @@ export const createFormSchema = z.object({
       return file && ACCEPTED_FILE_TYPES.includes(file.type);
     }, 'El tipo de archivo debe ser uno de los siguientes: png, jpeg, jpg, gif, webp'),
   seoRobots: z
-    .enum(robots, {
-      message: "El valor de robots debe ser uno de los siguientes: index_follow, noindex_follow, index_nofollow, noindex_nofollow",
+    .enum(SEO_ROBOTS, {
+      message: "El valor de robots debe ser uno de los siguientes: " + SEO_ROBOTS.join(", "),
     }),
   publishedAt: z
     .date({ message: "La fecha de publicación debe ser una fecha válida" })

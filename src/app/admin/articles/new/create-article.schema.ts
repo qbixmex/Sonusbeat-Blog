@@ -8,11 +8,11 @@ const ACCEPTED_FILE_TYPES = [
   'image/gif',
   'image/webp',
 ];
-const robots = [
-  "index, follow",
-  "noindex, nofollow",
-  "noindex, follow",
-  "index, nofollow",
+const SEO_ROBOTS = [
+  "index_follow",
+  "noindex_nofollow",
+  "noindex_follow",
+  "index_nofollow",
 ] as const;
 
 export const formSchema = z.object({
@@ -27,8 +27,8 @@ export const formSchema = z.object({
       return file && ACCEPTED_FILE_TYPES.includes(file.type);
     }, 'El tipo de archivo debe ser uno de los siguientes: png, jpeg, jpg, gif, webp'),
   seoRobots: z
-    .enum(robots, {
-      message: "Los robots seo debe ser uno de los valores permitidos",
+    .enum(SEO_ROBOTS, {
+      message: "El valor de robots debe ser uno de los siguientes: " + SEO_ROBOTS.join(", "),
     }),
   publishedAt: z
     .date({ message: "La fecha de publicación debe ser una fecha válida" })
@@ -66,16 +66,12 @@ export const formSchema = z.object({
         .min(3, "El texto alternativo de la imagen debe ser por lo menos de 3 caracteres")
         .optional(),
       seoTitle: z
-        .string({
-          message: "El título seo debe ser un string",
-        })
+        .string({ message: "El título seo debe ser un string" })
         .trim()
         .min(8, "El título seo debe ser por lo menos de 8 caracteres")
         .max(70, "El título seo debe ser máximo 70 caracteres"),
       seoDescription: z
-        .string({
-          message: "La descripción seo debe ser un string",
-        })
+        .string({ message: "La descripción seo debe ser un string" })
         .trim()
         .min(8, "La descripción seo debe ser por lo menos de 8 caracteres")
         .max(160, "La descripción seo debe ser máximo 160 caracteres"),
