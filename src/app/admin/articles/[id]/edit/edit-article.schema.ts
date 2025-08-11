@@ -8,7 +8,7 @@ const ACCEPTED_FILE_TYPES = [
   'image/gif',
   'image/webp',
 ];
-const robots = [
+const SEO_ROBOTS = [
   "index_follow",
   "noindex_follow",
   "index_nofollow",
@@ -28,8 +28,8 @@ export const formSchema = z.object({
     .nullable()
     .optional(),
   seoRobots: z
-    .enum(robots, {
-      message: "El valor de robots debe ser uno de los siguientes: " + robots.join(', '),
+    .enum(SEO_ROBOTS, {
+      message: "El valor de robots debe ser uno de los siguientes: " + SEO_ROBOTS.join(', '),
     }),
   publishedAt: z
     .date({ message: "La fecha de publicación debe ser una fecha válida" })
