@@ -18,7 +18,7 @@ const HomePage: FC<Props> = ({ params }) => {
   // Enable static rendering
   setRequestLocale(locale);
 
-  const response = use(fetchPublicArticlesAction());
+  const response = use(fetchPublicArticlesAction({ limit: 7 }));
   const articles = response.articles ?? [];
 
   // Once the request locale is set, you

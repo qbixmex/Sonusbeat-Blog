@@ -15,12 +15,14 @@ export const ArticlesList: FC<Props> = async ({ articles, locale }) => {
   });
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-      {filteredArticles.map((article) => (
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-3">
+      {filteredArticles.map((article, index) => (
         <Article
           key={article.id}
           article={article}
           locale={locale}
+          className={index < 1 ? 'lg:col-span-2 xl:col-span-3' : ''}
+          feature={index < 1}
         />
       ))}
     </div>
