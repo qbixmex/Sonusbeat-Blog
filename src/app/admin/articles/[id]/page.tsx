@@ -1,5 +1,11 @@
 import { FC } from "react";
 import Link from "next/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
@@ -17,9 +23,18 @@ import Image from "next/image";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { renderRobots } from "@/root/src/lib/utils";
+import { cn, renderRobots } from "@/root/src/lib/utils";
 import "./styles.module.css";
 import { Category } from "@/root/src/interfaces/category.interface";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/tokyo-night-dark.min.css";
+import rehypeRaw from "rehype-raw";
+import rehypeYoutube from '@/lib/rehype-youtube';
+import Divider from "@/root/src/components/divider.component";
+
+type Author = { id: string; name: string };
 
 type Props = Readonly<{
   params: Promise<{
@@ -62,143 +77,146 @@ const ArticlePage: FC<Props> = async ({ params }) => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Card className="flex-1">
-                <CardHeader>
-                  <CardTitle className="text-3xl">Información del Artículo</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <section className="flex flex-col gap-y-5 md:flex-row md:gap-x-10 justify-start items-center mb-5">
-                    <div className="w-full md:max-w-[600px]">
-                      <Image
-                        src={
-                          article?.imageURL?.startsWith("https")
-                            ? article.imageURL
-                            : `/images/blog/${article?.imageURL}`
-                        }
-                        width={600}
-                        height={400}
-                        alt="Imagen de artículo"
-                        className="w-full min-w-[300px] max-w-[600px] object-cover rounded-lg"
-                      />
-                    </div>
-                    <div className="w-full md:w-1/2">
-                      <Table className="w-full">
-                        <TableBody>
-                          <TableRow>
-                            <TableHead>URL de la Imagen:</TableHead>
-                            <TableCell className="text-muted-foreground break-all whitespace-normal">
-                              {article?.imageURL}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableHead>Texto Alternativo:</TableHead>
-                            <TableCell className="text-muted-foreground">
-                              {article?.translations[0].imageAlt}
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </section>
+              <h1 className="text-5xl font-semibold">Detalles del Artículo</h1>
 
-                  <Table className="w-full">
-                    <TableBody>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Título:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground break-words">
-                          {article?.translations[0].title}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Slug:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground break-words">
-                          {article?.translations[0].slug}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold align-top">Descripción:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.translations[0].description}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Autor:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          <Link
-                            href={`/admin/profile/${(article?.author as { id: string }).id}`}
-                            className="text-blue-500 hover:underline"
-                          >
-                            {(article?.author as { name: string }).name}
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Categoría:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          <Link
-                            href={
-                              (article && (article.category as Category).translations.length > 0)
-                                ? `/admin/categories/${(article?.category as Category).translations[0].name}`
-                                : "#"
-                            }
-                            className="text-blue-500 hover:underline"
-                          >
-                            {(article?.category as Category).translations[0].name ?? "Sin Categoría"}
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold align-top">Contenido:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.translations[0].content}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Título Seo:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {article?.translations[0].seoTitle}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold align-top">Descripción Seo:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground whitespace-break-spaces break-words">
-                          {article?.translations[0].seoDescription}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Robots Seo:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {renderRobots(article?.seoRobots as string)}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Estado:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {article?.published ? "Publicado" : "No Publicado"}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Publicado en:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {format(new Date(article?.publishedAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Fecha de creación:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {format(new Date(article?.createdAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableHead className="text-sm font-semibold">Fecha de actualización:</TableHead>
-                        <TableCell className="text-pretty text-muted-foreground">
-                          {format(new Date(article?.updatedAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+              <Accordion type="single" collapsible defaultValue={"es"}>
+                {article?.translations
+                  .sort((a, b) => a.language === "es" ? -1 : b.language === "es" ? 1 : 0)
+                  .map((translation) => (
+                    <AccordionItem key={translation.id} value={translation.language}>
+                      <AccordionTrigger>{translation.language === "en" ? "English" : "Español"}</AccordionTrigger>
+                      <AccordionContent>
+                        <Card className="flex-1">
+                          <CardHeader>
+                            <figure className="mb-5">
+                              <Image
+                                src={
+                                  article?.imageURL?.startsWith("https")
+                                    ? article.imageURL
+                                    : `/images/blog/${article?.imageURL}`
+                                }
+                                width={1280}
+                                height={720}
+                                alt="Imagen de artículo"
+                                className="w-full min-w-[300px] max-w-[1280px] object-cover rounded-lg mb-5"
+                              />
+                              <figcaption><b>Texto Alternativo:</b> {translation.imageAlt}</figcaption>
+                            </figure>
+
+                            <CardTitle>
+                              <h2 className="text-3xl">{translation.title}</h2>
+                            </CardTitle>
+
+                            <Divider spaceY="sm" />
+
+                            <section className="flex flex-col gap-5">
+                              <h3 className="text-2xl font-semibold">Descripción</h3>
+                              <p>{translation.description}</p>
+                            </section>
+
+                            <Divider spaceY="sm" />
+
+                            <section className="flex flex-col gap-5 md:flex-row">
+                              <div className="w-1/2">
+                                <Table className="w-full">
+                                  <TableBody>
+                                    <TableRow>
+                                      <TableHead className="font-bold w-[225px]">Categoría:</TableHead>
+                                      <TableCell>
+                                        <Link
+                                          href={`/admin/categories/${(article?.category as Category).id}`}
+                                          className="text-sky-600 hover:underline"
+                                        >
+                                          {(article?.category as Category).translations.find(
+                                            (t) => t.language === translation.language
+                                          )?.name ?? "No category available"}
+                                        </Link>
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Autor:</TableHead>
+                                      <TableCell>
+                                        <Link
+                                          href={`/admin/profile/${(article?.author as Author).id}`}
+                                          className="text-sky-600 hover:underline"
+                                        >
+                                          {(article?.author as Author).name}
+                                        </Link>
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Fecha de Creación:</TableHead>
+                                      <TableCell>
+                                        {format(new Date(article?.createdAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Fecha de Actualización:</TableHead>
+                                      <TableCell>
+                                        {format(new Date(article?.updatedAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Fecha de Publicación:</TableHead>
+                                      <TableCell>
+                                        {format(new Date(article?.publishedAt as Date), "d 'de' MMMM 'del' yyyy", { locale: es })}
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableBody>
+                                </Table>
+                              </div>
+                              <div className="w-1/2">
+                                <Table className="w-full">
+                                  <TableBody>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Título Seo:</TableHead>
+                                      <TableCell className="whitespace-break-spaces">{translation.seoTitle}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Descripción Seo:</TableHead>
+                                      <TableCell className="whitespace-break-spaces">{translation.seoDescription}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead className="font-bold">Robots Seo:</TableHead>
+                                      <TableCell>{renderRobots(article.seoRobots)}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableHead>Estado:</TableHead>
+                                      <TableCell>{article.published ? "Publicado" : "Borrador"}</TableCell>
+                                    </TableRow>
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            </section>
+                          </CardHeader>
+
+                          <CardContent>
+                            <Divider spaceY="sm" />
+
+                            <h3 className="text-2xl font-semibold mb-5">Contenido</h3>
+
+                            <section
+                              className={cn([
+                                "prose",
+                                "prose-lg",
+                                "dark:prose-invert",
+                                "max-w-none",
+                                styles.articleContent,
+                              ])}
+                            >
+                              <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                rehypePlugins={[rehypeHighlight, rehypeRaw, rehypeYoutube]}
+                              >
+                                {translation.content ?? "No content available."}
+                              </ReactMarkdown>
+                            </section>
+                          </CardContent>
+                        </Card>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
             </div>
           </div>
         </main>
