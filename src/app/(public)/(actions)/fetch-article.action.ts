@@ -48,6 +48,7 @@ export const fetchPublicArticleAction = async (slug: string, locale: string): Pr
         publishedAt: true,
         translations: {
           select: {
+            id: true,
             language: true,
             title: true,
             slug: true,
