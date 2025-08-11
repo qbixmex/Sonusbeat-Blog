@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Menu, CircleX } from "lucide-react";
-import { ModeToggle } from "../switch-mode";
+import { Menu, CircleX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import LanguageSwitcher from "../../app/admin/(components)/navbar/language-switcher.component";
+import Image from "next/image";
 
 const links = [
   { id: "8ybq", url: '/', label: 'Home' },
@@ -44,7 +44,12 @@ export const Navbar: React.FC<NavbarProps> = ({ urlParams }) => {
       <nav className="flex items-center">
         <div className="flex items-center gap-5 font-semibold text-gray-400">
           <Link href="/" className={cn(path === '/' && "text-primary")}>
-            <Home />
+            <Image
+              src="/images/sonusbeat-logo-horizontal.png"
+              width={100}
+              height={200}
+              alt="Sonusbeat Logo"
+            />
           </Link>
           <div className="hidden md:flex items-center gap-5">
             {links.map(({id, url, label}) => {
@@ -62,7 +67,6 @@ export const Navbar: React.FC<NavbarProps> = ({ urlParams }) => {
         <div className="ml-auto flex items-center gap-2">
           <MobileMenu toggleMobileMenu={toggleMobileMenu} />
           <LanguageSwitcher urlParams={urlParams} />
-          <ModeToggle />
         </div>
         {mobileMenu && (
           <div className="absolute top-0 left-0 z-[1000] w-screen h-screen bg-stone-50 dark:bg-stone-900 flex flex-col items-center justify-center gap-5 p-5 md:hidden text-2xl">

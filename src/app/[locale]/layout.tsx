@@ -50,12 +50,10 @@ const LocaleLayout: React.FC<Props> = async ({ children, params }) => {
       </head>
       <body className={`${fontsVariables.join(' ')} antialiased`}>
         <NextIntlClientProvider locale={locale}>
-          <main className="w-full">
-            <Providers>
-              {children}
-              <GoogleAnalyticsWrapper />
-            </Providers>
-          </main>
+          <Providers>
+            {children}
+            <GoogleAnalyticsWrapper />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>
