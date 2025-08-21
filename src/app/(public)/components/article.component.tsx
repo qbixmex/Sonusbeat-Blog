@@ -12,7 +12,6 @@ import { Button } from '@/root/src/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PublicArticleForHomePage } from '@/interfaces/article.interface';
 import styles from './article.module.css';
-import Divider from '@/root/src/components/divider.component';
 
 type Props = Readonly<{
   article: PublicArticleForHomePage;
@@ -43,92 +42,96 @@ export const Article: FC<Props> = ({ article, feature = false, locale, className
   const categorySlug = categoryTranslation?.slug ?? 'no-category';
 
   return (
-    <article className={cn("flex flex-col gap-5", className)}>
-      <Link href={`/${locale}/${categorySlug}/${articleSlug}`}>
-        <Image
-          src={
-            article.imageURL.startsWith("https")
-              ? article.imageURL
-              : `/images/blog/${article.imageURL}`
-          }
-          alt={articleImageAlt}
-          width={feature ? 1280 : 512}
-          height={feature ? 720 : 384}
-          className={`object-cover w-full rounded ${ feature ? 'h-[400px]' : 'h-auto' }`}
-        />
-      </Link>
-      <h2 className="text-xl font-semibold text-stone-700 md:text-2xl dark:text-stone-100">
-        <Link href={`/${locale}/${categorySlug}/${articleSlug ?? "no-article"}`}>
-          {articleTitle}
+    <article className={cn(className, styles.article)}>
+      <header>
+        <Link href={`/${locale}/${categorySlug}/${articleSlug}`}>
+          <Image
+            src={
+              article.imageURL.startsWith("https")
+                ? article.imageURL
+                : `/images/blog/${article.imageURL}`
+            }
+            alt={articleImageAlt}
+            width={feature ? 1280 : 512}
+            height={feature ? 720 : 384}
+            className={`object-cover w-full ${feature ? 'h-[400px]' : 'h-auto'}`}
+          />
         </Link>
-      </h2>
-      <div className="flex-1 text-lg text-stone-600 dark:text-stone-400 italic">
-        <span className="leading-8 mr-2">
-          {
-            fullDescription
-              ? articleDescription
-              : (articleDescription.length < CHARACTERS_LENGTH) || feature
-                ? articleDescription
-                : `${articleDescription.slice(0, CHARACTERS_LENGTH)}`
-          }
-        </span>
-        {
-          ((articleDescription.length > CHARACTERS_LENGTH) && !feature) && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFullDescription(!fullDescription)}
-                    className="ml-1"
-                  >
-                    {fullDescription ? <ChevronsDownUp /> : <Ellipsis />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-stone-900 text-stone-100 border-stone-700"
-                  arrowClassName="bg-stone-900 fill-stone-900"
-                >
-                  {fullDescription ? "Colapsar" : "Ver más"}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )
-        }
-      </div>
-      <section className={styles.articleData}>
-        <div className={styles.articleDataRow}>
-          <Folder className={styles.articleDataIcon} />
-          <Link
-            href={`/${locale}/${categorySlug}`}
-            className={styles.articleLink}
-          >
-            {categoryName}
+      </header>
+      <main className={styles.articleMain}>
+        <h2 className={styles.articleTitle}>
+          <Link href={`/${locale}/${categorySlug}/${articleSlug ?? "no-article"}`}>
+            {articleTitle}
           </Link>
-        </div>
-        <div className={styles.articleDataRow}>
-          <CalendarDays className={styles.articleDataIcon} />
-          <span className={styles.articleDataText}>
+        </h2>
+
+        <div className={styles.articleContent}>
+          <span className={styles.articleDescription}>
             {
-              isValid(article.publishedAt)
-                ? articleFormatDate(
-                  article.publishedAt,
-                  (locale === "es") ? es : undefined
-                )
-                : 'Fecha desconocida'
+              fullDescription
+                ? articleDescription
+                : (articleDescription.length < CHARACTERS_LENGTH) || feature
+                  ? articleDescription
+                  : `${articleDescription.slice(0, CHARACTERS_LENGTH)}`
             }
           </span>
+          {
+            ((articleDescription.length > CHARACTERS_LENGTH) && !feature) && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setFullDescription(!fullDescription)}
+                      className="ml-1"
+                    >
+                      {fullDescription ? <ChevronsDownUp /> : <Ellipsis />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    className={styles.articleContentTooltip}
+                    arrowClassName={styles.articleContentTooltipArrow}
+                  >
+                    {fullDescription ? "Collapse" : "View more"}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )
+          }
         </div>
-        <div className={styles.articleDataRow}>
-          <User className={styles.articleDataIcon} />
-          <span className={styles.articleDataText}>
-            {article.author.name}
-          </span>
-        </div>
-      </section>
 
-      { feature && <Divider className="hidden lg:block" /> }
+        <section className={styles.articleData}>
+          <div className={styles.articleDataRow}>
+            <Folder className={styles.articleDataIcon} />
+            <Link
+              href={`/${locale}/${categorySlug}`}
+              className={styles.articleLink}
+            >
+              {categoryName}
+            </Link>
+          </div>
+          <div className={styles.articleDataRow}>
+            <CalendarDays className={styles.articleDataIcon} />
+            <span className={styles.articleDataText}>
+              {
+                isValid(article.publishedAt)
+                  ? articleFormatDate(
+                    article.publishedAt,
+                    (locale === "es") ? es : undefined
+                  )
+                  : 'Fecha desconocida'
+              }
+            </span>
+          </div>
+          <div className={cn(styles.articleDataRow, 'hidden!')}>
+            <User className={styles.articleDataIcon} />
+            <span className={styles.articleDataText}>
+              {article.author.name}
+            </span>
+          </div>
+        </section>
+      </main>
     </article>
   );
 };
