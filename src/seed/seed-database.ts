@@ -117,14 +117,15 @@ const main = async () => {
   );
 
   articles.forEach(async (article) => {
-    const { category, author, ...attributesRest } = article;
-
     await prisma.article.create({
       data: {
-        ...attributesRest,
-        authorId: usersMap[(author as string).toLowerCase()],
-        categoryId: categoriesMap[(category as string).toLowerCase()],
-        translations: { create: attributesRest.translations },
+        imageURL: article.imageURL,
+        categoryId: categoriesMap[(article.category as string).toLowerCase()],
+        authorId: usersMap[(article.author as string).toLowerCase()],
+        seoRobots: article.seoRobots,
+        publishedAt: article.publishedAt,
+        published: article.published,
+        translations: { create: article.translations },
       },
     });
   });
