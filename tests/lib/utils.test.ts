@@ -1,4 +1,4 @@
-import { getInitials, createSlug, renderRobots, renderSeoRobots, getFirstAndLastName, articleFormatDate, capitalizeFirstLetter } from '@/lib/utils';
+import { getInitials, createSlug, renderRobots, renderSeoRobots, getFirstAndLastName, articleFormatDate, capitalizeFirstLetter, slugify, pad } from '@/lib/utils';
 import { es } from 'date-fns/locale';
 import { expect } from 'vitest';
 
@@ -72,5 +72,16 @@ describe('Tests on Utils', () => {
     const testCase = 'lorem ipsum';
     const capitalizedText = capitalizeFirstLetter(testCase);
     expect(capitalizedText).toBe('Lorem ipsum');
+  });
+
+  test('Should slugify text correctly', () => {
+    expect(slugify('adhana festival !')).toBe('adhana-festival');
+    expect(slugify('la acción - debe ser así')).toBe('la-accion-debe-ser-asi');
+  });
+
+  test('Should return a padded number', () => {
+    expect(pad(5)).toBe('05');
+    expect(pad(42)).toBe('42');
+    expect(pad(123, 5)).toBe('00123');
   });
 });

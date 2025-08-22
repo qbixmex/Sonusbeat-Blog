@@ -63,10 +63,10 @@ export const createArticleAction = async (
   const { image, ...articleToSave } = articleParsed.data;
 
   // Upload Image to third-party storage (cloudinary).
-  const imageUploaded = await uploadImage(image!, 'articles');
+  const cloudinaryResponse = await uploadImage(image!, 'articles');
 
-  if (!imageUploaded) {
-    throw 'Error uploading image to cloudinary';
+  if (!cloudinaryResponse) {
+    throw new Error('Error uploading image to cloudinary');
   }
 
   try {
@@ -74,8 +74,8 @@ export const createArticleAction = async (
       const createdArticle = await transaction.article.create({
         data: {
           categoryId: articleToSave.categoryId,
-          imageURL: imageUploaded.secureUrl,
-          imagePublicID: imageUploaded.publicId,
+          imageURL: cloudinaryResponse.secureUrl,
+          imagePublicID: cloudinaryResponse.publicId,
           authorId: authenticatedUserId,
           seoRobots: articleToSave.seoRobots,
           publishedAt: articleToSave.publishedAt,
@@ -104,8 +104,8 @@ export const createArticleAction = async (
         article: {
           id: createdArticle.id,
           categoryId: createdArticle.categoryId,
-          imageURL: imageUploaded.secureUrl,
-          imagePublicID: imageUploaded.publicId,
+          imageURL: cloudinaryResponse.secureUrl,
+          imagePublicID: cloudinaryResponse.publicId,
           authorId: authenticatedUserId,
           seoRobots: createdArticle.seoRobots,
           publishedAt: createdArticle.publishedAt,

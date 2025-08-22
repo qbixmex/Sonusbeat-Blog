@@ -10,7 +10,7 @@ export interface Article {
   id?: string;
   imageURL: string | null;
   imagePublicID?: string;
-  images?: string[];
+  articleImages?: ArticleImage[];
   author?: {
     id: string;
     name: string;
@@ -85,4 +85,12 @@ export interface PublicArticleForHomePage {
     seoTitle: string;
     seoDescription: string;
   }[],
+}
+
+export interface ArticleImage {
+  id?: string;
+  imageUrl: string;
+  publicId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

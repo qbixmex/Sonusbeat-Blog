@@ -2,8 +2,14 @@
 
 import prisma from "@/lib/prisma";
 import uploadImage from "./upload-image.action";
+import { CloudinaryResponse } from "@/root/src/interfaces/cloudinary.interface";
 
-export const uploadContentImage = async (file: File, articleId: string) => {
+type UploadArticleImageResponse = Promise<{
+  message: string;
+  cloudinaryResponse: CloudinaryResponse;
+}>;
+
+export const uploadContentImage = async (file: File, articleId: string): UploadArticleImageResponse => {
   if (!articleId) {
     throw new Error("No articleId provided");
   }
@@ -11,7 +17,7 @@ export const uploadContentImage = async (file: File, articleId: string) => {
   const imageUploaded = await uploadImage(file!, 'articles');
 
   if (!imageUploaded) {
-    throw 'Error uploading image to cloudinary';
+    throw new Error('Error uploading image to cloudinary');
   }
 
   await prisma.article.update({
@@ -19,13 +25,19 @@ export const uploadContentImage = async (file: File, articleId: string) => {
     data: {
       images: {
         push: imageUploaded.secureUrl,
+      },
+      articleImages: {
+        create: {
+          imageUrl: imageUploaded.secureUrl,
+          publicId: imageUploaded.publicId,
+        }
       }
     },
   });
 
   return {
     message: 'Image uploaded successfully 👍',
-    imageURL: imageUploaded.secureUrl,
+    cloudinaryResponse: imageUploaded,
   }
 };
 
