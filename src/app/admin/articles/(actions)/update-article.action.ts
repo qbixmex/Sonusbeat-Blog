@@ -132,15 +132,21 @@ export const updateArticleAction = async (
               },
             },
             translations: true,
+            articleImages: {
+             select: {
+              publicId: true,
+              imageUrl: true,
+             },
+            },
           },
         });
 
         if (image) {
           // Delete previous image from cloudinary.
           if (updatedArticle.imagePublicID) {
-            const response = await deleteImage(updatedArticle.imagePublicID);
-            if (!response.ok) {
-              throw 'Error deleting image from cloudinary';
+            const cloudinaryResponse = await deleteImage(updatedArticle.imagePublicID);
+            if (!cloudinaryResponse.ok) {
+              throw new Error('Error deleting image from cloudinary');
             }
           }
 
@@ -148,7 +154,7 @@ export const updateArticleAction = async (
           const imageUploaded = await uploadImage(image, 'articles');
 
           if (!imageUploaded) {
-            throw 'Error uploading image to cloudinary';
+            throw new Error('Error uploading image to cloudinary');
           }
 
           // Update event with new image.
@@ -195,6 +201,7 @@ export const updateArticleAction = async (
             createdAt: updatedArticle.createdAt,
             updatedAt: updatedArticle.updatedAt,
             translations: updatedArticle.translations,
+            articleImages: updatedArticle.articleImages,
           },
         };
       } catch (error) {

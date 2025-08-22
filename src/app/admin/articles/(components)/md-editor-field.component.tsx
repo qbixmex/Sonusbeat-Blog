@@ -10,6 +10,7 @@ import "highlight.js/styles/tokyo-night-dark.min.css";
 import "./markdown-styles.css";
 import uploadContentImage from "../(actions)/upload-content-image.action";
 import markdownItYoutube from "@/components/markdown-it-youtube";
+import { ArticleImage } from "@/interfaces/article.interface";
 
 const mdParser = new MarkdownIt({
   html: true, // Allows embedded HTML
@@ -37,7 +38,7 @@ const mdParser = new MarkdownIt({
 type Props = Readonly<{
   value: string;
   setContent: (value: string) => void;
-  updateContentImage: (imageUrl: string) => void;
+  updateContentImage: (articleImage: ArticleImage) => void;
   articleId?: string;
 }>;
 
@@ -49,9 +50,13 @@ export const MdEditorField: FC<Props> = ({
 }) => {
   const handleImageUpload = async (file: File) => {
     const response = await uploadContentImage(file, articleId!);
-    if (!response?.imageURL) throw new Error("No image URL returned");
-    updateContentImage(response.imageURL);
-    return response.imageURL;
+    if (!response) throw new Error("No image URL returned");
+    const { cloudinaryResponse } = response;
+    updateContentImage({
+      publicId: cloudinaryResponse.publicId,
+      imageUrl: cloudinaryResponse.secureUrl,
+    });
+    return cloudinaryResponse.secureUrl;
   };
 
   return (

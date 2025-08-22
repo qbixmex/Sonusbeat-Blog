@@ -41,7 +41,7 @@ import { updateArticleAction } from "../(actions)/update-article.action";
 import { useSession } from "next-auth/react";
 import createArticleSchema from "../new/create-article.schema";
 import editArticleSchema from "../[id]/edit/edit-article.schema";
-import { Article } from "@/interfaces/article.interface";
+import { Article, ArticleImage } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
 import MdEditorField from "./md-editor-field.component";
 // import { CharactersCounter } from "@/components/characters-counter.component";
@@ -74,15 +74,15 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
   const formSchema = !article ? createArticleSchema : editArticleSchema;
   const [isDeletingImage, setIsDeletingImage] = useState<string | null>(null);
-  const [contentImages, setContentImages] = useState<string[]>(article?.images ?? []);
+  const [contentImages, setContentImages] = useState<ArticleImage[]>(article?.articleImages ?? []);
 
-  const updateContentImage = (imageUrl: string) => {
-    setContentImages((prevUrlImages) => [...prevUrlImages, imageUrl]);
+  const updateContentImage = (articleImage: ArticleImage) => {
+    setContentImages((prev) => [...prev, articleImage]);
   };
 
   useEffect(() => {
-    setContentImages(article?.images ?? []);
-  }, [article?.images]);
+    setContentImages(article?.articleImages ?? []);
+  }, [article?.articleImages]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -118,13 +118,15 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
   const [openCalendar, setOpenCalendar] = useState(false);
 
-  const handleDeleteImage = async (imageUrl: string) => {
-    setIsDeletingImage(imageUrl);
+  const handleDeleteImage = async (articleImage: ArticleImage) => {
+    setIsDeletingImage(articleImage.imageUrl);
 
-    const response = await deleteContentImageAction(article?.id as string, imageUrl);
+    const response = await deleteContentImageAction(article?.id as string, articleImage.publicId);
 
     if (response.ok) {
-      setContentImages(prevImages => prevImages.filter(img => img !== imageUrl));
+      setContentImages(prevImages => prevImages.filter(({ imageUrl }) => {
+        return imageUrl !== articleImage.imageUrl;
+      }));
       setIsDeletingImage(null);
       toast.success("Imagen eliminada correctamente 👍");
     }
@@ -413,27 +415,29 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                   <h2 className="text-3xl mt-8 font-semibold mb-5">
                     Imágenes del contenido
                   </h2>
+
                   <div className="flex flex-wrap gap-5">
-                    {contentImages.map((image) => (
-                      <figure key={image} className="relative w-fit">
+                    {contentImages.map((articleImage) => (
+                      <figure key={articleImage.publicId} className="relative w-fit">
                         <Image
-                          src={image}
+                          src={articleImage.imageUrl}
                           alt="Imagen del contenido"
                           width={150}
                           height={150}
                           className="w-[150px] h-[150px] object-cover rounded-lg"
                         />
+                        <p>PUBLIC ID: {articleImage.publicId}</p>
                         <Button
                           type="button"
                           variant="destructive"
                           size="icon"
-                          disabled={isDeletingImage === image}
+                          disabled={isDeletingImage === articleImage.imageUrl}
                           className={cn("!bg-pink-600/70 hover:!bg-pink-600 absolute top-0 right-0 cursor-pointer", {
-                            "cursor-not-allowed !bg-gray-500": isDeletingImage === image,
+                            "cursor-not-allowed !bg-gray-500": isDeletingImage === articleImage.imageUrl,
                           })}
-                          onClick={() => handleDeleteImage(image)}
+                          onClick={() => handleDeleteImage(articleImage)}
                         >
-                          {isDeletingImage === image
+                          {isDeletingImage === articleImage.imageUrl
                             ? <LoaderCircle className="animate-spin" />
                             : <X className="size-[25px]" />
                           }

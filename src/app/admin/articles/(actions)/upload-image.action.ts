@@ -1,8 +1,8 @@
 "use server";
 
-import crypto from "node:crypto";
 import { CloudinaryResponse } from "@/interfaces/cloudinary.interface";
 import { v2 as cloudinary } from "cloudinary";
+import { pad, slugify } from "@/lib/utils";
 
 cloudinary.config(process.env.CLOUDINARY_URL ?? '');
 
@@ -10,17 +10,35 @@ export const uploadImage = async (image: File, folder: 'users' | 'articles'): Pr
   try {
     const buffer = await image.arrayBuffer();
     const base64Image = Buffer.from(buffer).toString('base64');
-    
-    const response = await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Image}`, {
+
+    const originalName = image.name ?? crypto.randomUUID();
+    const sanitized = slugify(originalName);
+
+    // Build timestamp like: 2025-04-22_14-35-45-232
+    const now = new Date();
+    const timestamp = now.getFullYear()
+      + `-${pad(now.getMonth() + 1)}`
+      + `-${pad(now.getDate())}`
+      + `_${pad(now.getHours())}`
+      + `-${pad(now.getMinutes())}`
+      + `-${pad(now.getSeconds())}`
+      + `-${pad(now.getMilliseconds(), 3)}`;
+
+    // Use the real file MIME type if available
+    const mime = image.type || 'image/jpeg';
+    const dataUri = `data:${mime};base64,${base64Image}`;
+
+    const seoPublicId = `${sanitized}-${timestamp}`;
+
+    const response = await cloudinary.uploader.upload(dataUri, {
       folder: `/${folder}`,
-      public_id: crypto.randomUUID(),
+      public_id: seoPublicId,
     });
 
     return {
       publicId: response.public_id,
       secureUrl: response.secure_url,
     };
-
   } catch (error) {
     console.error(error);
     return null;

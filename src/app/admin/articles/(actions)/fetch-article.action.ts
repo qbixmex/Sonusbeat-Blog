@@ -30,6 +30,12 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
             }
           }
         },
+        articleImages: {
+          select: {
+            imageUrl: true,
+            publicId: true,
+          },
+        },
         translations: true,
       }
     });
@@ -44,7 +50,7 @@ export const fetchArticleAction = async (articleId: string): Promise<FetchArticl
           translations: article?.category?.translations ?? [],
         },
         imageURL: article.imageURL,
-        images: article.images,
+        articleImages: article.articleImages,
         author: {
           id: article.author.id,
           name: article.author.name!,
