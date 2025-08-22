@@ -25,7 +25,7 @@ type Props = Readonly<{
 const EditArticlePage: FC<Props> = async ({ params }) => {
   const articleId = (await params).id;
   const responseArticle = await fetchArticleAction(articleId);
-  
+
   if (!responseArticle.ok) {
     redirect("/admin/articles");
   }
