@@ -23,9 +23,6 @@ export const uploadContentImage = async (file: File, articleId: string): UploadA
   await prisma.article.update({
     where: { id: articleId },
     data: {
-      images: {
-        push: imageUploaded.secureUrl,
-      },
       articleImages: {
         create: {
           imageUrl: imageUploaded.secureUrl,
