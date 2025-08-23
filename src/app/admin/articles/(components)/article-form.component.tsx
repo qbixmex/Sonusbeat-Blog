@@ -426,7 +426,6 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                           height={150}
                           className="w-[150px] h-[150px] object-cover rounded-lg"
                         />
-                        <p>PUBLIC ID: {articleImage.publicId}</p>
                         <Button
                           type="button"
                           variant="destructive"
