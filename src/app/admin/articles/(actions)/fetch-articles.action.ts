@@ -1,5 +1,10 @@
 import prisma from "@/lib/prisma";
 
+type Options = Readonly<{
+  page?: number;
+  take?: number;
+}>;
+
 export type AdminArticle = {
   id: string;
   category: {
@@ -25,31 +30,41 @@ export type AdminArticle = {
   }[];
 };
 
-type ResponseFetchArticles = {
+type ResponseFetchArticles = Promise<{
   ok: boolean;
   message: string;
   articles: AdminArticle[] | null;
+  pagination: Pagination | null;
+}>;
+
+export type Pagination = {
+  currentPage: number;
+  totalPages: number;
 };
 
 /**
  * Action to fetch articles from the database.
  * @param props - Optional parameters for pagination.
- * @param props.limit - Number of articles to fetch (default is 10).
- * @param props.offset - Offset for pagination (default is 0).
+ * @param props.page - Page number (default is 1).
+ * @param props.take - Number of articles to fetch (default is 12).
  * @example```
  * // Examples usage:
- * fetchArticlesAction({ limit: 5 });
- * fetchArticlesAction({ offset: 10 });
- * fetchArticlesAction({ limit: 5, offset: 0 });
- * fetchArticlesAction({ limit: 20, offset: 10 });
+ * fetchArticlesAction(); // Uses defaults
+ * fetchArticlesAction({ page: 4 });
+ * fetchArticlesAction({ take: 10 });
+ * fetchArticlesAction({ page: 2, take: 24 });
  * ```
- * @returns Response containing the articles or an error message.
+ * @returns Response containing the articles with pagination otherwise error message.
  */
-export const fetchArticlesAction = async (props?: {
-  limit?: number;
-  offset?: number;
-}): Promise<ResponseFetchArticles> => {
-  const { limit, offset } = props ?? { limit: 10, offset: 0 };
+export const fetchArticlesAction = async (options?: Options): ResponseFetchArticles => {
+  let { page = 1, take = 12 } = options ?? {};
+
+  // In case is an invalid number like (x)
+  if (isNaN(page)) page = 1;
+  if (isNaN(take)) take = 12;
+
+  // Negative numbers are not allowed
+  if (page <= 0) page = 1;
 
   try {
     const articles = await prisma.article.findMany({
@@ -86,9 +101,11 @@ export const fetchArticlesAction = async (props?: {
           }
         }
       },
-      take: limit,
-      skip: offset,
+      take: take,
+      skip: (page - 1) * take,
     });
+
+    const totalCount = await prisma.article.count();
 
     return {
       ok: true,
@@ -108,7 +125,11 @@ export const fetchArticlesAction = async (props?: {
         published: article.published,
         translations: article.translations,
       })),
-    }
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / take),
+      },
+    };
   } catch (error) {
     if (error instanceof Error) {
       console.log("Error fetching articles");
@@ -116,6 +137,7 @@ export const fetchArticlesAction = async (props?: {
         ok: false,
         message: error.message,
         articles: null,
+        pagination: null,
       };
     }
     console.log(error);
@@ -123,6 +145,7 @@ export const fetchArticlesAction = async (props?: {
       ok: false,
       message: "Error inesperado al obtener los artículos, revise los logs del servidor",
       articles: null,
+      pagination: null,
     };
   }
 };
