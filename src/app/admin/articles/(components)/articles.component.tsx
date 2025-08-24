@@ -15,15 +15,6 @@ import Link from "next/link";
 import { Eye, File, FileEdit, Trash } from "lucide-react";
 import { Switch } from "@/root/src/components/ui/switch";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -34,17 +25,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { updateArticleStateAction } from "../(actions)/update-article-state.action";
 import { deleteArticleAction } from "../(actions)/delete-article.action";
 import { getFirstAndLastName } from "@/lib/utils";
-import { AdminArticle } from "../(actions)/fetch-articles.action";
+import { AdminArticle, Pagination } from "../(actions)/fetch-articles.action";
 import Image from "next/image";
 import RobotsBadges from "@/root/src/components/robots-badges.component";
 
 type Props = Readonly<{
   articles: AdminArticle[];
+  pagination: Pagination;
 }>;
 
 export const Articles: FC<Props> = ({ articles }) => {
@@ -132,9 +124,10 @@ export const Articles: FC<Props> = ({ articles }) => {
                           ? article.translations[0].imageAlt
                           : "Imagen del artículo"
                       }
-                      className="w-[150px] h-[75px] object-cover rounded"
-                      width={150}
-                      height={75}
+                      className="object-cover w-full min-w-[100px] max-w-[200px] h-[100px] border-2 border-blue-500/50 rounded"
+                      width={200}
+                      height={100}
+                      priority
                     />
                   </Link>
                 </TableCell>
@@ -240,32 +233,6 @@ export const Articles: FC<Props> = ({ articles }) => {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" title="Anteriores" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                2
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" title="Siguientes" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </CardFooter>
     </Card>
   );
 };
