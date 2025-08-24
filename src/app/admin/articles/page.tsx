@@ -1,3 +1,5 @@
+import { FC } from "react";
+import { redirect } from "next/navigation";
 import AdminLayout from "@/app/admin/admin.layout";
 import {
   Breadcrumb,
@@ -9,11 +11,32 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
-import fetchArticlesAction from "./(actions)/fetch-articles.action";
+import fetchArticlesAction, { Pagination } from "./(actions)/fetch-articles.action";
+import { PaginationLinks } from "../(components)/pagination/pagination.component";
 
-const ArticlesPage = async () => {
-  const response = await fetchArticlesAction();
+type Props = Readonly<{
+  searchParams: Promise<{
+    page?: string;
+    take?: string;
+  }>;
+}>;
+
+const ArticlesPage: FC<Props> = async ({ searchParams }) => {
+  const { page, take } = await searchParams;
+
+  const paginationOptions = {
+    page: parseInt(page ?? '1'),
+    take: parseInt(take ?? '12'),
+  };
+
+  const response = await fetchArticlesAction(paginationOptions);
   const articles = response.articles ?? [];
+
+  if (articles.length === 0) {
+    redirect('/admin/articles?page=1');
+  }
+
+  const { totalPages, currentPage } = response.pagination as Pagination;
 
   return (
     <AdminLayout>
@@ -35,7 +58,11 @@ const ArticlesPage = async () => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles articles={articles} />
+              <Articles
+                articles={articles}
+                pagination={{ totalPages, currentPage }}
+              />
+              <PaginationLinks totalPages={totalPages} />
             </div>
           </div>
         </main>
