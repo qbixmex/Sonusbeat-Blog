@@ -1,6 +1,15 @@
-import { getInitials, createSlug, renderRobots, renderSeoRobots, getFirstAndLastName, articleFormatDate, capitalizeFirstLetter, slugify, pad } from '@/lib/utils';
+import {
+  getInitials,
+  createSlug,
+  renderRobots,
+  renderSeoRobots,
+  getFirstAndLastName,
+  articleFormatDate,
+  capitalizeFirstLetter,
+  slugify,
+  pad,
+} from '@/lib/utils';
 import { es } from 'date-fns/locale';
-import { expect } from 'vitest';
 
 describe('Tests on Utils', () => {
   test('Should getInitials', () => {
