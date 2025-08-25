@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
-import fetchArticlesAction, { Pagination } from "./(actions)/fetch-articles.action";
+import fetchArticlesAction from "./(actions)/fetch-articles.action";
 import { PaginationLinks } from "../(components)/pagination/pagination.component";
+import { Pagination } from "@/interfaces/pagination.interface";
 
 type Props = Readonly<{
   searchParams: Promise<{
@@ -36,7 +37,7 @@ const ArticlesPage: FC<Props> = async ({ searchParams }) => {
     redirect('/admin/articles?page=1');
   }
 
-  const { totalPages, currentPage } = response.pagination as Pagination;
+  const { totalPages } = response.pagination as Pagination;
 
   return (
     <AdminLayout>
@@ -58,10 +59,7 @@ const ArticlesPage: FC<Props> = async ({ searchParams }) => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles
-                articles={articles}
-                pagination={{ totalPages, currentPage }}
-              />
+              <Articles articles={articles} />
               <PaginationLinks totalPages={totalPages} />
             </div>
           </div>

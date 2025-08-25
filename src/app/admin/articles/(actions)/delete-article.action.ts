@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import deleteImage from "./delete-image.action";
 
 export const deleteArticleAction = async (articleId: string) => {
@@ -32,6 +32,7 @@ export const deleteArticleAction = async (articleId: string) => {
     }
   }
 
+  revalidateTag('public-articles');
   revalidatePath('/admin/articles');
 
   return {

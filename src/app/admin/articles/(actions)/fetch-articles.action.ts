@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { Pagination } from "@/interfaces/pagination.interface";
 
 type Options = Readonly<{
   page?: number;
@@ -36,11 +37,6 @@ type ResponseFetchArticles = Promise<{
   articles: AdminArticle[] | null;
   pagination: Pagination | null;
 }>;
-
-export type Pagination = {
-  currentPage: number;
-  totalPages: number;
-};
 
 /**
  * Action to fetch articles from the database.

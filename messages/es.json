@@ -18,5 +18,9 @@
     "email": "Correo Electrónico",
     "password": "Contraseña",
     "loginButton": "Iniciar Sesión"
+  },
+  "Pagination": {
+    "next": "Siguientes",
+    "prev": "Anteriores"
   }
 }
