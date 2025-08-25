@@ -1,0 +1,104 @@
+@reference 'tailwindcss';
+
+.pagination {
+  @apply flex justify-center mt-10;
+}
+
+.paginationList {
+  @apply inline-flex -space-x-px text-sm;
+}
+
+.paginationPrevious {
+  @apply flex items-center justify-center px-3 md:px-4 h-8 md:h-10 ms-0
+    leading-tight
+    text-stone-500
+    bg-stone-50
+    border
+    border-e-0
+    md:rounded-s-lg
+    border-stone-300
+    md:border-stone-300
+    rounded-s-lg
+    hover:bg-stone-100
+    hover:text-stone-700
+    dark:bg-stone-800
+    dark:border-stone-700
+    dark:text-stone-400
+    dark:hover:bg-stone-700
+    dark:hover:text-stone-50;
+}
+
+.paginationPrevDisabled {
+  @apply flex items-center justify-center px-3 md:px-4 h-8 md:h-10
+    leading-tight
+    text-stone-600
+    bg-stone-400
+    border
+    border-stone-300
+    rounded-s-lg
+    md:rounded-s-lg
+    dark:bg-stone-800
+    dark:border-stone-700
+    dark:text-stone-500
+    cursor-not-allowed;
+}
+
+.paginationNext {
+  @apply flex items-center justify-center px-3 md:px-4 h-8 md:h-10
+    leading-tight
+    text-stone-500
+    bg-stone-50
+    border
+    border-stone-300
+    rounded-e-lg
+    hover:bg-stone-100
+    hover:text-stone-700
+    dark:bg-stone-800
+    dark:border-stone-700
+    dark:text-stone-400
+    dark:hover:bg-stone-700
+    dark:hover:text-stone-50
+}
+
+.paginationNextDisabled {
+  @apply flex items-center justify-center px-3 md:px-4 h-8 md:h-10
+    leading-tight
+    text-stone-600
+    bg-stone-400
+    border
+    border-stone-300
+    rounded-e-lg
+    dark:bg-stone-800
+    dark:border-stone-700
+    dark:text-stone-500
+    cursor-not-allowed;
+}
+
+.paginationPage {
+  @apply flex items-center justify-center md:px-4 px-3 h-8 md:h-10
+    leading-tight
+    text-stone-500
+    bg-stone-50
+    border
+    border-stone-300
+    hover:bg-stone-100
+    hover:text-stone-700
+    dark:bg-stone-800
+    dark:border-stone-700
+    dark:text-stone-400
+    dark:hover:bg-stone-700
+    dark:hover:text-stone-50;
+}
+
+.paginationCurrentPage {
+  @apply flex items-center justify-center px-3 md:px-4 h-8 md:h-10
+  text-stone-600
+  border
+  border-stone-300
+  bg-stone-50
+  hover:bg-stone-600
+  hover:text-stone-50
+  dark:border-stone-700
+  dark:bg-stone-700
+  dark:text-white;
+}
