@@ -18,5 +18,9 @@
     "email": "Email",
     "password": "Password",
     "loginButton": "Login"
+  },
+  "Pagination": {
+    "next": "Next",
+    "prev": "Previous"
   }
 }
