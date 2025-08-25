@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import editFormSchema from "../../articles/[id]/edit/edit-article.schema";
 import prisma from "@/lib/prisma";
 import { Article } from "@/interfaces/article.interface";
@@ -170,8 +170,10 @@ export const updateArticleAction = async (
           updatedArticle.imageURL = imageUploaded.secureUrl;
         }
 
-        // Revalidate Paths
+        // Revalidate Cache
+        revalidateTag('public-articles');
         revalidatePath('/');
+
         updatedArticle.category?.translations.forEach((categoryTranslation) => {
           updatedArticle.translations.forEach((articleTranslation) => {
             if (articleTranslation.language === categoryTranslation.language) {

@@ -30,13 +30,12 @@ import { toast } from "sonner";
 import { updateArticleStateAction } from "../(actions)/update-article-state.action";
 import { deleteArticleAction } from "../(actions)/delete-article.action";
 import { getFirstAndLastName } from "@/lib/utils";
-import { AdminArticle, Pagination } from "../(actions)/fetch-articles.action";
+import { AdminArticle } from "../(actions)/fetch-articles.action";
 import Image from "next/image";
 import RobotsBadges from "@/root/src/components/robots-badges.component";
 
 type Props = Readonly<{
   articles: AdminArticle[];
-  pagination: Pagination;
 }>;
 
 export const Articles: FC<Props> = ({ articles }) => {
