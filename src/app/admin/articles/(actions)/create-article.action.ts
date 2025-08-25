@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 
 import { createFormSchema } from "./create-article.schema";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import uploadImage from "./upload-image.action";
 import z from "zod";
 
@@ -118,6 +118,7 @@ export const createArticleAction = async (
     });
 
     // Revalidate Paths
+    revalidateTag('public-articles');
     revalidatePath('/');
     revalidatePath('/admin/articles');
 

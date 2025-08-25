@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import prisma from "@/lib/prisma";
 
 type UpdateArticleStatusResponse = {
@@ -26,8 +26,9 @@ export const updateArticleStateAction = async (
   await prisma.article.update({
     where: { id: articleId },
     data: { published: !article.published },
-  });
-  
+  });  
+
+  revalidateTag('public-articles');
   revalidatePath('/admin/articles');
 
   return {

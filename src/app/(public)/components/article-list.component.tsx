@@ -7,7 +7,7 @@ type Props = Readonly<{
   locale: string;
 }>;
 
-export const ArticlesList: FC<Props> = async ({ articles, locale }) => {
+export const ArticlesList: FC<Props> = async ({ articles, locale }) => {  
   const filteredArticles = articles.filter(article => {
     const hasArticleTranslation = article.translations.some(t => t.language === locale);
     const hasCategoryTranslation = article.category.translations?.some(t => t.language === locale);
