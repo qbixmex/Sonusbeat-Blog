@@ -33,6 +33,21 @@ export const uploadImage = async (image: File, folder: 'users' | 'articles'): Pr
     const response = await cloudinary.uploader.upload(dataUri, {
       folder: `/${folder}`,
       public_id: seoPublicId,
+      // Automatic Transformations
+      transformation: [
+        {
+          width: 1280,
+          height: 720,
+          crop: 'fill', // Fill the entire area
+          gravity: 'auto', // Automatically determine the focal point
+          format: "webp", // Use webp format
+          quality: "auto:good", // Automatic Quality
+        }
+      ],
+      // Additional optimization configurations
+      format: "webp", // Force (webp) format
+      quality: "auto:good", // Automatic Quality
+      fetch_format: "auto", // Detects best format for browser
     });
 
     return {
