@@ -14,10 +14,13 @@ type Props = Readonly<{
 export const PublicPagination: FC<Props> = ({ totalPages }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const translate = useTranslations('Pagination');
+
+  if (totalPages < 2) return null;
+
   const pageString = searchParams.get('page') ?? '1';
   const currentPage = isNaN(+pageString) ? 1 : +pageString;
   const allPages = generatePaginationNumbers(currentPage, totalPages);
-  const translate = useTranslations('Pagination');
 
   if (currentPage < 1 || isNaN(+pageString)) {
     redirect(pathname);

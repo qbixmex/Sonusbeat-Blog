@@ -21,6 +21,7 @@ type Props = Readonly<{
 export const PaginationLinks: FC<Props> = ({ totalPages }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const pageString = searchParams.get('page') ?? '1';
   const currentPage = isNaN(+pageString) ? 1 : +pageString;
   const allPages = generatePaginationNumbers(currentPage, totalPages);
