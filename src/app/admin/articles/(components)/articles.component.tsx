@@ -98,19 +98,19 @@ export const Articles: FC<Props> = ({ articles }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Imagen</TableHead>
-              <TableHead>Título</TableHead>
-              <TableHead className="hidden lg:table-cell">Categoría</TableHead>
-              <TableHead className="hidden lg:table-cell">Author</TableHead>
-              <TableHead>Activo</TableHead>
-              <TableHead className="hidden lg:table-cell">Robots</TableHead>
+              <TableHead className="w-[200px]">Imagen</TableHead>
+              <TableHead className="hidden md:table-cell min-w-[250px]">Título</TableHead>
+              <TableHead className="hidden lg:table-cell w-[100px]">Categoría</TableHead>
+              <TableHead className="hidden lg:table-cell w-[200px]">Author</TableHead>
+              <TableHead className="hidden md:table-cell w-[80px]">Activo</TableHead>
+              <TableHead className="hidden lg:table-cell w-[180px]">Robots</TableHead>
               <TableHead>Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {optimisticState.map((article) => (
               <TableRow key={article.id}>
-                <TableCell>
+                <TableCell className="min-w-[200px] max-w-[240px] py-2 lg:py-5">
                   <Link href={`/admin/articles/${article.id}`}>
                     <Image
                       src={
@@ -123,14 +123,14 @@ export const Articles: FC<Props> = ({ articles }) => {
                           ? article.translations[0].imageAlt
                           : "Imagen del artículo"
                       }
-                      className="object-cover w-full min-w-[100px] max-w-[200px] h-[100px] border-2 border-blue-500/50 rounded"
+                      className="object-cover w-full mx-auto min-w-[100px] max-w-[200px] h-[100px] border-2 border-blue-500/50 rounded"
                       width={200}
                       height={100}
                       priority
                     />
                   </Link>
                 </TableCell>
-                <TableCell className="whitespace-break-spaces break-words max-w-xs">
+                <TableCell className="hidden md:table-cell whitespace-break-spaces break-words">
                   <Link href={`/admin/articles/${article.id}`}>
                     {
                       (article.translations.length > 0)
@@ -155,7 +155,7 @@ export const Articles: FC<Props> = ({ articles }) => {
                     {getFirstAndLastName((article.author as { name: string }).name)}
                   </Link>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <Switch
                     checked={article.published}
                     onCheckedChange={() => {
@@ -163,7 +163,7 @@ export const Articles: FC<Props> = ({ articles }) => {
                     }}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden lg:table-cell">
                   <RobotsBadges seoRobots={article.seoRobots as string} />
                 </TableCell>
                 <TableCell>
