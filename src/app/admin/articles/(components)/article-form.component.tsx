@@ -201,7 +201,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
   });
 
   return (
-    <div className="w-full lg:max-w-[768px] mx-auto">
+    <div className="px-13 py-10">
       <h1 className="text-3xl md:text-5xl font-semibold text-center mb-10">
         {article ? 'Editar' : 'Crear'} Articulo
       </h1>
@@ -466,8 +466,8 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                               : `/images/blog/${article.imageURL}`
                           }
                           alt={article.translations[0].imageAlt ?? "Imagen del artículo"}
-                          width={300}
-                          height={200}
+                          width={500}
+                          height={400}
                           className="w-full h-auto object-cover rounded-lg"
                         />
                       </DialogTrigger>
