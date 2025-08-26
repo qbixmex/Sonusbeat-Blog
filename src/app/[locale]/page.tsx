@@ -19,13 +19,13 @@ type Props = Readonly<{
 }>;
 
 const HomePage: FC<Props> = ({ params, searchParams }) => {
-  const { page, take } = use(searchParams);
+  const { page = '1', take = '12' } = use(searchParams);
   const { locale } = use(params);
   
   // Enable static rendering
   setRequestLocale(locale);
   
-  const getCachedArticles = unstable_cache(
+  const getCachedArticles: () => Promise<ResponseFetchArticles> = unstable_cache(
     async () => {
       return fetchPublicArticlesAction({
         page: page ? parseInt(page) : undefined,
@@ -39,7 +39,7 @@ const HomePage: FC<Props> = ({ params, searchParams }) => {
     }
   );
 
-  const { articles, pagination } = use(getCachedArticles()) as ResponseFetchArticles;
+  const { articles, pagination } = use(getCachedArticles());
   const { totalPages } = pagination as Pagination;
 
   // Once the request locale is set, you
@@ -51,7 +51,7 @@ const HomePage: FC<Props> = ({ params, searchParams }) => {
       <MainContainer>
         <h1 className="hide-element">{translate('title')}</h1>
         <ArticlesList articles={articles ?? []} locale={locale} />
-        { totalPages > 1 && <PublicPagination totalPages={totalPages} />}
+        <PublicPagination totalPages={totalPages} />
       </MainContainer>
     </PublicLayout>
   );
