@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import styles from "./styles.module.css";
 import { Articles } from "./(components)/articles.component";
-import fetchArticlesAction from "./(actions)/fetch-articles.action";
+import fetchArticlesAction, { ResponseFetchArticles } from "./(actions)/fetch-articles.action";
 import { PaginationLinks } from "../(components)/pagination/pagination.component";
 import { Pagination } from "@/interfaces/pagination.interface";
+import { unstable_cache } from "next/cache";
 
 type Props = Readonly<{
   searchParams: Promise<{
@@ -23,21 +24,29 @@ type Props = Readonly<{
 }>;
 
 const ArticlesPage: FC<Props> = async ({ searchParams }) => {
-  const { page, take } = await searchParams;
+  const { page = '1', take = '6' } = await searchParams;
 
   const paginationOptions = {
     page: parseInt(page ?? '1'),
-    take: parseInt(take ?? '12'),
+    take: parseInt(take ?? '6'),
   };
 
-  const response = await fetchArticlesAction(paginationOptions);
-  const articles = response.articles ?? [];
+  const getCachedArticles: () => Promise<ResponseFetchArticles> = unstable_cache(
+    async () => {
+      return fetchArticlesAction(paginationOptions);
+    },
+    ["admin-articles", page, take],
+    {
+      tags: ['admin-articles'],
+      revalidate: 86000, // Every 24 hours (24 * 60 * 60)
+    }
+  );
 
-  if (articles.length === 0) {
+  const { articles = [], pagination } = await getCachedArticles();
+
+  if (articles?.length === 0) {
     redirect('/admin/articles?page=1');
   }
-
-  const { totalPages } = response.pagination as Pagination;
 
   return (
     <AdminLayout>
@@ -59,8 +68,8 @@ const ArticlesPage: FC<Props> = async ({ searchParams }) => {
         <main>
           <div className={styles.mainWrapper}>
             <div className={styles.section}>
-              <Articles articles={articles} />
-              <PaginationLinks totalPages={totalPages} />
+              <Articles articles={articles!} />
+              <PaginationLinks totalPages={(pagination as Pagination).totalPages} />
             </div>
           </div>
         </main>

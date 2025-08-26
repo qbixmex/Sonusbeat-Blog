@@ -31,7 +31,7 @@ export type AdminArticle = {
   }[];
 };
 
-type ResponseFetchArticles = Promise<{
+export type ResponseFetchArticles = Promise<{
   ok: boolean;
   message: string;
   articles: AdminArticle[] | null;
