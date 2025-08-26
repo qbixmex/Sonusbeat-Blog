@@ -43,7 +43,7 @@ import createArticleSchema from "../new/create-article.schema";
 import editArticleSchema from "../[id]/edit/edit-article.schema";
 import { Article, ArticleImage } from "@/interfaces/article.interface";
 import { Category } from "@/interfaces/category.interface";
-import MdEditorField from "./md-editor-field.component";
+import { MdEditorField } from "./md-editor-field.component";
 // import { CharactersCounter } from "@/components/characters-counter.component";
 import Divider from "@/components/divider.component";
 import deleteContentImageAction from "../(actions)/delete-content-image";
