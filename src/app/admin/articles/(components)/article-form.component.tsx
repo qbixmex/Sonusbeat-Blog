@@ -311,7 +311,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                           </FormLabel>
                           <FormControl>
                             <MdEditorField
-                              value={field.value}
+                              markdownString={field.value}
                               setContent={value => field.onChange(value)}
                               articleId={article?.id ?? undefined}
                               updateContentImage={updateContentImage}
