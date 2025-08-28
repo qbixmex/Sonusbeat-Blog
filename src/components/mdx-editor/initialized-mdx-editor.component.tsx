@@ -6,24 +6,25 @@ import {
   BoldItalicUnderlineToggles,
   BlockTypeSelect,
   CodeToggle,
-  CreateLink,
   ListsToggle,
   DiffSourceToggleWrapper,
   InsertTable,
   InsertThematicBreak,
   InsertCodeBlock,
+  InsertImage,
   // Plugins
   toolbarPlugin,
   headingsPlugin,
   quotePlugin,
   listsPlugin,
-  markdownShortcutPlugin,
-  linkDialogPlugin,
   linkPlugin,
+  markdownShortcutPlugin,
   thematicBreakPlugin,
   tablePlugin,
+  imagePlugin,
   diffSourcePlugin,
   codeBlockPlugin,
+  directivesPlugin,
   Separator,
   MDXEditor,
   codeMirrorPlugin,
@@ -32,12 +33,16 @@ import {
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css'
 import { basicDark } from 'cm6-theme-basic-dark';
+import { YoutubeDirectiveDescriptor } from './youtube-directive';
+import YouTubeButton from './youtube-btn.component';
 import './theme.css';
 
-export default function InitializedMDXEditor({
-  editorRef,
-  ...props
-}: { editorRef: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps) {
+type Props =
+  & { editorRef: ForwardedRef<MDXEditorMethods> | null }
+  & MDXEditorProps
+  & { uploadImage?: (file: File) => Promise<string> };
+
+const InitializedMDXEditor = ({ editorRef, uploadImage, ...props }: Props) => {
   return (
     <MDXEditor
       className="dark-theme dark-editor"
@@ -48,10 +53,26 @@ export default function InitializedMDXEditor({
         listsPlugin(),
         markdownShortcutPlugin(),
         thematicBreakPlugin(),
-        linkDialogPlugin(),
-        linkPlugin(),
         tablePlugin(),
+        linkPlugin(),
         codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+        directivesPlugin({
+          directiveDescriptors: [YoutubeDirectiveDescriptor]
+        }),
+        imagePlugin({
+          imageUploadHandler: async (file: File) => {
+            try {
+              let url = "";
+              if (typeof uploadImage === 'function') {
+                url = await uploadImage(file);
+              }
+              return url;
+            } catch (error) {
+              console.error('[imagePlugin] error uploading image:', error);
+              throw error;
+            }
+          },
+        }),
         codeMirrorPlugin({
           codeBlockLanguages: {
             txt: 'text',
@@ -74,13 +95,15 @@ export default function InitializedMDXEditor({
               <BoldItalicUnderlineToggles />
               <BlockTypeSelect />
               <CodeToggle />
-              <CreateLink />
               <Separator />
               <ListsToggle />
               <Separator />
               <InsertTable />
               <InsertCodeBlock />
               <InsertThematicBreak />
+              <Separator />
+              <InsertImage />
+              <YouTubeButton />
               <Separator />
               <UndoRedo />
             </DiffSourceToggleWrapper>
@@ -97,4 +120,6 @@ export default function InitializedMDXEditor({
       ref={editorRef}
     />
   )
-}
+};
+
+export default InitializedMDXEditor;

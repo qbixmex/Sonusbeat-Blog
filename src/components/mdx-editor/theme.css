@@ -1,7 +1,9 @@
 @import url('@radix-ui/colors/tomato-dark.css');
 @import url('@radix-ui/colors/gray-dark.css');
 
+
 .prose {
+  position: relative;
   font-family: "Inter", sans-serif;
   max-width: none;
   width: 100%;
@@ -14,6 +16,8 @@
 }
 
 .dark-editor {
+  box-sizing: border-box;
+
   --accentBase: var(--tomato-1);
   --accentBgSubtle: var(--tomato-2);
   --accentBg: var(--tomato-3);
@@ -62,4 +66,23 @@
   --basePageBg: var(--color-stone-950);
   background: var(--basePageBg);
   border-radius: 8px;
+
+  min-height: 300px;
+  max-height: clamp(320px, 80vh, 800px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dark-editor .prose::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dark-editor .prose::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+
+.cm-matchingBracket {
+  background-color: transparent !important;
+  color: var(--color-amber-500) !important;
 }

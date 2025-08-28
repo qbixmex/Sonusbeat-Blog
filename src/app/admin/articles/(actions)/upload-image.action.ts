@@ -22,7 +22,7 @@ export const uploadImage = async (image: File, folder: 'users' | 'articles'): Pr
       + `_${pad(now.getHours())}`
       + `-${pad(now.getMinutes())}`
       + `-${pad(now.getSeconds())}`
-      + `-${pad(now.getMilliseconds(), 3)}`;
+      + `.${pad(now.getMilliseconds(), 3)}`;
 
     // Use the real file MIME type if available
     const mime = image.type || 'image/jpeg';
@@ -36,8 +36,6 @@ export const uploadImage = async (image: File, folder: 'users' | 'articles'): Pr
       // Automatic Transformations
       transformation: [
         {
-          width: 1280,
-          height: 720,
           crop: 'fill', // Fill the entire area
           gravity: 'auto', // Automatically determine the focal point
           format: "webp", // Use webp format

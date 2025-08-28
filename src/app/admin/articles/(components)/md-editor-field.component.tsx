@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-// import uploadContentImage from "../(actions)/upload-content-image.action";
+import uploadContentImage from "../(actions)/upload-content-image.action";
 import { ArticleImage } from "@/interfaces/article.interface";
 import { ForwardRefEditor } from "@/components/mdx-editor/forward-ref-editor-component";
 
@@ -15,26 +15,26 @@ type Props = Readonly<{
 export const MdEditorField: FC<Props> = ({
   markdownString,
   setContent,
-  // updateContentImage,
-  // articleId
+  updateContentImage,
+  articleId
 }) => {
-  // const handleImageUpload = async (file: File) => {
-  //   const response = await uploadContentImage(file, articleId!);
-  //   if (!response) throw new Error("No image URL returned");
-  //   const { cloudinaryResponse } = response;
-  //   updateContentImage({
-  //     publicId: cloudinaryResponse.publicId,
-  //     imageUrl: cloudinaryResponse.secureUrl,
-  //   });
-  //   return cloudinaryResponse.secureUrl;
-  // };
+  const handleImageUpload = async (file: File) => {
+    const response = await uploadContentImage(file, articleId!);
+    if (!response) throw new Error("No image URL returned");
+    const { cloudinaryResponse } = response;
+    updateContentImage({
+      publicId: cloudinaryResponse.publicId,
+      imageUrl: cloudinaryResponse.secureUrl,
+    });
+    return cloudinaryResponse.secureUrl;
+  };
 
   return (
     <>
       <ForwardRefEditor
         markdown={markdownString}
         onChange={(value: string) => setContent(value)}
-        // uploadImage={handleImageUpload}
+        uploadImage={handleImageUpload}
       />
     </>
   );
