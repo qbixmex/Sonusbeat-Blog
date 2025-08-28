@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon, X } from "lucide-react";
+import { CalendarIcon, LoaderCircle, Save, XCircle, ImageIcon, X, Send, Copy } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -47,6 +47,7 @@ import { MdEditorField } from "./md-editor-field.component";
 // import { CharactersCounter } from "@/components/characters-counter.component";
 import Divider from "@/components/divider.component";
 import deleteContentImageAction from "../(actions)/delete-content-image";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Props = Readonly<{
   categories: Category[];
@@ -75,6 +76,11 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
   const formSchema = !article ? createArticleSchema : editArticleSchema;
   const [isDeletingImage, setIsDeletingImage] = useState<string | null>(null);
   const [contentImages, setContentImages] = useState<ArticleImage[]>(article?.articleImages ?? []);
+
+  const isDraftRef = useRef(false);
+  const onSaveDraft = () => {
+    isDraftRef.current = true;
+  };
 
   const updateContentImage = (articleImage: ArticleImage) => {
     setContentImages((prev) => [...prev, articleImage]);
@@ -137,7 +143,23 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
     }
   };
 
+  const copyToClipboard = async (text: string) => {
+    if (typeof window === 'undefined') return false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      // fallback: prompt sin manipular el DOM
+      window.prompt('Copia la URL (Cmd/Ctrl+C):', text);
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const isDraftFlag = isDraftRef.current;
     const formData = new FormData();
 
     formData.append("categoryId", data.categoryId);
@@ -169,8 +191,11 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
       if (response.ok) {
         toast.success(response.message);
-        form.reset();
-        route.replace("/admin/articles");
+        if (!isDraftFlag) {
+          form.reset();
+          route.replace("/admin/articles");
+        }
+        isDraftRef.current = false;
         return;
       }
     }
@@ -188,8 +213,11 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
       if (response.ok) {
         toast.success(response.message);
-        form.reset();
-        route.replace("/admin/articles");
+        if (!isDraftFlag) {
+          form.reset();
+          route.replace("/admin/articles");
+        }
+        isDraftRef.current = false;
         return;
       }
     }
@@ -311,7 +339,7 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                           </FormLabel>
                           <FormControl>
                             <MdEditorField
-                              value={field.value}
+                              markdownString={field.value}
                               setContent={value => field.onChange(value)}
                               articleId={article?.id ?? undefined}
                               updateContentImage={updateContentImage}
@@ -422,25 +450,43 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
                         <Image
                           src={articleImage.imageUrl}
                           alt="Imagen del contenido"
-                          width={150}
-                          height={150}
+                          width={200}
+                          height={200}
                           className="w-[150px] h-[150px] object-cover rounded-lg"
                         />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          disabled={isDeletingImage === articleImage.imageUrl}
-                          className={cn("!bg-pink-600/70 hover:!bg-pink-600 absolute top-0 right-0 cursor-pointer", {
-                            "cursor-not-allowed !bg-gray-500": isDeletingImage === articleImage.imageUrl,
-                          })}
-                          onClick={() => handleDeleteImage(articleImage)}
-                        >
-                          {isDeletingImage === articleImage.imageUrl
-                            ? <LoaderCircle className="animate-spin" />
-                            : <X className="size-[25px]" />
-                          }
-                        </Button>
+                        <div className="absolute top-0 right-0 w-full flex justify-between gap-2">
+                          <Button
+                            type="button"
+                            size="icon"
+                            disabled={isDeletingImage === articleImage.imageUrl}
+                            className={cn("!bg-cyan-600/70 hover:!bg-cyan-600 cursor-pointer", {
+                              "cursor-not-allowed !bg-gray-500": isDeletingImage === articleImage.imageUrl,
+                            })}
+                            onClick={async () => {
+                              const url = articleImage.imageUrl;
+                              const ok = await copyToClipboard(url);
+                              if (ok) toast.success('URL copiada al portapapeles 👍');
+                              else toast('URL mostrada para copia manual');
+                            }}
+                          >
+                            <Copy className="size-[25px]" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            disabled={isDeletingImage === articleImage.imageUrl}
+                            className={cn("!bg-pink-600/70 hover:!bg-pink-600 cursor-pointer", {
+                              "cursor-not-allowed !bg-gray-500": isDeletingImage === articleImage.imageUrl,
+                            })}
+                            onClick={() => handleDeleteImage(articleImage)}
+                          >
+                            {isDeletingImage === articleImage.imageUrl
+                              ? <LoaderCircle className="animate-spin" />
+                              : <X className="size-[25px]" />
+                            }
+                          </Button>
+                        </div>
                       </figure>
                     ))}
                   </div>
@@ -642,37 +688,99 @@ export const ArticleForm: FC<Props> = ({ article, categories }) => {
 
           <Divider spaceY="lg" />
 
-          <section className="flex flex-col gap-3 md:flex-row md:justify-end">
-            <Button
-              className="bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-muted-foreground cursor-pointer"
-              type="button"
-            >
-              <Link href="/admin/articles" className="inline-flex items-center gap-2">
-                Cancelar <XCircle />
-              </Link>
-            </Button>
-            <Button
-              type="submit"
-              className={cn("cursor-pointer", {
-                "bg-primary/60 dark:bg-secondary dark:hover:bg-secondary cursor-not-allowed": form.formState.isSubmitting,
-              })}
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? (
-                <div className="flex items-center gap-2 text-secondary-foreground animate-pulse">
-                  <span className="text-sm italic">Espere</span>
-                  <LoaderCircle className="size-4 animate-spin" />
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  Guardar <Save />
-                </div>
-              )}
-            </Button>
-          </section>
+          <FormButtons
+            isSubmitting={form.formState.isSubmitting}
+            saveDraft={onSaveDraft}
+          />
         </form>
       </Form>
     </div>
+  );
+};
+
+const FormButtons: FC<Readonly<{
+  isSubmitting: boolean;
+  saveDraft: () => void;
+}>> = ({ isSubmitting, saveDraft }) => {
+  return (
+    <section className="flex flex-col gap-3 md:flex-row md:justify-end">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            className="bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 dark:text-muted-foreground cursor-pointer"
+            type="button"
+          >
+            <Link href="/admin/articles" className="inline-flex items-center gap-2">
+              <XCircle />
+            </Link>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          side="left"
+          className="bg-stone-950"
+          arrowClassName="bg-stone-950 fill-stone-950"
+        >
+          Cerrar
+        </TooltipContent>
+      </Tooltip>
+
+      {/* Save Draft */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="submit"
+            className={cn("cursor-pointer", {
+              "bg-primary/60 dark:bg-secondary dark:hover:bg-secondary cursor-not-allowed": isSubmitting,
+            })}
+            disabled={isSubmitting}
+            onClick={() => saveDraft()}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center gap-2 text-secondary-foreground animate-pulse">
+                <span className="text-sm italic">Espere</span>
+                <LoaderCircle className="size-4 animate-spin" />
+              </span>
+            ) : (
+              <Save />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          className="bg-stone-950"
+          arrowClassName="bg-stone-950 fill-stone-950"
+        >
+          Guardar
+        </TooltipContent>
+      </Tooltip>
+
+      {/* Save and Close */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="submit"
+            className={cn("cursor-pointer bg-emerald-600 dark:bg-emerald-600", {
+              "bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-700 cursor-not-allowed": isSubmitting,
+            })}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center gap-2 text-secondary-foreground animate-pulse">
+                <span className="text-sm italic">Espere</span>
+                <LoaderCircle className="size-4 animate-spin" />
+              </span>
+            ) : (
+              <Send />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          className="bg-stone-950"
+          arrowClassName="bg-stone-950 fill-stone-950"
+        >
+          Guardar y Cerrar
+        </TooltipContent>
+      </Tooltip>
+    </section>
   );
 };
 
