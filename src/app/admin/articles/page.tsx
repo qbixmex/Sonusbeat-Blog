@@ -31,7 +31,7 @@ const ArticlesPage: FC<Props> = async ({ searchParams }) => {
     take: parseInt(take ?? '6'),
   };
 
-  const getCachedArticles: () => Promise<ResponseFetchArticles> = unstable_cache(
+  const getCachedArticles: () => ResponseFetchArticles = unstable_cache(
     async () => {
       return fetchArticlesAction(paginationOptions);
     },
